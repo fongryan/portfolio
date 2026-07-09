@@ -1,0 +1,38 @@
+---
+/*
+ * SiteHeader — quiet, left wordmark, minimal nav. No announcement bar, no
+ * CTA shouting. Sticky with a translucent paper backing and hairline border on
+ * scroll is overkill for a hub this small; keep it static and still.
+ */
+interface Props {
+  /** Compact mode hides the inline nav on short pages. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<header class="border-b border-line">
+  <div
+    class="mx-auto flex max-w-3xl items-baseline justify-between px-6 py-5"
+  >
+    <a
+      href="/"
+      class="text-base font-semibold tracking-tight text-ink link-quiet hover:text-accent"
+    >
+      Ryan Fong
+    </a>
+    {!compact && (
+      <nav class="flex items-center gap-5 text-sm text-ink-soft">
+        <a href="#work" class="link-quiet hover:text-ink">Work</a>
+        <a href="#about" class="link-quiet hover:text-ink">About</a>
+        <a
+          href="https://github.com/fongryan"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="link-quiet hover:text-ink"
+          >GitHub</a
+        >
+      </nav>
+    )}
+  </div>
+</header>

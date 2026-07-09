@@ -1,0 +1,78 @@
+---
+/*
+ * Homepage. Hero + the mini-app grid driven entirely by the `apps` content
+ * collection. Copy is specific and quiet; layout is left-aligned and roomy.
+ */
+import Base from "../layouts/Base.astro";
+import AppCard from "../components/AppCard.astro";
+import { getApps, countLive, hasRealApps } from "../lib/apps";
+
+const apps = await getApps();
+const liveCount = countLive(apps);
+const total = apps.length;
+const hasReal = hasRealApps(apps);
+---
+
+<Base>
+  <section class="mx-auto max-w-3xl px-6 pt-20 pb-12">
+    <p
+      class="text-2xs font-medium uppercase tracking-[0.18em] text-accent"
+    >
+      Portfolio
+    </p>
+    <h1 class="mt-4 max-w-2xl text-4xl text-ink">
+      Small, fast software products.
+    </h1>
+    <p class="mt-5 max-w-xl text-lg text-ink-soft">
+      A growing set of focused mini-apps built for Armalo. Each ships on its own
+      subdomain; this is the hub that connects them.
+    </p>
+    <p class="mt-6 text-sm text-ink-faint">
+      {total} {total === 1 ? "project" : "projects"}
+      {hasReal ? ` · ${liveCount} live` : " · wiring up now"}
+    </p>
+  </section>
+
+  <section id="work" class="mx-auto max-w-3xl px-6 pb-8">
+    <div class="mb-5 flex items-baseline justify-between">
+      <h2 class="text-xl text-ink">Work</h2>
+      <span class="text-2xs uppercase tracking-wide text-ink-faint"
+        >Mini-apps</span
+      >
+    </div>
+
+    {apps.length === 0 ? (
+      <p class="text-ink-soft">
+        No mini-apps yet. Add one Markdown file under
+        <code>src/content/apps/</code>.
+      </p>
+    ) : (
+      <ul
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        style="grid-auto-rows: 1fr;"
+      >
+        {apps.map((app) => (
+          <li>
+            <AppCard app={app} />
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section id="about" class="mx-auto max-w-3xl px-6 pt-16">
+    <h2 class="text-xl text-ink">About this hub</h2>
+    <div class="mt-4 space-y-4 text-ink-soft">
+      <p>
+        This site is a content-first hub. It links out to each Armalo mini-app's
+        subdomain and stays out of the way: no tracking, no client-side
+        JavaScript for static content, and a deliberately restrained design.
+      </p>
+      <p>
+        Adding a mini-app is a content edit — one Markdown file in
+        <code>src/content/apps/</code> — not a code change. See
+        <code>README.md</code> for the model.
+      </p>
+    </div>
+  </section>
+</Base>

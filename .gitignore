@@ -1,0 +1,47 @@
+# Secrets and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.pem.pub
+secrets/
+*.secret
+
+# Private/local agent state (never commit)
+.lavish/*
+!.lavish/.gitkeep
+.firstmate/
+.no-mistakes/
+.treehouse/
+.stow-notes.md
+*.log
+transcripts/
+memory-dumps/
+agent-state/
+
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+.output/
+.vercel/
+.netlify/
+build/
+coverage/
+.cache/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+
+# Local env overrides for the site itself
+public/local/

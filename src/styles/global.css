@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/*
+ * Portfolio design tokens.
+ *
+ * Design contract (AGENTS.md): restrained, not vibe-coded. One ink, one paper,
+ * one accent. No gradient wash, no emoji-as-icons, no rounded-2xl slop. Every
+ * value here should be defensible to a senior designer. Any new surface should
+ * reuse these tokens instead of inventing new ones.
+ */
+
+@theme {
+  /* ---- Color ----
+   * oklch for perceptually even lightness. Ink is a warm near-black; paper is a
+   * warm off-white. The accent is a single deliberate hue, tunable in one place. */
+  --color-ink: oklch(0.22 0.012 75);
+  --color-ink-soft: oklch(0.4 0.012 75);
+  --color-ink-faint: oklch(0.58 0.01 75);
+  --color-paper: oklch(0.985 0.004 75);
+  --color-paper-recess: oklch(0.965 0.005 75);
+  --color-line: oklch(0.9 0.006 75);
+  --color-accent: oklch(0.55 0.15 230);
+  --color-accent-soft: oklch(0.55 0.15 230 / 0.12);
+
+  /* ---- Status (semantic, restrained) ---- */
+  --color-live: oklch(0.55 0.13 155);
+  --color-wip: oklch(0.62 0.12 70);
+  --color-planned: oklch(0.55 0.01 75);
+
+  /* ---- Typography ----
+   * Refined system stack: no external font dependency, fastest, most private.
+   * Craft comes from the scale and tracking below, not from a typeface. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Roboto Mono", Menlo,
+    Consolas, monospace;
+
+  /* Modular 1.2 type scale, tuned. */
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.375rem; /* 22px */
+  --text-2xl: 1.75rem; /* 28px */
+  --text-3xl: 2.25rem; /* 36px */
+  --text-4xl: 3rem; /* 48px */
+
+  /* ---- Radius: small and deliberate ---- */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+}
+
+/* Dark theme: same tokens, inverted lightness. Honors system preference. */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-ink: oklch(0.95 0.004 75);
+    --color-ink-soft: oklch(0.78 0.006 75);
+    --color-ink-faint: oklch(0.6 0.006 75);
+    --color-paper: oklch(0.16 0.008 75);
+    --color-paper-recess: oklch(0.19 0.008 75);
+    --color-line: oklch(0.28 0.008 75);
+    --color-accent: oklch(0.7 0.13 230);
+    --color-accent-soft: oklch(0.7 0.13 230 / 0.16);
+    --color-live: oklch(0.72 0.12 155);
+    --color-wip: oklch(0.75 0.11 70);
+    --color-planned: oklch(0.62 0.008 75);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    font-feature-settings: "kern" 1, "liga" 1, "cv01" 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.15;
+    letter-spacing: -0.018em;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Respect reduced motion globally — no autoplay, no parallax slop. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Subtle, tasteful link/card motion only. No scale-105 bounce slop. */
+@utility link-quiet {
+  transition: color 0.15s ease, opacity 0.15s ease;
+}

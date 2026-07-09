@@ -1,0 +1,13 @@
+# Per-repo no-mistakes overrides for the portfolio hub.
+#
+# The proof gate is a deterministic type-check + production build, not an
+# agent-driven step. A task is not done until this gate passes AND the repo's
+# public-safety doctor passes.
+
+commands:
+  test: 'npm run check && npm run build && ./scripts/portfolio-doctor.sh'
+
+# Keep test evidence out of this public repo; no-mistakes stores it in a temp dir.
+test:
+  evidence:
+    store_in_repo: false
