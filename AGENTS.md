@@ -1,5 +1,12 @@
 # AGENTS.md
 
+## Design With Agents
+
+This repo participates in the agent-driven design workflow. Load when work produces UI, visual artifacts, generated front-end, branding, or marketing assets. Canonical methodology: `/Users/ryanfong/workspace/DESIGN-WITH-AGENTS.md`.
+
+Core reflexes: keep a `soul.md` (exhaustive project memory, record+transcribe meetings, don't pre-distill); when output is close-but-wrong build a disposable control surface (slider modal / gallery / generator), dial it in, discard it — never hand-edit blindly; shepherd tightly with maximal context then unleash (rich context unlocks surprise; generic output = thin input); attach a mood board / reference set before prompting; ship dual human+machine surfaces with a do-not-run guard for sample commands; treat feedback as prompt → agent → PR with a human merge gate.
+
+
 This repository is **public**. It is Ryan Fong's portfolio hub: a fast,
 content-first site that links the subdomains hosting the mini-apps built for
 Armalo. Treat it as a shareable, production-quality product surface, never as a
