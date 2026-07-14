@@ -60,3 +60,24 @@ Verify: Run npm run build to validate the content schema. If the link is "live",
 Record: Note the mini-app and its status in GOALS.md so the portfolio roadmap stays accurate.
 Stop: Stop when the collection matches reality and the build passes.
 ```
+
+## Product Catalogue Boundary Loop
+
+Use whenever a product, capability, integration, or marketing decision is added
+to the portfolio.
+
+```text
+Observe: Decide whether the proposed fact is public-safe and whether it is a
+product, capability, channel, integration, or private strategy decision.
+Choose: Keep private strategy in Brain/Obsidian; keep this repo to verified,
+public-safe metadata and links.
+Act: Add or update the smallest content entry and point product use/provisioning
+to the canonical `app.armalo.ai` gateway when appropriate.
+Verify: Run npm run check && npm run build && ./scripts/portfolio-doctor.sh;
+inspect the diff for private names, credentials, unsupported live claims, and
+private customer context.
+Record: Update the private catalogue project when the product graph, maturity,
+integration status, or commercial hypothesis changes.
+Stop: Stop when the public projection is accurate and the private owner surface
+contains the deeper decision.
+```

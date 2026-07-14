@@ -1,6 +1,6 @@
 ---
 /*
- * Homepage. Hero + the mini-app grid driven entirely by the `apps` content
+ * Homepage. Hero + the product grid driven entirely by the `apps` content
  * collection. Copy is specific and quiet; layout is left-aligned and roomy.
  */
 import Base from "../layouts/Base.astro";
@@ -21,14 +21,14 @@ const hasReal = hasRealApps(apps);
       Portfolio
     </p>
     <h1 class="mt-4 max-w-2xl text-4xl text-ink">
-      Small, fast software products.
+      Armalo products, built deliberately.
     </h1>
     <p class="mt-5 max-w-xl text-lg text-ink-soft">
-      A growing set of focused mini-apps built for Armalo. Each ships on its own
-      subdomain; this is the hub that connects them.
+      A growing catalogue of focused products under Armalo AI. Each can have its
+      own product surface; this is the public hub that connects them.
     </p>
     <p class="mt-6 text-sm text-ink-faint">
-      {total} {total === 1 ? "project" : "projects"}
+      {total} {total === 1 ? "product" : "products"}
       {hasReal ? ` · ${liveCount} live` : " · wiring up now"}
     </p>
   </section>
@@ -37,13 +37,13 @@ const hasReal = hasRealApps(apps);
     <div class="mb-5 flex items-baseline justify-between">
       <h2 class="text-xl text-ink">Work</h2>
       <span class="text-2xs uppercase tracking-wide text-ink-faint"
-        >Mini-apps</span
+        >Products</span
       >
     </div>
 
     {apps.length === 0 ? (
       <p class="text-ink-soft">
-        No mini-apps yet. Add one Markdown file under
+        No products yet. Add one Markdown file under
         <code>src/content/apps/</code>.
       </p>
     ) : (
@@ -64,12 +64,12 @@ const hasReal = hasRealApps(apps);
     <h2 class="text-xl text-ink">About this hub</h2>
     <div class="mt-4 space-y-4 text-ink-soft">
       <p>
-        This site is a content-first hub. It links out to each Armalo mini-app's
-        subdomain and stays out of the way: no tracking, no client-side
+        This site is a content-first hub. It links out to each Armalo product's
+        surface and stays out of the way: no tracking, no client-side
         JavaScript for static content, and a deliberately restrained design.
       </p>
       <p>
-        Adding a mini-app is a content edit — one Markdown file in
+        Adding a product is a content edit — one Markdown file in
         <code>src/content/apps/</code> — not a code change. See
         <code>README.md</code> for the model.
       </p>

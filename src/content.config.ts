@@ -27,6 +27,9 @@ const apps = defineCollection({
     order: z.number().int().default(100),
     // Optional short tag list for future filtering. Keep to nouns, max 3.
     tags: z.array(z.string()).max(3).default([]),
+    // Optional public product metadata. Keep ownership language public-safe.
+    owner: z.string().optional(),
+    platform: z.string().optional(),
   }),
 });
 

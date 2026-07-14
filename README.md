@@ -14,11 +14,19 @@ workflow (Firstmate, treehouse, no-mistakes, lavish-axi, Brain).
 - **Tailwind CSS v4** — utility-first styling, CSS-first token config.
 - **TypeScript** — strict.
 
-The homepage is a quiet hero plus a grid of mini-apps. The grid is driven
-entirely by the `apps` content collection, so adding a mini-app is a content
+The homepage is a quiet hero plus a grid of products. The grid is driven
+entirely by the `apps` content collection, so adding a product is a content
 edit, never a code change.
 
-## Add a mini-app
+## Product catalogue foundation
+
+This repo is the public-safe index for the broader Armalo product catalogue.
+Read [`docs/product-catalogue-public-foundation.md`](./docs/product-catalogue-public-foundation.md)
+for the boundary between this portfolio hub and the private catalogue/control
+plane hosted through `app.armalo.ai`. Internal strategy, pricing, customer
+research, and operator playbooks do not belong in this public repo.
+
+## Add a product
 
 Create one Markdown file under `src/content/apps/`. The filename becomes the
 slug. Frontmatter schema lives in `src/content.config.ts`.
@@ -48,6 +56,8 @@ npm run dev          # local dev server
 npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
 npm run doctor       # repo health + public-safety gate (run before committing)
+npm run test:hermes  # deterministic test for the Girl-Math invocation contract
+npm run invoke:girl-math -- "Your private work prompt" # requires private runtime env
 npm run format       # format with prettier
 ```
 

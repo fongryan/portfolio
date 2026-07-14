@@ -15,6 +15,10 @@ States: `active`, `stretch`, `done`, `retired`.
   mini-app subdomains — src/pages/index.astro + src/content/apps — a homepage
   a senior designer would not be embarrassed by — before the next mini-app
   launches.
+- [active] Keep the public portfolio aligned with the private Armalo product
+  catalogue without leaking internal strategy —
+  docs/product-catalogue-public-foundation.md + src/content/apps — every public
+  entry has explicit proof status and an `app.armalo.ai` destination when used.
 - [active] Keep the hub under a 50 KB first-load budget on the homepage (no
   client JS for static content) — astro build output — Lighthouse 100 /
   best-practices + 95+ performance — continuous.

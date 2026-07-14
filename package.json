@@ -11,6 +11,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "doctor": "./scripts/portfolio-doctor.sh",
+    "invoke:girl-math": "node scripts/invoke-girl-math.mjs",
+    "test:hermes": "node --test scripts/invoke-girl-math.test.mjs",
     "format": "prettier --write ."
   },
   "license": "MIT",

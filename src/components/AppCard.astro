@@ -1,9 +1,8 @@
 ---
 /*
- * AppCard — one mini-app in the grid. Renders as a link to the subdomain when
- * the entry has a URL and is live/wip; planned apps are non-links with a quiet
- * affordance. Restraint over decoration: a hairline border, generous padding,
- * and one accent on hover. No shadows, no scale transform, no gradient.
+ * AppCard — one product in the catalogue. Every entry gets an internal detail
+ * page so the homepage can stay neutral while any product can later become the
+ * lead. External destinations belong on the detail page.
  */
 import type { CollectionEntry } from "astro:content";
 import StatusBadge from "./StatusBadge.astro";
@@ -12,21 +11,18 @@ interface Props {
   app: CollectionEntry<"apps">;
 }
 const { app } = Astro.props;
-const { name, url, status, category, description, year } = app.data;
-const isLink = !!url && status !== "planned";
-const Tag = isLink ? "a" : "div";
-const linkProps = isLink
-  ? { href: url, target: "_blank", rel: "noopener noreferrer" }
-  : {};
+const { name, status, category, description, year } = app.data;
+const href = `/apps/${app.id}`;
+const isLink = true;
+const Tag = "a";
+const linkProps = { href };
 ---
 
 <Tag
   {...linkProps}
   class:list={[
     "group flex h-full flex-col rounded-md border border-line bg-paper p-5",
-    isLink &&
-      "transition-colors duration-150 hover:border-accent focus-visible:outline-none",
-    !isLink && "cursor-default opacity-90",
+    "transition-colors duration-150 hover:border-accent focus-visible:outline-none",
   ]}
 >
   <div class="flex items-start justify-between gap-3">
