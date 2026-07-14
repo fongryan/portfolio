@@ -190,3 +190,20 @@ Hosted preview receipt (2026-07-14): the canonical branch deployed through the
 existing Vercel `app` project at
 https://app-cgd3f6cma-ryanrfonggmailcoms-projects.vercel.app. Production alias
 promotion remains gated by the active no-mistakes run; no bypass was used.
+
+Hosted start-flow repair (2026-07-14): `ARMALO_ROOM_TOKEN_SECRET` was present
+in Vercel Production but omitted from Turborepo's environment contract.
+`turbo.json` now declares the auth/runtime variables globally, and the existing
+encrypted room-token secret is present in Vercel Preview as well. The corrected
+Preview deployment reached Ready at
+https://app-113vxmpnj-ryanrfonggmailcoms-projects.vercel.app. Production reached
+Ready and promoted `https://app.armalo.ai`. The secret value was not stored in
+this public repository. No provider or financial mutation occurred.
+
+Canonical production re-promotion (2026-07-14): a later unrelated deployment
+had replaced the alias with an older workspace surface. The canonical branch
+was re-promoted through the existing Vercel `app` project; deployment
+`dpl_GEsexZBeWVepCpQQHUkNQrZ8Nv5G` reached Ready and owns
+https://app.armalo.ai. Chrome proof reached the Armalo workspace through
+`/start`. Fresh web tests, type-check, build, and portfolio doctor passed. No
+provider or financial mutation occurred.
