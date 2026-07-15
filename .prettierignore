@@ -1,3 +1,11 @@
 # Canonical multi-agent instructions are maintained as byte-identical files.
 AGENTS.md
 CLAUDE.md
+
+# Generated or platform-managed surfaces are not authored source. Vercel
+# materializes these before running the configured build command.
+.astro/
+.lavish/
+.vercel/
+dist/
+vercel.json

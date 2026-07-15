@@ -12,6 +12,25 @@ test("Vercel publishes only output that passed the canonical proof", async () =>
   assert.equal(config.outputDirectory, "dist");
 });
 
+test("Vercel-generated surfaces stay outside the authored-source format gate", async () => {
+  const ignored = new Set(
+    (await readFile(new URL("../.prettierignore", import.meta.url), "utf8"))
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")),
+  );
+
+  for (const path of [
+    ".astro/",
+    ".lavish/",
+    ".vercel/",
+    "dist/",
+    "vercel.json",
+  ]) {
+    assert.ok(ignored.has(path), `${path} must be excluded from format:check`);
+  }
+});
+
 test("Vercel applies the approved static-site security policy", async () => {
   const config = JSON.parse(
     await readFile(new URL("../vercel.json", import.meta.url), "utf8"),
