@@ -71,11 +71,20 @@ function runDoctor(root, env = process.env) {
   });
 }
 
+async function environmentWithoutWorkingRg(root) {
+  const bin = path.join(root, "test-bin");
+  await mkdir(bin, { recursive: true });
+  const fakeRg = path.join(bin, "rg");
+  await writeFile(fakeRg, "#!/bin/sh\nexit 127\n");
+  await chmod(fakeRg, 0o755);
+  return { ...process.env, PATH: `${bin}:${process.env.PATH}` };
+}
+
 test("doctor validates a safe upload archive without Git metadata", async (t) => {
   const root = await makeArchive(t);
 
   const result = runDoctor(root, {
-    ...process.env,
+    ...(await environmentWithoutWorkingRg(root)),
     PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
   });
 
@@ -94,7 +103,7 @@ test("doctor rejects secrets in an upload archive", async (t) => {
   );
 
   const result = runDoctor(root, {
-    ...process.env,
+    ...(await environmentWithoutWorkingRg(root)),
     PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
   });
 
@@ -103,27 +112,12 @@ test("doctor rejects secrets in an upload archive", async (t) => {
   assert.match(result.stdout, /archive-secret\.txt/);
 });
 
-test("doctor fails closed when ripgrep is unavailable or unusable", async (t) => {
+test("doctor does not depend on an external ripgrep binary", async (t) => {
   const root = await makeRepo(t);
-  const bin = path.join(root, "test-bin");
-  await mkdir(bin);
-  const fakeRg = path.join(bin, "rg");
-  await writeFile(
-    fakeRg,
-    '#!/bin/sh\nif [ "$1" = "--version" ]; then exit 0; fi\nexit 2\n',
-  );
-  await chmod(fakeRg, 0o755);
+  const result = runDoctor(root, await environmentWithoutWorkingRg(root));
 
-  const result = runDoctor(root, {
-    ...process.env,
-    PATH: `${bin}:${process.env.PATH}`,
-  });
-
-  assert.notEqual(result.status, 0, result.stdout);
-  assert.match(
-    result.stdout,
-    /required scanner rg (?:is unavailable or unusable|failed while scanning current Git files)/,
-  );
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /ok: public-safety scanner completed/);
 });
 
 test("doctor rejects a force-tracked file that matches ignore rules", async (t) => {
@@ -139,7 +133,7 @@ test("doctor rejects a force-tracked file that matches ignore rules", async (t) 
   run("git", ["add", ".gitignore"], { cwd: root });
   run("git", ["add", "-f", "ignored-secret.txt"], { cwd: root });
 
-  const result = runDoctor(root);
+  const result = runDoctor(root, await environmentWithoutWorkingRg(root));
 
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stdout, /tracked files match ignore rules/);
@@ -152,7 +146,7 @@ test("doctor rejects CLAUDE.md symlinks that do not target AGENTS.md", async (t)
   await symlink("README.md", path.join(root, "CLAUDE.md"));
   run("git", ["add", "CLAUDE.md"], { cwd: root });
 
-  const result = runDoctor(root);
+  const result = runDoctor(root, await environmentWithoutWorkingRg(root));
 
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(
@@ -167,7 +161,7 @@ test("doctor rejects other public-tree symlinks without following them", async (
   await symlink(`${"/Users"}/example/private-vault`, link);
   run("git", ["add", "private-link"], { cwd: root });
 
-  const result = runDoctor(root);
+  const result = runDoctor(root, await environmentWithoutWorkingRg(root));
 
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stdout, /symlink is not public-safe: private-link/);

@@ -86,7 +86,7 @@ fi
 check_tool git required
 check_tool node required
 check_tool npm required
-check_tool rg required
+check_tool rg optional
 check_tool find required
 check_tool treehouse optional
 check_tool no-mistakes optional
@@ -113,9 +113,10 @@ fi
 # --- Public-safety scan -------------------------------------------------------
 # This repo is public. Build a NUL-safe scan set from Git's tracked files plus
 # untracked, nonignored files. Explicit paths keep force-tracked ignored files
-# visible to rg while local ignored files (including node_modules) stay out.
-if command -v rg >/dev/null 2>&1 && rg --version >/dev/null 2>&1; then
-  say "public-safety scan:"
+# visible to the scanner while local ignored files (including node_modules)
+# stay out. The scanner uses required Node instead of assuming deployment
+# archives provide a host-installed ripgrep binary.
+say "public-safety scan:"
 
   raw_files_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-files-raw.XXXXXX")"
   tmp_files+=("$raw_files_tmp")
@@ -187,20 +188,53 @@ if command -v rg >/dev/null 2>&1 && rg --version >/dev/null 2>&1; then
     esac
   done <"$raw_files_tmp"
 
-  scan_with_rg() {
+  scan_files() {
     local output_file="$1" pattern="$2"
     shift 2
     if [[ "$#" -eq 0 ]]; then
       return 1
     fi
     local scan_status=0
-    rg -n --no-ignore -- "$pattern" "$@" >"$output_file" \
+    PORTFOLIO_SCAN_PATTERN="$pattern" node - "$@" >"$output_file" <<'NODE' \
       || scan_status=$?
+const fs = require("node:fs");
+
+let pattern;
+try {
+  pattern = new RegExp(process.env.PORTFOLIO_SCAN_PATTERN);
+} catch (error) {
+  console.error(`invalid public-safety pattern: ${error.message}`);
+  process.exit(2);
+}
+
+let matched = false;
+for (const file of process.argv.slice(2)) {
+  let contents;
+  try {
+    contents = fs.readFileSync(file, "utf8");
+  } catch (error) {
+    console.error(`could not scan ${file}: ${error.message}`);
+    process.exitCode = 2;
+    continue;
+  }
+  const lines = contents.split(/\r?\n/);
+  for (let index = 0; index < lines.length; index += 1) {
+    if (pattern.test(lines[index])) {
+      console.log(`${file}:${index + 1}:${lines[index]}`);
+      matched = true;
+    }
+  }
+}
+
+if (process.exitCode !== 2) {
+  process.exitCode = matched ? 0 : 1;
+}
+NODE
     if [[ "$scan_status" -eq 0 ]]; then
       return 0
     fi
     if [[ "$scan_status" -gt 1 ]]; then
-      err "required scanner rg failed while scanning current Git files"
+      err "public-safety scanner failed while scanning current files"
       return 2
     fi
     return 1
@@ -219,7 +253,7 @@ if command -v rg >/dev/null 2>&1 && rg --version >/dev/null 2>&1; then
   for pattern in "${secret_patterns[@]}"; do
     scan_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-secret.XXXXXX")"
     tmp_files+=("$scan_tmp")
-    if scan_with_rg "$scan_tmp" "$pattern" "${secret_scan_files[@]}"; then
+    if scan_files "$scan_tmp" "$pattern" "${secret_scan_files[@]}"; then
       err "possible secret leaked: $pattern"
       sed 's/^/  /' "$scan_tmp"
     fi
@@ -228,27 +262,26 @@ if command -v rg >/dev/null 2>&1 && rg --version >/dev/null 2>&1; then
   path_scan_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-path.XXXXXX")"
   tmp_files+=("$path_scan_tmp")
   # Private absolute paths outside the intentional captain-stack pointer files.
-  if scan_with_rg "$path_scan_tmp" '/Users/|/home/|C:\\Users\\' \
+  if scan_files "$path_scan_tmp" '/Users/|/home/|C:\\Users\\' \
       "${path_scan_files[@]}"; then
     warn "possible private local path (review; OK if sanitized example):"
     sed 's/^/  /' "$path_scan_tmp"
     # Paths are a soft warning for a public repo: fail only on obvious private
     # topology (brain/vault/private project internals), not on docs/examples.
-    if rg -n '/Users/ryan|/home/ryan|vault/|/brain/' "$path_scan_tmp" >/dev/null 2>&1; then
+    if grep -En '/Users/ryan|/home/ryan|vault/|/brain/' "$path_scan_tmp" >/dev/null 2>&1; then
       err "private topology path leaked outside AGENTS.md/CLAUDE.md"
     fi
   fi
 
   env_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-env.XXXXXX")"
   tmp_files+=("$env_tmp")
-  if scan_with_rg "$env_tmp" '(^|[^.[:alnum:]_])\.env(\.|$)' \
+  if scan_files "$env_tmp" '(^|[^.A-Za-z0-9_])\.env(\.|$)' \
       "${env_scan_files[@]}"; then
     err ".env reference outside allowed files:"
     sed 's/^/  /' "$env_tmp"
   fi
-else
-  err "required scanner rg is unavailable or unusable"
-fi
+
+ok "public-safety scanner completed"
 
 # --- Build gate (proof can skip this already-completed phase) -----------------
 if [[ -f package.json ]]; then
