@@ -6,6 +6,7 @@ CLAUDE.md
 # materializes these before running the configured build command.
 .astro/
 .lavish/
+.gstack/
 .vercel/
 dist/
 vercel.json

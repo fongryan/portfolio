@@ -37,11 +37,32 @@ test("Vercel-generated surfaces stay outside the authored-source format gate", a
   for (const path of [
     ".astro/",
     ".lavish/",
+    ".gstack/",
     ".vercel/",
     "dist/",
     "vercel.json",
   ]) {
     assert.ok(ignored.has(path), `${path} must be excluded from format:check`);
+  }
+});
+
+test("Vercel uploads exclude local agent state", async () => {
+  const ignored = new Set(
+    (await readFile(new URL("../.vercelignore", import.meta.url), "utf8"))
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")),
+  );
+
+  for (const path of [
+    ".gstack/",
+    ".portfolio-proof.lock/",
+    ".lavish/",
+    ".firstmate/",
+    ".no-mistakes/",
+    ".treehouse/",
+  ]) {
+    assert.ok(ignored.has(path), `${path} must not upload to Vercel`);
   }
 });
 
