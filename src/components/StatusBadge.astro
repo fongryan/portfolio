@@ -4,12 +4,13 @@
  * not a rainbow. No emoji, no glow.
  */
 interface Props {
-  status: "live" | "wip" | "planned";
+  status: "live" | "beta" | "wip" | "planned";
 }
 const { status } = Astro.props;
 
 const label: Record<Props["status"], string> = {
   live: "Live",
+  beta: "Beta",
   wip: "In progress",
   planned: "Planned",
 };
@@ -19,16 +20,16 @@ const label: Record<Props["status"], string> = {
   class:list={[
     "inline-flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide",
     status === "live" && "bg-live/12 text-live",
+    status === "beta" && "bg-accent-soft text-accent",
     status === "wip" && "bg-wip/15 text-wip",
     status === "planned" && "bg-ink-faint/10 text-ink-faint",
   ]}
   aria-label={`Status: ${label[status]}`}
 >
-  {status === "live" && (
-    <span
-      class="size-1.5 rounded-full bg-live"
-      aria-hidden="true"
-    ></span>
-  )}
+  {
+    ["live", "beta"].includes(status) && (
+      <span class="size-1.5 rounded-full bg-live" aria-hidden="true" />
+    )
+  }
   {label[status]}
 </span>

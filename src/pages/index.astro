@@ -5,31 +5,31 @@
  */
 import Base from "../layouts/Base.astro";
 import AppCard from "../components/AppCard.astro";
-import { getApps, countLive, hasRealApps } from "../lib/apps";
+import { getApps, countAvailable, hasRealApps } from "../lib/apps";
 
 const apps = await getApps();
-const liveCount = countLive(apps);
+const availableCount = countAvailable(apps);
 const total = apps.length;
 const hasReal = hasRealApps(apps);
+const catalogueSummary = `${total} ${total === 1 ? "product" : "products"}${
+  hasReal ? ` · ${availableCount} available` : " · coming soon"
+}`;
 ---
 
 <Base>
   <section class="mx-auto max-w-3xl px-6 pt-20 pb-12">
-    <p
-      class="text-2xs font-medium uppercase tracking-[0.18em] text-accent"
-    >
+    <p class="text-2xs font-medium uppercase tracking-[0.18em] text-accent">
       Portfolio
     </p>
     <h1 class="mt-4 max-w-2xl text-4xl text-ink">
-      Armalo products, built deliberately.
+      Focused products, built to be useful.
     </h1>
     <p class="mt-5 max-w-xl text-lg text-ink-soft">
-      A growing catalogue of focused products under Armalo AI. Each can have its
-      own product surface; this is the public hub that connects them.
+      I’m Ryan Fong. I build focused products with Armalo AI, then share the
+      useful public surfaces here with clear access and proof.
     </p>
     <p class="mt-6 text-sm text-ink-faint">
-      {total} {total === 1 ? "product" : "products"}
-      {hasReal ? ` · ${liveCount} live` : " · wiring up now"}
+      {catalogueSummary}
     </p>
   </section>
 
@@ -41,37 +41,36 @@ const hasReal = hasRealApps(apps);
       >
     </div>
 
-    {apps.length === 0 ? (
-      <p class="text-ink-soft">
-        No products yet. Add one Markdown file under
-        <code>src/content/apps/</code>.
-      </p>
-    ) : (
-      <ul
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2"
-        style="grid-auto-rows: 1fr;"
-      >
-        {apps.map((app) => (
-          <li>
-            <AppCard app={app} />
-          </li>
-        ))}
-      </ul>
-    )}
+    {
+      apps.length === 0 ? (
+        <p class="text-ink-soft">
+          The first product is being prepared for the catalogue.
+        </p>
+      ) : (
+        <ul class="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2">
+          {apps.map((app) => (
+            <li>
+              <AppCard app={app} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </section>
 
   <section id="about" class="mx-auto max-w-3xl px-6 pt-16">
-    <h2 class="text-xl text-ink">About this hub</h2>
+    <h2 class="text-xl text-ink">About</h2>
     <div class="mt-4 space-y-4 text-ink-soft">
       <p>
-        This site is a content-first hub. It links out to each Armalo product's
-        surface and stays out of the way: no tracking, no client-side
-        JavaScript for static content, and a deliberately restrained design.
+        I use this catalogue to publish focused experiments once there is a real
+        visitor-facing surface to explore. Each entry separates maturity,
+        access, and proof so an early beta is not mistaken for a finished
+        service.
       </p>
       <p>
-        Adding a product is a content edit — one Markdown file in
-        <code>src/content/apps/</code> — not a code change. See
-        <code>README.md</code> for the model.
+        Armalo is the thread between them: practical AI products shaped around a
+        specific decision or workflow, with claims kept as concrete as the
+        evidence behind them.
       </p>
     </div>
   </section>

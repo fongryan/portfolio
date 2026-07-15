@@ -16,7 +16,7 @@ Use before any visual or content change ships to the public site.
 Observe: Open the affected page and read its source. Check for AI-slop patterns: emoji as feature icons, gradient wash backgrounds, "🚀 built with X" footer noise, centered-everything layouts, generic stock copy, low-contrast text.
 Choose: Pick the one change that most raises craft: tighter type scale, restrained palette, real whitespace, semantic structure, one defensible accent color.
 Act: Make the change in source (Astro component / Tailwind tokens), not via inline hacks.
-Verify: Run npm run check && npm run build && ./scripts/portfolio-doctor.sh. Re-open the page and confirm it reads as a senior designer's work.
+Verify: Run npm run proof. Re-open the page and confirm it reads as a senior designer's work.
 Record: Note the pattern fixed in this loop or a GOALS.md entry so the slop does not return.
 Stop: Stop when the page is defensible, not when it is merely "fine".
 ```
@@ -26,10 +26,10 @@ Stop: Stop when the page is defensible, not when it is merely "fine".
 Use when starting non-trivial portfolio work.
 
 ```text
-Observe: Read AGENTS.md, then run git status --short --branch and treehouse status. If the work is broad, read the Firstmate session digest.
-Choose: Decide if this is a direct local edit, a treehouse-isolated change, a Firstmate scout/ship task, or a no-mistakes promotion run.
+Observe: Read AGENTS.md and the workspace workflow, then run git status --short --branch. If the work is broad, read the Firstmate session digest.
+Choose: Under the current mainline-yolo policy, decide whether direct-main work is safe or explicit isolation is required; route broad work through Firstmate.
 Act: Make one bounded change through the established owner surface.
-Verify: Run ./scripts/portfolio-doctor.sh. For shippable code, route through no-mistakes axi run --intent "<goal>".
+Verify: Run npm run proof for every shippable change. Use no-mistakes only when an optional legacy wrapper is specifically useful.
 Record: Update Firstmate backlog, GOALS.md, or a Brain note with outcome, proof, and next bottleneck.
 Stop: Stop at success, clean no-op, blocked with exact blocker, or approval-required.
 ```
@@ -55,9 +55,9 @@ Use whenever a new Armalo mini-app subdomain is added or a link changes.
 ```text
 Observe: Read src/content/apps (the content collection that backs the homepage grid). List each entry's url, status, and blurb.
 Choose: Pick the entry that is most likely stale or underspecified.
-Act: Update the frontmatter (name, url, status: live|wip|planned, category, description, year). Keep copy tight and free of hype.
-Verify: Run npm run build to validate the content schema. If the link is "live", confirm the subdomain resolves before flipping status.
-Record: Note the mini-app and its status in GOALS.md so the portfolio roadmap stays accurate.
+Act: Update the frontmatter with separate maturity, access, proof, verification date, product URL, CTA, and highlights. Keep copy tight and free of hype.
+Verify: Run npm run proof. Before raising proof to public-live, verify the product-specific public destination in a real browser.
+Record: Note the product, access, proof level, and verification date in its content entry so the catalogue stays accurate.
 Stop: Stop when the collection matches reality and the build passes.
 ```
 
@@ -71,9 +71,9 @@ Observe: Decide whether the proposed fact is public-safe and whether it is a
 product, capability, channel, integration, or private strategy decision.
 Choose: Keep private strategy in Brain/Obsidian; keep this repo to verified,
 public-safe metadata and links.
-Act: Add or update the smallest content entry and point product use/provisioning
-to the canonical `app.armalo.ai` gateway when appropriate.
-Verify: Run npm run check && npm run build && ./scripts/portfolio-doctor.sh;
+Act: Add or update the smallest public content entry and link directly to its
+verified product-specific destination when the entry is actionable.
+Verify: Run npm run proof;
 inspect the diff for private names, credentials, unsupported live claims, and
 private customer context.
 Record: Update the private catalogue project when the product graph, maturity,

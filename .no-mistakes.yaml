@@ -1,11 +1,9 @@
 # Per-repo no-mistakes overrides for the portfolio hub.
 #
-# The proof gate is a deterministic type-check + production build, not an
-# agent-driven step. A task is not done until this gate passes AND the repo's
-# public-safety doctor passes.
+# The repo-native proof is authoritative locally, in CI, and in Vercel.
 
 commands:
-  test: 'npm run check && npm run build && ./scripts/portfolio-doctor.sh'
+  test: "npm run proof"
 
 # Keep test evidence out of this public repo; no-mistakes stores it in a temp dir.
 test:

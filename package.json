@@ -11,10 +11,13 @@
     "preview": "astro preview",
     "check": "astro check",
     "doctor": "./scripts/portfolio-doctor.sh",
-    "invoke:girl-math": "node scripts/invoke-girl-math.mjs",
-    "test:hermes": "node --test scripts/invoke-girl-math.test.mjs",
-    "test:deploy": "node --test scripts/portfolio-deploy-contract.test.mjs scripts/catalogue-contract.test.mjs",
-    "format": "prettier --write ."
+    "test": "node --test scripts/catalogue-contract.test.mjs scripts/portfolio-deploy-contract.test.mjs scripts/portfolio-doctor-contract.test.mjs scripts/portfolio-proof-contract.test.mjs",
+    "test:deploy": "npm test",
+    "test:output": "node --test scripts/site-output.test.mjs",
+    "budget": "node --test scripts/performance-budget.test.mjs",
+    "proof": "./scripts/portfolio-proof.sh",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "license": "MIT",
   "dependencies": {

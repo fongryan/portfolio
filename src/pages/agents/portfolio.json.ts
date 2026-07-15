@@ -1,43 +1,27 @@
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getApps } from "../../lib/apps";
 
-/**
- * Public, machine-readable catalogue surface.
- *
- * This is intentionally metadata-only. Private campaign strategy, customer
- * data, credentials, spend, and provider state belong behind app.armalo.ai.
- */
 export async function GET() {
-  const apps: CollectionEntry<"apps">[] = await getCollection("apps");
+  const apps = await getApps();
   const body = {
-    schema: "armalo.portfolio.catalogue.v1",
+    schema: "armalo.portfolio.catalogue.v2",
     generatedBy: "portfolio",
-    operator: {
-      name: "Hermes",
-      mode: "hosted-admin-only",
-      runtime: "Armalo hosted relay",
-      authority: "plan-and-propose",
-      liveMutations: "approval-required",
-    },
-    products: apps
-      .sort((a, b) => a.data.order - b.data.order)
-      .map(({ id, data }) => ({
-        slug: id,
-        name: data.name,
-        url: data.url ?? null,
-        status: data.status,
-        category: data.category,
-        description: data.description,
-        year: data.year,
-        tags: data.tags,
-        owner: data.owner ?? null,
-        platform: data.platform ?? null,
-      })),
-    capabilities: {
-      marketing: ["catalogue recall", "campaign planning", "copy variants", "creative brief", "Meta Ads proposal"],
-      commerce: ["Stripe product proposal", "pricing proposal", "catalogue mapping", "reconciliation plan"],
-      disallowedWithoutApproval: ["ad spend", "campaign activation", "Stripe activation", "payout", "refund", "credential changes"],
-    },
-    privateControlPlane: "https://app.armalo.ai",
+    products: apps.map(({ id, data }) => ({
+      slug: id,
+      name: data.name,
+      url: data.url ?? null,
+      status: data.status,
+      access: data.access,
+      proof: data.proof,
+      lastVerified: data.lastVerified,
+      category: data.category,
+      description: data.description,
+      year: data.year,
+      tags: data.tags,
+      owner: data.owner ?? null,
+      platform: data.platform ?? null,
+      ctaLabel: data.ctaLabel,
+      highlights: data.highlights,
+    })),
   };
 
   return new Response(JSON.stringify(body, null, 2), {

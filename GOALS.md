@@ -18,27 +18,29 @@ States: `active`, `stretch`, `done`, `retired`.
 - [active] Keep the public portfolio aligned with the private Armalo product
   catalogue without leaking internal strategy —
   docs/product-catalogue-public-foundation.md + src/content/apps — every public
-  entry has explicit proof status and an `app.armalo.ai` destination when used.
+  entry has explicit access and proof status plus a verified product-specific
+  public destination when actionable — continuous.
 - [active] Keep the hub under a 50 KB first-load budget on the homepage (no
   client JS for static content) — astro build output — Lighthouse 100 /
   best-practices + 95+ performance — continuous.
-- [stretch] Add a per-mini-app detail route that shows the product story,
+- [done] Add a per-mini-app detail route that shows the product story,
   stack, and live link without coupling the portfolio to any mini-app's
-  internal data — src/pages/apps/[slug].astro — only when a second mini-app is
-  live.
+  internal data — src/pages/apps/[slug].astro — shipped with the first verified
+  public catalogue entry.
 
 ## Workflow
 
 - [active] Every non-trivial change routes through Firstmate or the repo's
   declared owner surface, never a sidecar queue — AGENTS.md — zero competing
   TODO surfaces — continuous.
-- [active] Every shippable change passes no-mistakes with intent recorded —
-  .no-mistakes.yaml — 100% of merged PRs carry an intent — continuous.
+- [active] Every shippable change passes the same deterministic repo-native
+  proof locally, in GitHub Actions, and in Vercel — `npm run proof` — 100% of
+  production builds are proof-gated — continuous.
 - [active] Lavish review artifacts are always opened and polled; dead Lavish
   sessions are always repaired or reported — LOOPS.md — zero silently-broken
   Lavish sessions — continuous.
-- [active] The public-safety doctor runs green before every commit —
-  scripts/portfolio-doctor.sh — zero secret/private-topology leaks —
+- [active] The public-safety doctor runs as the final phase of every canonical
+  proof — scripts/portfolio-doctor.sh — zero secret/private-topology leaks —
   continuous.
 
 ## Self-Improvement

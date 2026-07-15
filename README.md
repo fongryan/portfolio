@@ -6,7 +6,7 @@ hosting the mini-apps built for Armalo.
 This is a **public** repo. It is a product surface, not a private memory vault.
 Read [`AGENTS.md`](./AGENTS.md) before doing anything non-trivial here; it is the
 single source of truth for every coding agent and locks in the cracked dev
-workflow (Firstmate, treehouse, no-mistakes, lavish-axi, Brain).
+workflow (Firstmate, repo-native proof, lavish-axi, and Brain).
 
 ## Stack
 
@@ -35,12 +35,18 @@ slug. Frontmatter schema lives in `src/content.config.ts`.
 ---
 name: "Your Mini-App"
 url: "https://app.example.com"
-status: live        # live | wip | planned
+status: beta # live | beta | wip | planned
+access: public # public | sign-in | private-beta | waitlist | unavailable
+proof: public-live # strongest verified public claim
+lastVerified: "2026-07-15"
 category: "Finance"
 description: "One tight sentence on what it does."
 year: 2026
-order: 10           # lower renders first
-tags: ["solana"]    # optional, max 3
+order: 10 # lower renders first
+tags: ["solana"] # optional, max 3
+ctaLabel: "Open product"
+highlights:
+  - "One concise, defensible visitor benefit."
 ---
 
 Optional longer body. Not rendered on the grid today.
@@ -55,11 +61,21 @@ npm install          # install dependencies
 npm run dev          # local dev server
 npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
-npm run doctor       # repo health + public-safety gate (run before committing)
-npm run test:hermes  # deterministic test for the Girl-Math invocation contract
-npm run invoke:girl-math -- "Your private work prompt" # requires private runtime env
+npm test             # deterministic source and deploy contracts
+npm run budget       # built homepage under 50 KB and zero shipped JS
+npm run proof        # canonical local, CI, and Vercel promotion gate
+npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier
+npm run format:check # verify formatting without changing files
 ```
+
+`npm run proof` is the authoritative release command. It serializes concurrent
+runs, checks formatting and deterministic contracts, type-checks, builds once,
+checks generated routes and metadata, enforces the performance budget, and then
+runs the public-safety doctor without rebuilding. A successful proof leaves
+`dist/` intact for publication. The lock records its owner PID atomically,
+allows a two-second grace window while owner metadata is established, and
+recovers abandoned locks without deleting a replacement owner's lock.
 
 ## Design contract (not vibe-coded)
 
@@ -75,17 +91,20 @@ This repo participates in Ryan's cross-agent cracked dev workflow:
 
 - **Firstmate** drives prioritization, dispatch, and handoffs (registered in the
   Firstmate fleet).
-- **treehouse** isolates implementation and risky investigation.
-- **no-mistakes** is the default promotion gate (`npm run doctor` is the proof
-  step).
+- The workspace's current **mainline-yolo** policy permits deliberate direct
+  work on `main`; preserve unrelated work and never force-push.
+- **treehouse** remains available when isolation is explicitly required.
+- **repo-native proof** (`npm run proof`) is the promotion gate used locally,
+  by GitHub Actions, and by Vercel. `no-mistakes` is an optional legacy wrapper.
 - **lavish-axi** is used for dense plans, comparisons, and visual review — and
   must always work (recovery loop in `AGENTS.md`).
 - **Obsidian Brain** holds durable cross-repo memory.
 
-Before committing:
+Before committing or pushing:
 
 ```sh
-./scripts/portfolio-doctor.sh
+npm run proof
 ```
 
-The doctor fails on secrets, private topology, or a broken build.
+The doctor can still run independently with `npm run doctor`; it fails on
+secrets, private topology, divergent agent instructions, or a broken build.

@@ -1,11 +1,8 @@
 ---
-import {
-  getCollection,
-  render,
-  type CollectionEntry,
-} from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import StatusBadge from "../../components/StatusBadge.astro";
+import { accessLabels, proofLabels } from "../../lib/apps";
 
 export async function getStaticPaths() {
   const apps = await getCollection("apps");
@@ -17,8 +14,21 @@ export async function getStaticPaths() {
 
 const { app } = Astro.props as { app: CollectionEntry<"apps"> };
 const { Content } = await render(app);
-const { name, url, status, category, description, year, owner, platform } =
-  app.data;
+const {
+  name,
+  url,
+  status,
+  access,
+  proof,
+  lastVerified,
+  category,
+  description,
+  year,
+  owner,
+  platform,
+  ctaLabel,
+  highlights,
+} = app.data;
 ---
 
 <Base title={`${name} — Armalo product catalogue`} description={description}>
@@ -41,19 +51,41 @@ const { name, url, status, category, description, year, owner, platform } =
       {description}
     </p>
 
-    <div class="mt-10 grid gap-6 border-y border-line py-6 text-sm sm:grid-cols-3">
-      {owner && (
-        <div>
-          <p class="text-2xs uppercase tracking-wide text-ink-faint">Owner</p>
-          <p class="mt-1 text-ink">{owner}</p>
-        </div>
-      )}
-      {platform && (
-        <div>
-          <p class="text-2xs uppercase tracking-wide text-ink-faint">Surface</p>
-          <p class="mt-1 text-ink">{platform}</p>
-        </div>
-      )}
+    <div
+      class="mt-10 grid gap-6 border-y border-line py-6 text-sm sm:grid-cols-3"
+    >
+      <div>
+        <p class="text-2xs uppercase tracking-wide text-ink-faint">Access</p>
+        <p class="mt-1 text-ink">{accessLabels[access]}</p>
+      </div>
+      <div>
+        <p class="text-2xs uppercase tracking-wide text-ink-faint">Proof</p>
+        <p class="mt-1 text-ink">{proofLabels[proof]}</p>
+      </div>
+      <div>
+        <p class="text-2xs uppercase tracking-wide text-ink-faint">Verified</p>
+        <p class="mt-1 text-ink">
+          <time datetime={lastVerified}>{lastVerified}</time>
+        </p>
+      </div>
+      {
+        owner && (
+          <div>
+            <p class="text-2xs uppercase tracking-wide text-ink-faint">Owner</p>
+            <p class="mt-1 text-ink">{owner}</p>
+          </div>
+        )
+      }
+      {
+        platform && (
+          <div>
+            <p class="text-2xs uppercase tracking-wide text-ink-faint">
+              Surface
+            </p>
+            <p class="mt-1 text-ink">{platform}</p>
+          </div>
+        )
+      }
       <div>
         <p class="text-2xs uppercase tracking-wide text-ink-faint">Started</p>
         <p class="mt-1 text-ink">{year}</p>
@@ -64,25 +96,35 @@ const { name, url, status, category, description, year, owner, platform } =
       <Content />
     </div>
 
+    <section class="mt-10 max-w-2xl" aria-labelledby="highlights-heading">
+      <h2 id="highlights-heading" class="text-xl text-ink">What you can do</h2>
+      <ul class="mt-4 space-y-2 text-ink-soft">
+        {
+          highlights.map((highlight: string) => (
+            <li class="flex gap-3">
+              <span class="text-accent" aria-hidden="true">
+                —
+              </span>
+              <span>{highlight}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
     <div class="mt-12 flex flex-wrap items-center gap-4">
-      {url && status === "live" && (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper link-quiet hover:bg-accent"
-        >
-          Open product
-        </a>
-      )}
-      {name === "Girl Math" && (
-        <a
-          href="/agents/girl-math.md"
-          class="rounded-md border border-line px-4 py-2 text-sm text-ink link-quiet hover:border-accent"
-        >
-          Hermes invocation contract
-        </a>
-      )}
+      {
+        url && access !== "unavailable" && (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper link-quiet hover:bg-accent"
+          >
+            {ctaLabel}
+          </a>
+        )
+      }
     </div>
   </article>
 </Base>

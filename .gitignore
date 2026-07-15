@@ -16,6 +16,8 @@ secrets/
 .firstmate/
 .no-mistakes/
 .treehouse/
+.portfolio-proof.lock/
+.portfolio-proof.lock.stale-claim.*
 .stow-notes.md
 *.log
 transcripts/
@@ -45,4 +47,3 @@ Thumbs.db
 
 # Local env overrides for the site itself
 public/local/
-.vercel

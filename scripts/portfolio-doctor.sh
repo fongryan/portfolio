@@ -8,6 +8,10 @@ set -euo pipefail
 
 root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$root"
+git_mode=0
+if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null || true)" == "true" ]]; then
+  git_mode=1
+fi
 
 fail=0
 tmp_files=()
@@ -48,7 +52,13 @@ require_file CLAUDE.md
 require_file README.md
 require_file package.json
 require_file astro.config.mjs
-require_file .gitignore
+if [[ "$git_mode" -eq 1 ]]; then
+  require_file .gitignore
+else
+  ok "archive mode does not require .gitignore"
+fi
+require_file scripts/portfolio-proof.sh
+require_file .github/workflows/ci.yml
 
 # --- AGENTS.md carries the locked-in cracked-dev-workflow block ---------------
 if grep -q "BEGIN RYAN CRACKED DEV WORKFLOW" AGENTS.md \
@@ -60,16 +70,24 @@ fi
 
 # CLAUDE.md must point to the same rules as AGENTS.md (symlink or identical).
 if [[ -L CLAUDE.md ]]; then
-  ok "CLAUDE.md -> $(readlink CLAUDE.md)"
+  claude_target="$(readlink CLAUDE.md 2>/dev/null || true)"
+  if [[ "$claude_target" == "AGENTS.md" ]] && cmp -s AGENTS.md CLAUDE.md; then
+    ok "CLAUDE.md -> AGENTS.md"
+  else
+    err "CLAUDE.md symlink target must be exactly AGENTS.md"
+  fi
+elif cmp -s AGENTS.md CLAUDE.md; then
+  ok "CLAUDE.md is identical to AGENTS.md"
 else
-  warn "CLAUDE.md is not a symlink to AGENTS.md (Claude Code may read divergent rules)"
+  err "CLAUDE.md must be a symlink to or identical with AGENTS.md"
 fi
 
 # --- Captain stack ------------------------------------------------------------
 check_tool git required
 check_tool node required
 check_tool npm required
-check_tool rg optional
+check_tool rg required
+check_tool find required
 check_tool treehouse optional
 check_tool no-mistakes optional
 check_tool lavish-axi optional
@@ -83,7 +101,9 @@ check_tool wheelhouse optional
 # --- Git status snapshot ------------------------------------------------------
 git_status_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-git-status.XXXXXX")"
 tmp_files+=("$git_status_tmp")
-if git status --short --branch >"$git_status_tmp" 2>/dev/null; then
+if [[ "$git_mode" -eq 0 ]]; then
+  ok "archive mode: no Git status available"
+elif git status --short --branch >"$git_status_tmp" 2>/dev/null; then
   say "git:"
   sed 's/^/  /' "$git_status_tmp"
 else
@@ -91,12 +111,100 @@ else
 fi
 
 # --- Public-safety scan -------------------------------------------------------
-# This repo is public. Scan committed/trackable content for secrets and private
-# topology. Captain-stack pointers inside AGENTS.md / CLAUDE.md are intentional
-# operational references (audited by check-captain-stack.sh) and are exempted
-# from the private-path scan only; the secret scan has no exemptions.
-if command -v rg >/dev/null 2>&1; then
+# This repo is public. Build a NUL-safe scan set from Git's tracked files plus
+# untracked, nonignored files. Explicit paths keep force-tracked ignored files
+# visible to rg while local ignored files (including node_modules) stay out.
+if command -v rg >/dev/null 2>&1 && rg --version >/dev/null 2>&1; then
   say "public-safety scan:"
+
+  raw_files_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-files-raw.XXXXXX")"
+  tmp_files+=("$raw_files_tmp")
+
+  if [[ "$git_mode" -eq 1 ]]; then
+    tracked_ignored_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-tracked-ignored.XXXXXX")"
+    tmp_files+=("$tracked_ignored_tmp")
+    if git ls-files -z -ci --exclude-standard >"$tracked_ignored_tmp"; then
+      if [[ -s "$tracked_ignored_tmp" ]]; then
+        err "tracked files match ignore rules:"
+        while IFS= read -r -d '' file; do
+          say "  $file"
+        done <"$tracked_ignored_tmp"
+      fi
+    else
+      err "could not enumerate tracked files that match ignore rules"
+    fi
+
+    if ! {
+      git ls-files -z --cached
+      git ls-files -z --others --exclude-standard
+    } >"$raw_files_tmp"; then
+      err "could not enumerate current Git files for public-safety scan"
+    fi
+  else
+    say "archive mode: scanning uploaded filesystem files"
+    if ! find . \
+        \( -type d \( \
+          -name .git -o -name node_modules -o -name .astro \
+          -o -name dist -o -name .vercel -o -name .output \
+          -o -name .cache -o -name coverage -o -name build \
+          -o -name .no-mistakes -o -name .treehouse \
+          -o -name .firstmate -o -name .lavish \
+        \) -prune \) -o \
+        \( -type f -o -type l \) -print0 >"$raw_files_tmp"; then
+      err "could not enumerate uploaded filesystem files for public-safety scan"
+    fi
+  fi
+
+  secret_scan_files=()
+  path_scan_files=()
+  env_scan_files=()
+  while IFS= read -r -d '' file; do
+    file="${file#./}"
+    if [[ -L "$file" ]]; then
+      symlink_target="$(readlink "$file" 2>/dev/null || true)"
+      if [[ "$file" == "CLAUDE.md" && "$symlink_target" == "AGENTS.md" ]] \
+        && cmp -s AGENTS.md CLAUDE.md; then
+        continue
+      fi
+      err "symlink is not public-safe: $file -> $symlink_target"
+      continue
+    fi
+    [[ -f "$file" ]] || continue
+    case "$file" in
+      node_modules/* | .astro/* | dist/*) continue ;;
+    esac
+
+    if [[ "$file" != "scripts/portfolio-doctor.sh" ]]; then
+      secret_scan_files+=("$file")
+    fi
+    case "$file" in
+      AGENTS.md | CLAUDE.md | scripts/portfolio-doctor.sh | .gitignore) ;;
+      *) path_scan_files+=("$file") ;;
+    esac
+    case "$file" in
+      AGENTS.md | CLAUDE.md | .gitignore) ;;
+      *) env_scan_files+=("$file") ;;
+    esac
+  done <"$raw_files_tmp"
+
+  scan_with_rg() {
+    local output_file="$1" pattern="$2"
+    shift 2
+    if [[ "$#" -eq 0 ]]; then
+      return 1
+    fi
+    local scan_status=0
+    rg -n --no-ignore -- "$pattern" "$@" >"$output_file" \
+      || scan_status=$?
+    if [[ "$scan_status" -eq 0 ]]; then
+      return 0
+    fi
+    if [[ "$scan_status" -gt 1 ]]; then
+      err "required scanner rg failed while scanning current Git files"
+      return 2
+    fi
+    return 1
+  }
 
   secret_patterns=(
     'sk-[A-Za-z0-9_-]{20,}'
@@ -111,11 +219,7 @@ if command -v rg >/dev/null 2>&1; then
   for pattern in "${secret_patterns[@]}"; do
     scan_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-secret.XXXXXX")"
     tmp_files+=("$scan_tmp")
-    if rg -n --hidden \
-        --glob '!.git' --glob '!.git/**' --glob '!node_modules/**' \
-        --glob '!.astro/**' --glob '!dist/**' \
-        --glob '!scripts/portfolio-doctor.sh' \
-        "$pattern" . >"$scan_tmp"; then
+    if scan_with_rg "$scan_tmp" "$pattern" "${secret_scan_files[@]}"; then
       err "possible secret leaked: $pattern"
       sed 's/^/  /' "$scan_tmp"
     fi
@@ -124,12 +228,8 @@ if command -v rg >/dev/null 2>&1; then
   path_scan_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-path.XXXXXX")"
   tmp_files+=("$path_scan_tmp")
   # Private absolute paths outside the intentional captain-stack pointer files.
-  if rg -n --hidden \
-      --glob '!.git' --glob '!.git/**' --glob '!node_modules/**' \
-      --glob '!.astro/**' --glob '!dist/**' \
-      --glob '!AGENTS.md' --glob '!CLAUDE.md' \
-      --glob '!scripts/portfolio-doctor.sh' --glob '!.gitignore' \
-      '/Users/|/home/|C:\\Users\\' . >"$path_scan_tmp"; then
+  if scan_with_rg "$path_scan_tmp" '/Users/|/home/|C:\\Users\\' \
+      "${path_scan_files[@]}"; then
     warn "possible private local path (review; OK if sanitized example):"
     sed 's/^/  /' "$path_scan_tmp"
     # Paths are a soft warning for a public repo: fail only on obvious private
@@ -141,29 +241,34 @@ if command -v rg >/dev/null 2>&1; then
 
   env_tmp="$(mktemp "${TMPDIR:-/tmp}/portfolio-env.XXXXXX")"
   tmp_files+=("$env_tmp")
-  if rg -n --hidden \
-      --glob '!.git' --glob '!.git/**' --glob '!node_modules/**' \
-      --glob '!.gitignore' --glob '!AGENTS.md' --glob '!CLAUDE.md' \
-      '(^|[^.[:alnum:]_])\.env(\.|$)' . >"$env_tmp"; then
+  if scan_with_rg "$env_tmp" '(^|[^.[:alnum:]_])\.env(\.|$)' \
+      "${env_scan_files[@]}"; then
     err ".env reference outside allowed files:"
     sed 's/^/  /' "$env_tmp"
   fi
 else
-  warn "ripgrep unavailable; skipped content scan (install rg for full gate)"
+  err "required scanner rg is unavailable or unusable"
 fi
 
-# --- Build gate (opt-out, runs by default once dependencies exist) ------------
+# --- Build gate (proof can skip this already-completed phase) -----------------
 if [[ -f package.json ]]; then
   if [[ -d node_modules ]]; then
     if [[ "${PORTFOLIO_DOCTOR_SKIP_BUILD:-0}" == "1" ]]; then
-      warn "build skipped (PORTFOLIO_DOCTOR_SKIP_BUILD=1)"
+      ok "check + build already completed by canonical proof"
     else
       say "build + type check:"
-      if npm run check >/tmp/portfolio-doctor-check.log 2>&1 \
-        && npm run build >/tmp/portfolio-doctor-build.log 2>&1; then
+      check_log="$(mktemp "${TMPDIR:-/tmp}/portfolio-doctor-check.XXXXXX")"
+      build_log="$(mktemp "${TMPDIR:-/tmp}/portfolio-doctor-build.XXXXXX")"
+      tmp_files+=("$check_log" "$build_log")
+      if npm run check >"$check_log" 2>&1 \
+        && npm run build >"$build_log" 2>&1; then
         ok "npm run check + npm run build passed"
       else
-        err "build or check failed (see /tmp/portfolio-doctor-{check,build}.log)"
+        err "build or check failed"
+        say "check output:"
+        sed 's/^/  /' "$check_log"
+        say "build output:"
+        sed 's/^/  /' "$build_log"
       fi
     fi
   else

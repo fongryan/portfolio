@@ -5,21 +5,19 @@
  * lead. External destinations belong on the detail page.
  */
 import type { CollectionEntry } from "astro:content";
+import { accessLabels, proofLabels } from "../lib/apps";
 import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
   app: CollectionEntry<"apps">;
 }
 const { app } = Astro.props;
-const { name, status, category, description, year } = app.data;
+const { name, status, access, proof, category, description, year } = app.data;
 const href = `/apps/${app.id}`;
-const isLink = true;
-const Tag = "a";
-const linkProps = { href };
 ---
 
-<Tag
-  {...linkProps}
+<a
+  href={href}
   class:list={[
     "group flex h-full flex-col rounded-md border border-line bg-paper p-5",
     "transition-colors duration-150 hover:border-accent focus-visible:outline-none",
@@ -34,19 +32,28 @@ const linkProps = { href };
 
   <p class="mt-1 text-sm text-ink-soft">{description}</p>
 
+  <dl class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-xs">
+    <div>
+      <dt class="uppercase tracking-wide text-ink-faint">Access</dt>
+      <dd class="mt-1 text-ink">{accessLabels[access]}</dd>
+    </div>
+    <div>
+      <dt class="uppercase tracking-wide text-ink-faint">Proof</dt>
+      <dd class="mt-1 text-ink">{proofLabels[proof]}</dd>
+    </div>
+  </dl>
+
   <div
     class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-4 text-2xs uppercase tracking-wide text-ink-faint"
   >
     <span>{category}</span>
     <span aria-hidden="true">·</span>
     <span>{year}</span>
-    {isLink && (
-      <span
-        class="ml-auto text-accent opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-        aria-hidden="true"
-      >
-        Open →
-      </span>
-    )}
+    <span
+      class="ml-auto text-accent opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+      aria-hidden="true"
+    >
+      Details →
+    </span>
   </div>
-</Tag>
+</a>

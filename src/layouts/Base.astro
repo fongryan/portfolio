@@ -2,8 +2,8 @@
 /*
  * Base layout — semantic HTML5 document, minimal metadata, no analytics or
  * third-party scripts by default. Fonts are the refined system stack from
- * global.css (no external requests). When the site goes live, set the
- * PORTFOLIO_SITE_URL env var so canonical/OG tags resolve.
+ * global.css (no external requests). Canonical and social metadata use the
+ * configured production origin without adding a script surface.
  */
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -18,9 +18,10 @@ const {
   description = "A portfolio hub linking the focused mini-apps built for Armalo.",
 } = Astro.props;
 
-const canonical = Astro.site
-  ? new URL(Astro.url.pathname, Astro.site).href
-  : undefined;
+if (!Astro.site) {
+  throw new Error("Astro.site is required for canonical metadata");
+}
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -30,7 +31,14 @@ const canonical = Astro.site
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="color-scheme" content="light dark" />
     <meta
       name="theme-color"
