@@ -36,6 +36,10 @@ States: `active`, `stretch`, `done`, `retired`.
 - [active] Every shippable change passes the same deterministic repo-native
   proof locally, in GitHub Actions, and in Vercel — `npm run proof` — 100% of
   production builds are proof-gated — continuous.
+- [active] Keep committed deployment configuration inside the proof contract
+  even when generated Vercel surfaces stay outside the normal formatter —
+  `scripts/check-vercel-format.mjs` + `npm run format:vercel` — committed
+  `vercel.json` format drift fails before deployment — continuous.
 - [active] Lavish review artifacts are always opened and polled; dead Lavish
   sessions are always repaired or reported — LOOPS.md — zero silently-broken
   Lavish sessions — continuous.

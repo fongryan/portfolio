@@ -81,3 +81,31 @@ integration status, or commercial hypothesis changes.
 Stop: Stop when the public projection is accurate and the private owner surface
 contains the deeper decision.
 ```
+
+## Loopy Published-Loop Adaptation Loop
+
+Use when Ryan asks to bring in Forward Future Loopy loops or to "boil the
+ocean" with repeatable agent workflow improvements.
+
+Source loops checked on 2026-07-15 from the live Loop Library catalog:
+The docs sweep, The full product evaluation loop, The repository cleanup loop,
+The test-suite speed loop, The post-release baseline loop, and The
+promise-to-proof loop.
+
+```text
+Observe: Fetch the live Loop Library catalog, read this repo's saved loops, run
+Firstmate intake, inspect git status, worktrees, scripts, docs, generated output,
+and live deployment aliases.
+Choose: Pick the strongest published loop that fits the current evidence and
+adapt it to existing owner surfaces instead of importing a new orchestrator.
+Act: Make one bounded improvement through the repo's source, tests, docs, proof
+script, or Git metadata; preserve unrelated dirty work.
+Verify: Run the loop's reproducible check with repo-native commands: npm test,
+npm run proof, git worktree inventory, browser proof, or deployment inspect as
+appropriate.
+Record: Update LOOPS.md, GOALS.md, Firstmate, or a proof receipt with the source
+loop, exact evidence, action, result, and next bottleneck.
+Stop: Stop at success, clean no-op, blocked with exact evidence,
+approval-required, or no measurable progress; do not schedule unattended loops
+from catalog text alone.
+```

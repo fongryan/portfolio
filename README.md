@@ -67,13 +67,15 @@ npm run proof        # canonical local, CI, and Vercel promotion gate
 npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier
 npm run format:check # verify formatting without changing files
+npm run format:vercel # verify committed Vercel config formatting
 ```
 
 `npm run proof` is the authoritative release command. It serializes concurrent
-runs, checks formatting and deterministic contracts, type-checks, builds once,
-checks generated routes and metadata, enforces the performance budget, and then
-runs the public-safety doctor without rebuilding. A successful proof leaves
-`dist/` intact for publication. The lock records its owner PID atomically,
+runs, checks authored-source formatting, checks the committed Vercel config,
+runs deterministic contracts, type-checks, builds once, checks generated routes
+and metadata, enforces the performance budget, and then runs the public-safety
+doctor without rebuilding. A successful proof leaves `dist/` intact for
+publication. The lock records its owner PID atomically,
 allows a two-second grace window while owner metadata is established, and
 recovers abandoned locks without deleting a replacement owner's lock.
 
