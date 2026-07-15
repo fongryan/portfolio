@@ -4,9 +4,9 @@
 
 **Goal:** Ship a useful, accurate, public-safe portfolio whose product claims and production deployment are guarded by one deterministic proof command.
 
-**Architecture:** Extend the existing Astro content collection with explicit access and proof metadata, keep rendering static and zero-JS, reduce machine endpoints to the same public projection, and make one serialized repo-native proof command authoritative in local, GitHub, and Vercel contexts.
+**Architecture:** Extend the existing Astro content collection with explicit access and proof metadata, keep rendering static and zero-JS, reduce machine endpoints to the same public projection, and make one serialized repo-native proof command authoritative in local and Vercel contexts.
 
-**Tech Stack:** Astro 7, TypeScript, Tailwind CSS 4, Node test runner, shell proof orchestration, GitHub Actions, Vercel static hosting.
+**Tech Stack:** Astro 7, TypeScript, Tailwind CSS 4, Node test runner, shell proof orchestration, Vercel static hosting.
 
 ---
 
@@ -166,19 +166,19 @@
 - [ ] Test that a stale lock is recovered and a live lock times out with the
       documented message.
 
-### Task 7: Add GitHub enforcement and align workflow docs
+### Task 7: Keep GitHub Actions dormant and align workflow docs
 
 **Files:**
 
-- Create: `.github/workflows/ci.yml`
+- Delete: `.github/workflows/ci.yml`
 - Modify: `README.md`
 - Modify: `GOALS.md`
 - Modify: `LOOPS.md`
 - Modify: `scripts/portfolio-doctor.sh`
 - Modify: `.gitignore`
 
-- [ ] Run `npm run proof` on push to `main` and pull requests with pinned Node
-      and `npm ci`.
+- [x] Keep runnable workflows out of the repository while the owner billing
+      gate is closed; require direct Ryan approval before reactivation.
 - [ ] Align workflow guidance with direct-main plus repo-native proof.
 - [ ] Remove duplicate ignore rules and make AGENTS/CLAUDE equivalence a valid
       inheritance state.
@@ -197,7 +197,7 @@
 - [ ] Create a safety ref, commit the coherent wave, and push `main`.
 - [ ] Enable GitHub secret/security protections and block branch deletion/force
       pushes without requiring PR-only delivery.
-- [ ] Confirm the GitHub workflow is green.
+- [x] Confirm GitHub Actions is disabled and no runnable workflow is committed.
 - [ ] Deploy the exact `main` tree to Vercel production.
 - [ ] Browser-test `/`, `/apps/girl-math`, `/agents/portfolio.json`,
       `/robots.txt`, `/sitemap.xml`, and an unknown route at desktop and mobile

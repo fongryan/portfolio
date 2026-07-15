@@ -34,8 +34,9 @@ States: `active`, `stretch`, `done`, `retired`.
   declared owner surface, never a sidecar queue — AGENTS.md — zero competing
   TODO surfaces — continuous.
 - [active] Every shippable change passes the same deterministic repo-native
-  proof locally, in GitHub Actions, and in Vercel — `npm run proof` — 100% of
-  production builds are proof-gated — continuous.
+  proof locally and in Vercel — `npm run proof` — 100% of production builds are
+  proof-gated; GitHub Actions remains disabled until Ryan directly approves
+  reactivation after the owner billing gate is healthy — continuous.
 - [active] Keep committed deployment configuration inside the proof contract
   even when generated Vercel surfaces stay outside the normal formatter —
   `scripts/check-vercel-format.mjs` + `npm run format:vercel` — committed

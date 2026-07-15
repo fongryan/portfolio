@@ -23,8 +23,8 @@ checks.
   authenticated owner surfaces.
 - Production omits canonical and social metadata, robots, sitemap, and a
   branded 404.
-- Direct pushes to public `main` have no GitHub workflow, aggregate proof gate,
-  or executable performance budget.
+- Direct pushes to public `main` had no aggregate proof gate or executable
+  performance budget.
 - The public tree contains implementation plans for private operator systems;
   their canonical owners already exist outside this repository.
 
@@ -34,7 +34,8 @@ checks.
 
 Correct product truth, remove misplaced private-owner implementation material,
 add explicit access/proof metadata, improve visitor copy and product detail,
-reduce machine endpoints to catalogue truth, and install deploy/CI proof.
+reduce machine endpoints to catalogue truth, and install deterministic local
+and deployment proof.
 
 This has the best combination of immediate visitor value, safety, leverage, and
 verifiable completion.
@@ -144,7 +145,7 @@ attributes and zero script elements.
 
 ## Proof architecture
 
-`npm run proof` is the canonical local, CI, and Vercel gate. It acquires a
+`npm run proof` is the canonical local and Vercel gate. It acquires a
 portable atomic-directory lock with a 120-second timeout, removes a stale lock
 whose recorded process no longer exists, and always releases its owned lock via
 `trap`. It then runs exactly:
@@ -160,7 +161,9 @@ whose recorded process no longer exists, and always releases its owned lock via
 The successful command leaves `dist/` intact for Vercel to publish. Vercel's
 `buildCommand` is exactly `npm run proof`.
 
-GitHub Actions runs the same command for pushes to `main` and pull requests.
+GitHub Actions remains disabled at both the account and repository levels while
+the owner billing gate is closed. The repository contains no runnable workflow,
+and no agent may add one or re-enable Actions without Ryan's direct approval.
 GitHub prevents branch deletion and force pushes without requiring PR ceremony.
 
 ## Failure behavior
@@ -180,7 +183,7 @@ GitHub prevents branch deletion and force pushes without requiring PR ceremony.
 1. Public-boundary cleanup and catalogue contract tests.
 2. Product truth, navigation, visitor copy, and detail-page usefulness.
 3. Metadata, routes, headers, and generated-output tests.
-4. Deterministic aggregate proof and GitHub Actions.
+4. Deterministic aggregate local and Vercel proof.
 5. GitHub safety settings, production deployment, and live browser proof.
 
 Catalogue expansion follows only when another product owner supplies a verified

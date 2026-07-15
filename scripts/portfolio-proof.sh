@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# portfolio-proof.sh — the canonical local, CI, and Vercel promotion gate.
+# portfolio-proof.sh — the canonical local and Vercel promotion gate.
 set -euo pipefail
 
 root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -24,6 +24,28 @@ test("Vercel publishes only output that passed the canonical proof", async () =>
   assert.equal(config.framework, "astro");
   assert.equal(config.buildCommand, "npm run proof");
   assert.equal(config.outputDirectory, "dist");
+});
+
+test("GitHub Actions stays intentionally dormant while the owner billing gate is closed", async () => {
+  const workflowsDirectory = new URL("../.github/workflows/", import.meta.url);
+  const workflowFiles = await readdir(workflowsDirectory).catch((error) => {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  });
+
+  assert.deepEqual(
+    workflowFiles.filter((file) => /\.ya?ml$/i.test(file)),
+    [],
+    "Do not add runnable GitHub Actions workflows without direct owner approval",
+  );
+
+  const readme = await readFile(
+    new URL("../README.md", import.meta.url),
+    "utf8",
+  );
+  const goals = await readFile(new URL("../GOALS.md", import.meta.url), "utf8");
+  assert.match(readme, /GitHub Actions is intentionally disabled/);
+  assert.match(goals, /GitHub Actions remains disabled/);
 });
 
 test("Vercel-generated surfaces stay outside the authored-source format gate", async () => {

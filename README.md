@@ -63,7 +63,7 @@ npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
 npm test             # deterministic source and deploy contracts
 npm run budget       # built homepage under 50 KB and zero shipped JS
-npm run proof        # canonical local, CI, and Vercel promotion gate
+npm run proof        # canonical local and Vercel promotion gate
 npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier
 npm run format:check # verify formatting without changing files
@@ -96,8 +96,10 @@ This repo participates in Ryan's cross-agent cracked dev workflow:
 - The workspace's current **mainline-yolo** policy permits deliberate direct
   work on `main`; preserve unrelated work and never force-push.
 - **treehouse** remains available when isolation is explicitly required.
-- **repo-native proof** (`npm run proof`) is the promotion gate used locally,
-  by GitHub Actions, and by Vercel. `no-mistakes` is an optional legacy wrapper.
+- **repo-native proof** (`npm run proof`) is the promotion gate used locally and
+  by Vercel. GitHub Actions is intentionally disabled while the owner billing
+  gate is closed; do not add workflows or re-enable Actions without Ryan's
+  direct approval. `no-mistakes` is an optional legacy wrapper.
 - **lavish-axi** is used for dense plans, comparisons, and visual review — and
   must always work (recovery loop in `AGENTS.md`).
 - **Obsidian Brain** holds durable cross-repo memory.

@@ -33,7 +33,6 @@ async function makeRepo(t) {
   const root = await mkdtemp(path.join(tmpdir(), "portfolio-doctor-test-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(path.join(root, "scripts"));
-  await mkdir(path.join(root, ".github/workflows"), { recursive: true });
   await copyFile(sourceDoctor, path.join(root, "scripts/portfolio-doctor.sh"));
   await Promise.all([
     writeFile(
@@ -49,7 +48,6 @@ async function makeRepo(t) {
     writeFile(path.join(root, "astro.config.mjs"), "export default {};\n"),
     writeFile(path.join(root, ".gitignore"), "node_modules/\ndist/\n"),
     writeFile(path.join(root, "scripts/portfolio-proof.sh"), "#!/bin/sh\n"),
-    writeFile(path.join(root, ".github/workflows/ci.yml"), "name: Fixture\n"),
   ]);
   run("git", ["init", "-q"], { cwd: root });
   run("git", ["add", "."], { cwd: root });
@@ -70,6 +68,23 @@ function runDoctor(root, env = process.env) {
     env,
   });
 }
+
+test("doctor rejects runnable GitHub Actions workflows while Actions is intentionally dormant", async (t) => {
+  const root = await makeRepo(t);
+  await mkdir(path.join(root, ".github/workflows"), { recursive: true });
+  await writeFile(
+    path.join(root, ".github/workflows/ci.yml"),
+    "name: Unexpected workflow\n",
+  );
+
+  const result = runDoctor(root, {
+    ...process.env,
+    PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
+  });
+
+  assert.notEqual(result.status, 0, result.stdout);
+  assert.match(result.stdout, /workflow present without direct owner approval/);
+});
 
 async function environmentWithoutOptionalUnixTools(root) {
   const bin = path.join(root, "test-bin");

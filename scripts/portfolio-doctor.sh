@@ -66,7 +66,21 @@ else
   ok "archive mode does not require .gitignore"
 fi
 require_file scripts/portfolio-proof.sh
-require_file .github/workflows/ci.yml
+
+# GitHub Actions is intentionally account-disabled while the owner billing
+# gate is closed. Keep the repository dormant too so a future settings change
+# cannot restart noisy, guaranteed-to-fail jobs without direct owner approval.
+workflow_files=()
+if [[ -d .github/workflows ]]; then
+  while IFS= read -r -d '' workflow_file; do
+    workflow_files+=("$workflow_file")
+  done < <(find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) -print0)
+fi
+if [[ "${#workflow_files[@]}" -eq 0 ]]; then
+  ok "GitHub Actions remains dormant"
+else
+  err "runnable GitHub Actions workflow present without direct owner approval: ${workflow_files[*]}"
+fi
 
 # --- AGENTS.md carries the locked-in cracked-dev-workflow block ---------------
 if grep -q "BEGIN RYAN CRACKED DEV WORKFLOW" AGENTS.md \
