@@ -114,30 +114,39 @@ test("the format gate checks committed authored Vercel config", async (t) => {
   assert.match(proof, /npm run format:vercel/);
 });
 
-test("the Vercel format gate works in upload archives without Git metadata", async (t) => {
+test("the Vercel format gate validates upload archives without Git metadata", async (t) => {
   const fixture = await mkdtemp(
     path.join(tmpdir(), "portfolio-vercel-upload-"),
   );
   t.after(() => rm(fixture, { recursive: true, force: true }));
 
-  await writeFile(path.join(fixture, "vercel.json"), '{"framework":"astro"}\n');
+  await writeFile(
+    path.join(fixture, "vercel.json"),
+    '{"framework":"astro","buildCommand":"npm run build","outputDirectory":"dist"}\n',
+  );
   const malformed = spawnSync(process.execPath, [formatChecker], {
     encoding: "utf8",
     env: { ...process.env, PORTFOLIO_FORMAT_ROOT: fixture },
   });
   assert.notEqual(malformed.status, 0, malformed.stdout);
-  assert.match(malformed.stdout, /uploaded vercel\.json is not formatted/);
+  assert.match(
+    malformed.stdout,
+    /uploaded vercel\.json deploy contract is invalid/,
+  );
 
   await writeFile(
     path.join(fixture, "vercel.json"),
-    '{\n  "framework": "astro"\n}\n',
+    '{"framework":"astro","buildCommand":"npm run proof","outputDirectory":"dist"}\n',
   );
   const formatted = spawnSync(process.execPath, [formatChecker], {
     encoding: "utf8",
     env: { ...process.env, PORTFOLIO_FORMAT_ROOT: fixture },
   });
   assert.equal(formatted.status, 0, `${formatted.stdout}\n${formatted.stderr}`);
-  assert.match(formatted.stdout, /uploaded vercel\.json format passed/);
+  assert.match(
+    formatted.stdout,
+    /uploaded vercel\.json deploy contract passed/,
+  );
 });
 
 test("Vercel applies the approved static-site security policy", async () => {
