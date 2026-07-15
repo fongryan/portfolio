@@ -158,6 +158,7 @@ fi
 
 say "[1/7] formatting"
 npm run format:check
+npm run format:vercel
 
 say "[2/7] deterministic tests"
 npm test

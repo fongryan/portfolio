@@ -114,6 +114,75 @@ test("doctor rejects secrets in an upload archive", async (t) => {
   assert.match(result.stdout, /archive-secret\.txt/);
 });
 
+const secretCases = [
+  ["OpenAI token", `sk-${"a".repeat(20)}`],
+  ["Anthropic token", `sk-${"ant"}-${"b".repeat(20)}`],
+  ["OpenAI key", ["OPENAI", "API", "KEY"].join("_") + "=fixture"],
+  ["Anthropic key", ["ANTHROPIC", "API", "KEY"].join("_") + "=fixture"],
+  ["AWS secret", ["AWS", "SECRET", "ACCESS", "KEY"].join("_") + "=fixture"],
+  ["GitHub token", ["GITHUB", "TOKEN"].join("_") + "=fixture"],
+  ["Slack bot token", ["SLACK", "BOT", "TOKEN"].join("_") + "=fixture"],
+  ["Stripe secret", ["STRIPE", "SECRET", "KEY"].join("_") + "=fixture"],
+  ["private key", ["BEGIN RSA", "PRIVATE KEY"].join(" ")],
+  ["Slack token", `xox${"b"}-${"a".repeat(20)}`],
+  ["AWS access key", `AKIA${"A".repeat(16)}`],
+  ["GitHub personal token", `ghp_${"a".repeat(36)}`],
+  ["GitHub OAuth token", `gho_${"b".repeat(36)}`],
+];
+
+test("doctor rejects every configured secret pattern", async (t) => {
+  const root = await makeArchive(t);
+  for (const [index, [, value]] of secretCases.entries()) {
+    await writeFile(path.join(root, `secret-${index}.txt`), `${value}\n`);
+  }
+  const result = runDoctor(root, {
+    ...(await environmentWithoutOptionalUnixTools(root)),
+    PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
+  });
+
+  assert.notEqual(result.status, 0, result.stdout);
+  assert.match(result.stdout, /possible secret leaked/);
+  for (const [index, [name]] of secretCases.entries()) {
+    assert.match(result.stdout, new RegExp(`secret-${index}\\.txt`), name);
+  }
+});
+
+const envBoundaryCases = [
+  ["bare env", [".", "env"].join(""), true],
+  ["suffixed env", ["config ", ".", "env.local"].join(""), true],
+  ["path env", ["config/", ".", "env"].join(""), true],
+  ["environment word", [".", "environment"].join(""), false],
+  ["envfile suffix", ["my.", "envfile"].join(""), false],
+  ["property access", ["object.", "env"].join(""), false],
+];
+
+test("doctor enforces exact .env reference boundaries", async (t) => {
+  const positiveRoot = await makeArchive(t);
+  const negativeRoot = await makeArchive(t);
+  for (const [index, [, value, rejected]] of envBoundaryCases.entries()) {
+    const root = rejected ? positiveRoot : negativeRoot;
+    await writeFile(path.join(root, `env-${index}.txt`), `${value}\n`);
+  }
+
+  const positive = runDoctor(positiveRoot, {
+    ...(await environmentWithoutOptionalUnixTools(positiveRoot)),
+    PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
+  });
+  assert.notEqual(positive.status, 0, positive.stdout);
+  assert.match(positive.stdout, /\.env reference outside allowed files/);
+  for (const [index, [name, , rejected]] of envBoundaryCases.entries()) {
+    if (rejected) {
+      assert.match(positive.stdout, new RegExp(`env-${index}\\.txt`), name);
+    }
+  }
+
+  const negative = runDoctor(negativeRoot, {
+    ...(await environmentWithoutOptionalUnixTools(negativeRoot)),
+    PORTFOLIO_DOCTOR_SKIP_BUILD: "1",
+  });
+  assert.equal(negative.status, 0, `${negative.stdout}\n${negative.stderr}`);
+});
+
 test("doctor does not depend on an external ripgrep binary", async (t) => {
   const root = await makeRepo(t);
   const result = runDoctor(

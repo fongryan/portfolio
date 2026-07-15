@@ -17,7 +17,8 @@
     "budget": "node --test scripts/performance-budget.test.mjs",
     "proof": "./scripts/portfolio-proof.sh",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "format:vercel": "node scripts/check-vercel-format.mjs"
   },
   "license": "MIT",
   "dependencies": {
