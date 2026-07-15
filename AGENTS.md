@@ -28,7 +28,7 @@ already covers:
 - **Firstmate** — captain/crew layer. Owns the queue, prioritization, context
   switching, dispatch, and handoffs.
 - **treehouse** — worktree layer. Owns isolated, reusable checkouts.
-- **no-mistakes** — promotion gate. Owns shippable branch validation.
+- **Repo-native proof** — owns shippable validation; no-mistakes is optional legacy tooling.
 - **lavish-axi** — visual review layer. Owns dense plans, architecture maps,
   comparisons, and review surfaces.
 - **Obsidian Brain** — durable memory layer. Owns cross-repo history.
@@ -81,7 +81,7 @@ backend. Prefer Firstmate backlog / `tasks-axi` over loose markdown TODO sprawl.
 - `treehouse` — isolate implementation and risky investigation. Return leases
   after landed or intentionally abandoned. Never run parallel agents in the same
   dirty checkout.
-- `no-mistakes` — the default branch/PR promotion gate for shippable work. A
+- Repo-native tests, doctor, smoke, and runtime proof are the default validation for shippable work. No-mistakes is optional legacy tooling. A
   task is not done until intent + review/test/lint/CI is recorded. Do not bypass
   unless the repo explicitly authorizes an emergency path.
 - `lavish-axi` — use for dense plans, comparisons, architecture maps, code
@@ -194,7 +194,7 @@ Agents must ask before:
 - `./scripts/portfolio-doctor.sh` — repo health + public-safety gate.
 - `bash /Users/ryanfong/workspace/check-captain-stack.sh` — workspace audit must
   show `ok workspace AGENTS.md` / `CLAUDE.md` for portfolio.
-- For shippable code, route through `no-mistakes axi run --intent "<goal>"`.
+- For shippable code, run the repo-native proof command and record its receipt.
 
 <!-- BEGIN RYAN CRACKED DEV WORKFLOW -->
 ## Ryan Cracked Dev Workflow
