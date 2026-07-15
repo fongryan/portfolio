@@ -65,7 +65,7 @@ const { name, url, status, category, description, year, owner, platform } =
     </div>
 
     <div class="mt-12 flex flex-wrap items-center gap-4">
-      {url && status !== "planned" && (
+      {url && status === "live" && (
         <a
           href={url}
           target="_blank"
