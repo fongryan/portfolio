@@ -45,3 +45,4 @@ Thumbs.db
 
 # Local env overrides for the site itself
 public/local/
+.vercel
