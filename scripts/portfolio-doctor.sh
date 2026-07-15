@@ -43,6 +43,14 @@ check_tool() {
   fi
 }
 
+files_equal() {
+  node -e '
+    const fs = require("node:fs");
+    const [left, right] = process.argv.slice(1);
+    process.exit(fs.readFileSync(left).equals(fs.readFileSync(right)) ? 0 : 1);
+  ' "$1" "$2"
+}
+
 say "portfolio doctor"
 say "root: $root"
 
@@ -71,12 +79,12 @@ fi
 # CLAUDE.md must point to the same rules as AGENTS.md (symlink or identical).
 if [[ -L CLAUDE.md ]]; then
   claude_target="$(readlink CLAUDE.md 2>/dev/null || true)"
-  if [[ "$claude_target" == "AGENTS.md" ]] && cmp -s AGENTS.md CLAUDE.md; then
+  if [[ "$claude_target" == "AGENTS.md" ]] && files_equal AGENTS.md CLAUDE.md; then
     ok "CLAUDE.md -> AGENTS.md"
   else
     err "CLAUDE.md symlink target must be exactly AGENTS.md"
   fi
-elif cmp -s AGENTS.md CLAUDE.md; then
+elif files_equal AGENTS.md CLAUDE.md; then
   ok "CLAUDE.md is identical to AGENTS.md"
 else
   err "CLAUDE.md must be a symlink to or identical with AGENTS.md"
@@ -164,7 +172,7 @@ say "public-safety scan:"
     if [[ -L "$file" ]]; then
       symlink_target="$(readlink "$file" 2>/dev/null || true)"
       if [[ "$file" == "CLAUDE.md" && "$symlink_target" == "AGENTS.md" ]] \
-        && cmp -s AGENTS.md CLAUDE.md; then
+        && files_equal AGENTS.md CLAUDE.md; then
         continue
       fi
       err "symlink is not public-safe: $file -> $symlink_target"
