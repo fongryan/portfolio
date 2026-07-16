@@ -1,0 +1,161 @@
+---
+/*
+ * Flywheel — the strategy board behind the catalogue. One revenue loop, five
+ * stages, every product placed honestly on it. Public-safe by design: this
+ * page names the mechanism (build → launch → paid acquisition → paid checkout
+ * → reinvest) but never spend, revenue, or account details.
+ */
+import Base from "../layouts/Base.astro";
+import StatusBadge from "../components/StatusBadge.astro";
+import {
+  getApps,
+  appsByFlywheelStage,
+  flywheelStages,
+  flywheelLabels,
+  flywheelDescriptions,
+  proofLabels,
+  type Flywheel,
+} from "../lib/apps";
+
+const apps = await getApps();
+const board = appsByFlywheelStage(apps);
+
+const advanceWhen: Record<Flywheel, string> = {
+  build: "The public surface is live and verified on its own subdomain.",
+  launch: "Real users hold the surface up and a paid campaign has a clear job.",
+  acquire:
+    "Paid traffic converts well enough to justify switching checkout on.",
+  monetize: "The funnel covers its own ad spend, with business-verified proof.",
+  compound:
+    "Profit is funding campaigns and the next build — the loop restarts.",
+};
+---
+
+<Base
+  title="Flywheel — Armalo strategy board"
+  description="The revenue loop behind the Armalo catalogue: build, launch, acquire, monetize, compound — and where each product sits on it."
+>
+  <article class="mx-auto max-w-3xl px-6 pt-20 pb-12">
+    <p class="text-2xs font-medium uppercase tracking-[0.18em] text-accent">
+      Strategy board
+    </p>
+    <h1 class="mt-4 max-w-2xl text-4xl text-ink">One loop, many products.</h1>
+    <p class="mt-5 max-w-xl text-lg text-ink-soft">
+      Every Armalo mini-app runs the same flywheel: build it on
+      <a
+        href="https://app.armalo.ai"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link-quiet text-ink hover:text-accent">app.armalo.ai</a
+      >, launch it on its own subdomain, buy attention with paid social on Meta,
+      convert it through a Stripe checkout funnel, and reinvest the profit into
+      more campaigns and the next build.
+    </p>
+    <p class="mt-4 max-w-xl text-sm text-ink-faint">
+      This board tracks stage and proof only. Spend, revenue, and campaign
+      detail stay in the private operating system.
+    </p>
+
+    <section class="mt-14" aria-labelledby="loop-heading">
+      <div class="mb-5 flex items-baseline justify-between">
+        <h2 id="loop-heading" class="text-xl text-ink">The loop</h2>
+        <span class="text-2xs uppercase tracking-wide text-ink-faint">
+          Compound feeds build
+        </span>
+      </div>
+      <ol class="divide-y divide-line border-y border-line">
+        {
+          flywheelStages.map((stage, index) => (
+            <li class="grid gap-x-6 gap-y-1 py-5 sm:grid-cols-[3rem_11rem_1fr]">
+              <span
+                class="text-2xs font-medium uppercase tracking-wide text-ink-faint"
+                aria-hidden="true"
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 class="text-base font-semibold tracking-tight text-ink">
+                {flywheelLabels[stage]}
+              </h3>
+              <div class="text-sm text-ink-soft">
+                <p>{flywheelDescriptions[stage]}</p>
+                <p class="mt-1 text-ink-faint">
+                  <span class="uppercase tracking-wide text-2xs">
+                    Advance when
+                  </span>
+                  — {advanceWhen[stage]}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="mt-16" aria-labelledby="board-heading">
+      <div class="mb-5 flex items-baseline justify-between">
+        <h2 id="board-heading" class="text-xl text-ink">The board</h2>
+        <span class="text-2xs uppercase tracking-wide text-ink-faint">
+          {apps.length}
+          {apps.length === 1 ? "product" : "products"}
+        </span>
+      </div>
+      <dl class="divide-y divide-line border-y border-line">
+        {
+          flywheelStages.map((stage) => {
+            const entries = board.get(stage) ?? [];
+            return (
+              <div class="grid gap-x-6 gap-y-2 py-5 sm:grid-cols-[14rem_1fr]">
+                <dt>
+                  <span class="text-base font-semibold tracking-tight text-ink">
+                    {flywheelLabels[stage]}
+                  </span>
+                </dt>
+                <dd>
+                  {entries.length === 0 ? (
+                    <p class="text-sm text-ink-faint">Open slot.</p>
+                  ) : (
+                    <ul class="space-y-3">
+                      {entries.map((app) => (
+                        <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <a
+                            href={`/apps/${app.id}`}
+                            class="link-quiet text-ink hover:text-accent"
+                          >
+                            {app.data.name}
+                          </a>
+                          <StatusBadge status={app.data.status} />
+                          <span class="text-xs text-ink-faint">
+                            {proofLabels[app.data.proof]}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </dd>
+              </div>
+            );
+          })
+        }
+      </dl>
+    </section>
+
+    <section class="mt-16 max-w-2xl" aria-labelledby="operating-heading">
+      <h2 id="operating-heading" class="text-xl text-ink">How it runs</h2>
+      <div class="mt-4 space-y-4 text-ink-soft">
+        <p>
+          The catalogue is the shared surface of a two-person studio: one loop
+          for building and shipping, one loop for campaigns and the funnel, both
+          meeting here. New mini-apps are vibe-coded in the app.armalo.ai cloud
+          editor and only join this board once there is a real public surface to
+          point at.
+        </p>
+        <p>
+          Stages only move forward on evidence — the same access and proof
+          discipline the catalogue already enforces. A product cannot claim the
+          compound stage without business-verified proof, so the board never
+          gets ahead of reality.
+        </p>
+      </div>
+    </section>
+  </article>
+</Base>

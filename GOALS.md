@@ -9,6 +9,23 @@ Format: `[state] goal — owner/surface — measure — by when`.
 
 States: `active`, `stretch`, `done`, `retired`.
 
+## Flywheel
+
+- [active] Run the catalogue as the strategy board for the studio's revenue
+  flywheel (build → launch → acquire → monetize → compound) —
+  src/pages/flywheel.astro + src/content/app-schema.ts — every product carries
+  a schema-enforced, evidence-gated stage; zero stages ahead of proof —
+  continuous.
+- [active] Move Girl Math one flywheel stage forward on evidence: from launch
+  to acquire once real users hold the surface up and a paid campaign has a
+  clear job — src/content/apps/girl-math.md — stage promoted with an updated
+  lastVerified date, or the blocker named in the private operating system —
+  next review of the board.
+- [active] Keep every dollar-shaped fact (spend, revenue, conversion, ROAS)
+  out of this public repo; the board tracks stage and proof only —
+  scripts/portfolio-doctor.sh + docs/flywheel-operating-model.md — zero
+  private funnel numbers in any commit — continuous.
+
 ## Product
 
 - [active] Ship a non-vibe-coded portfolio hub that links all live Armalo

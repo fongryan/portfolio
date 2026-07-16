@@ -2,7 +2,12 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import StatusBadge from "../../components/StatusBadge.astro";
-import { accessLabels, proofLabels } from "../../lib/apps";
+import {
+  accessLabels,
+  proofLabels,
+  flywheelLabels,
+  flywheelDescriptions,
+} from "../../lib/apps";
 
 export async function getStaticPaths() {
   const apps = await getCollection("apps");
@@ -20,6 +25,7 @@ const {
   status,
   access,
   proof,
+  flywheel,
   lastVerified,
   category,
   description,
@@ -66,6 +72,16 @@ const {
         <p class="text-2xs uppercase tracking-wide text-ink-faint">Verified</p>
         <p class="mt-1 text-ink">
           <time datetime={lastVerified}>{lastVerified}</time>
+        </p>
+      </div>
+      <div>
+        <p class="text-2xs uppercase tracking-wide text-ink-faint">
+          Flywheel stage
+        </p>
+        <p class="mt-1 text-ink" title={flywheelDescriptions[flywheel]}>
+          <a href="/flywheel" class="link-quiet hover:text-accent">
+            {flywheelLabels[flywheel]}
+          </a>
         </p>
       </div>
       {

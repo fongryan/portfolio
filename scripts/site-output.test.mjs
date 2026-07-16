@@ -17,6 +17,7 @@ const publicProductKeys = [
   "category",
   "ctaLabel",
   "description",
+  "flywheel",
   "highlights",
   "lastVerified",
   "name",
@@ -180,7 +181,34 @@ test("robots and sitemap expose deterministic public discovery routes", async ()
       `<loc>${canonicalOrigin.replaceAll(".", "\\.")}/apps/girl-math</loc>`,
     ),
   );
+  assert.match(
+    sitemap,
+    new RegExp(`<loc>${canonicalOrigin.replaceAll(".", "\\.")}/flywheel</loc>`),
+  );
   assert.doesNotMatch(sitemap, /<loc>http:/);
+});
+
+test("the flywheel strategy board ships every stage and stays claim-honest", async () => {
+  const html = await readOutput("flywheel/index.html");
+
+  for (const stage of ["Build", "Launch", "Acquire", "Monetize", "Compound"]) {
+    assert.match(html, new RegExp(`>${stage}<`), `stage ${stage}`);
+  }
+  // The board names the mechanism, never private operational numbers.
+  assert.match(html, /stage and proof only/i);
+  assert.doesNotMatch(html, /\$\s*\d|ROAS|CPM\b|CPC\b/i);
+  // Girl Math is placed on the board at its honest stage.
+  assert.match(html, /href="\/apps\/girl-math"/);
+});
+
+test("homepage and product surfaces route to the flywheel board", async () => {
+  const [homepage, detail] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("apps/girl-math/index.html"),
+  ]);
+
+  assert.match(homepage, /href="\/flywheel"/);
+  assert.match(detail, /href="\/flywheel"/);
 });
 
 test("the build contains the branded custom 404", async () => {
