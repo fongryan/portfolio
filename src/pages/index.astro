@@ -5,7 +5,13 @@
  */
 import Base from "../layouts/Base.astro";
 import AppCard from "../components/AppCard.astro";
-import { getApps, countAvailable, hasRealApps } from "../lib/apps";
+import {
+  getApps,
+  countAvailable,
+  hasRealApps,
+  flywheelStages,
+  flywheelLabels,
+} from "../lib/apps";
 
 const apps = await getApps();
 const availableCount = countAvailable(apps);
@@ -22,14 +28,31 @@ const catalogueSummary = `${total} ${total === 1 ? "product" : "products"}${
       Portfolio
     </p>
     <h1 class="mt-4 max-w-2xl text-4xl text-ink">
-      Focused products, built to be useful.
+      Focused products, run as one flywheel.
     </h1>
     <p class="mt-5 max-w-xl text-lg text-ink-soft">
-      I’m Ryan Fong. I build focused products with Armalo AI, then share the
-      useful public surfaces here with clear access and proof.
+      I’m Ryan Fong. My wife and I build small AI products with Armalo, launch
+      each one on its own subdomain, and reinvest what a product earns into the
+      next. This catalogue is the strategy board.
     </p>
     <p class="mt-6 text-sm text-ink-faint">
       {catalogueSummary}
+    </p>
+    <p
+      class="mt-8 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-2xs uppercase tracking-wide text-ink-faint"
+    >
+      {
+        flywheelStages.map((stage, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true">→</span>}
+            <span>{flywheelLabels[stage]}</span>
+          </>
+        ))
+      }
+      <span aria-hidden="true">↺</span>
+      <a href="/flywheel" class="link-quiet text-accent hover:text-ink">
+        The loop
+      </a>
     </p>
   </section>
 
@@ -62,15 +85,17 @@ const catalogueSummary = `${total} ${total === 1 ? "product" : "products"}${
     <h2 class="text-xl text-ink">About</h2>
     <div class="mt-4 space-y-4 text-ink-soft">
       <p>
-        I use this catalogue to publish focused experiments once there is a real
+        This catalogue publishes focused experiments once there is a real
         visitor-facing surface to explore. Each entry separates maturity,
-        access, and proof so an early beta is not mistaken for a finished
-        service.
+        access, proof, and its <a
+          href="/flywheel"
+          class="link-quiet text-ink hover:text-accent">flywheel stage</a
+        > so an early beta is not mistaken for a finished, earning service.
       </p>
       <p>
-        Armalo is the thread between them: practical AI products shaped around a
-        specific decision or workflow, with claims kept as concrete as the
-        evidence behind them.
+        Armalo is the thread between them: a two-person studio building
+        practical AI products around a specific decision or workflow, with
+        claims kept as concrete as the evidence behind them.
       </p>
     </div>
   </section>

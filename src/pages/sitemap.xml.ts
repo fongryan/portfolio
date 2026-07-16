@@ -17,6 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
   const apps = await getCollection("apps");
   const paths = [
     "/",
+    "/flywheel",
     ...apps.map((app: CollectionEntry<"apps">) => `/apps/${app.id}`),
   ].sort();
   const urls = paths

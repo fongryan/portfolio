@@ -1,7 +1,9 @@
 # portfolio
 
 Ryan Fong's portfolio hub — a fast, content-first site that links the subdomains
-hosting the mini-apps built for Armalo.
+hosting the mini-apps built for Armalo, and the public strategy board for the
+studio's product flywheel (build → launch → acquire → monetize → compound).
+See [`docs/flywheel-operating-model.md`](./docs/flywheel-operating-model.md).
 
 This is a **public** repo. It is a product surface, not a private memory vault.
 Read [`AGENTS.md`](./AGENTS.md) before doing anything non-trivial here; it is the
@@ -38,6 +40,7 @@ url: "https://app.example.com"
 status: beta # live | beta | wip | planned
 access: public # public | sign-in | private-beta | waitlist | unavailable
 proof: public-live # strongest verified public claim
+flywheel: launch # build | launch | acquire | monetize | compound
 lastVerified: "2026-07-15"
 category: "Finance"
 description: "One tight sentence on what it does."

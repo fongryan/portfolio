@@ -3,7 +3,7 @@ import { getApps } from "../../lib/apps";
 export async function GET() {
   const apps = await getApps();
   const body = {
-    schema: "armalo.portfolio.catalogue.v2",
+    schema: "armalo.portfolio.catalogue.v3",
     generatedBy: "portfolio",
     products: apps.map(({ id, data }) => ({
       slug: id,
@@ -12,6 +12,7 @@ export async function GET() {
       status: data.status,
       access: data.access,
       proof: data.proof,
+      flywheel: data.flywheel,
       lastVerified: data.lastVerified,
       category: data.category,
       description: data.description,

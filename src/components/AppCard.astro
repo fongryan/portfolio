@@ -5,14 +5,15 @@
  * lead. External destinations belong on the detail page.
  */
 import type { CollectionEntry } from "astro:content";
-import { accessLabels, proofLabels } from "../lib/apps";
+import { accessLabels, proofLabels, flywheelLabels } from "../lib/apps";
 import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
   app: CollectionEntry<"apps">;
 }
 const { app } = Astro.props;
-const { name, status, access, proof, category, description, year } = app.data;
+const { name, status, access, proof, flywheel, category, description, year } =
+  app.data;
 const href = `/apps/${app.id}`;
 ---
 
@@ -32,7 +33,7 @@ const href = `/apps/${app.id}`;
 
   <p class="mt-1 text-sm text-ink-soft">{description}</p>
 
-  <dl class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-4 text-xs">
+  <dl class="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4 text-xs">
     <div>
       <dt class="uppercase tracking-wide text-ink-faint">Access</dt>
       <dd class="mt-1 text-ink">{accessLabels[access]}</dd>
@@ -40,6 +41,10 @@ const href = `/apps/${app.id}`;
     <div>
       <dt class="uppercase tracking-wide text-ink-faint">Proof</dt>
       <dd class="mt-1 text-ink">{proofLabels[proof]}</dd>
+    </div>
+    <div>
+      <dt class="uppercase tracking-wide text-ink-faint">Stage</dt>
+      <dd class="mt-1 text-ink">{flywheelLabels[flywheel]}</dd>
     </div>
   </dl>
 

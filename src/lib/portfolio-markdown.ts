@@ -4,6 +4,7 @@ export interface CatalogueMarkdownProduct {
   status: string;
   access: string;
   proof: string;
+  flywheel: string;
   lastVerified: string;
   category: string;
   description: string;
@@ -45,6 +46,7 @@ export function renderCatalogueProductMarkdown(
 - Status: ${inline(data.status)}
 - Access: ${inline(data.access)}
 - Proof: ${inline(data.proof)}
+- Flywheel stage: ${inline(data.flywheel)}
 - Last verified: ${inline(data.lastVerified)}
 - Category: ${inline(data.category)}
 - Year: ${inline(data.year)}

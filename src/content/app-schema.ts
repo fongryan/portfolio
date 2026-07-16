@@ -19,6 +19,16 @@ const proofByStatus = {
   live: ["public-live", "business-verified"],
 } as const;
 
+// Flywheel stage: where a product sits in the studio's revenue loop.
+// A stage can never outrun product maturity, and the compounding claim
+// requires business-verified proof so the strategy board stays honest.
+const flywheelByStatus = {
+  planned: ["build"],
+  wip: ["build"],
+  beta: ["launch", "acquire", "monetize"],
+  live: ["launch", "acquire", "monetize", "compound"],
+} as const;
+
 const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Use an ISO YYYY-MM-DD date")
@@ -56,6 +66,7 @@ export const appSchema = z
       "public-live",
       "business-verified",
     ]),
+    flywheel: z.enum(["build", "launch", "acquire", "monetize", "compound"]),
     lastVerified: isoDate,
     category: singleLine(),
     description: singleLine(160),
@@ -82,6 +93,23 @@ export const appSchema = z
         code: "custom",
         path: ["url"],
         message: "An accessible product requires an HTTPS destination",
+      });
+    }
+
+    const allowedFlywheel = flywheelByStatus[entry.status] as readonly string[];
+    if (!allowedFlywheel.includes(entry.flywheel)) {
+      context.addIssue({
+        code: "custom",
+        path: ["flywheel"],
+        message: `${entry.flywheel} is not a valid flywheel stage for ${entry.status}`,
+      });
+    }
+
+    if (entry.flywheel === "compound" && entry.proof !== "business-verified") {
+      context.addIssue({
+        code: "custom",
+        path: ["flywheel"],
+        message: "The compound stage requires business-verified proof",
       });
     }
   });
