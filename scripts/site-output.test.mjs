@@ -219,8 +219,8 @@ test("the build contains the branded custom 404", async () => {
 
 test("homepage catalogue count preserves readable word spacing", async () => {
   const html = await readOutput("index.html");
-  assert.match(html, />1 product · 1 available</);
-  assert.doesNotMatch(html, />1product/);
+  assert.match(html, />2 products · 2 available</);
+  assert.doesNotMatch(html, />2products/);
 });
 
 test("generated machine surfaces expose only the public catalogue contract", async () => {
