@@ -82,6 +82,31 @@ Stop: Stop when the public projection is accurate and the private owner surface
 contains the deeper decision.
 ```
 
+## Flywheel Stage Review Loop
+
+Use whenever a product ships, a campaign starts or stops, checkout switches
+on, or Ryan asks "where is the flywheel". This is the loop that keeps the
+strategy board honest.
+
+```text
+Observe: Read src/content/apps and the /flywheel board. For each product,
+compare its declared flywheel stage against reality: is the surface live, is
+paid traffic actually running, is checkout actually collecting, is the funnel
+actually profitable?
+Choose: Pick the one product whose stage is most wrong (ahead of evidence is
+worse than behind it).
+Act: Update its flywheel stage, proof, and lastVerified together in its
+content entry. Promote only on the advance-when criterion documented in
+docs/flywheel-operating-model.md; demote immediately when evidence lapses.
+Verify: Run npm run proof. The schema rejects stages the maturity and proof
+cannot support (compound requires business-verified).
+Record: Keep the stage decision here; keep the numbers that justified it
+(spend, revenue, conversion) in the private operating system, never in this
+repo.
+Stop: Stop when every product's stage matches evidence and the board renders
+correctly.
+```
+
 ## Loopy Published-Loop Adaptation Loop
 
 Use when Ryan asks to bring in Forward Future Loopy loops or to "boil the

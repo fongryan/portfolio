@@ -35,6 +35,7 @@ test("Girl Math points directly to its verified public product surface", async (
   assert.match(source, /status:\s*beta/);
   assert.match(source, /access:\s*public/);
   assert.match(source, /proof:\s*public-live/);
+  assert.match(source, /flywheel:\s*launch/);
   assert.match(source, /lastVerified:\s*["']2026-07-15["']/);
   assert.match(source, /not live (seat )?availability/i);
 });
@@ -49,6 +50,7 @@ test("public catalogue machine surfaces contain catalogue truth only", async () 
   for (const required of [
     "access",
     "proof",
+    "flywheel",
     "lastVerified",
     "ctaLabel",
     "highlights",
@@ -84,6 +86,7 @@ test("global navigation resolves homepage sections from every page", async () =>
   const source = await read("src/components/SiteHeader.astro");
   assert.match(source, /href=["']\/#work["']/);
   assert.match(source, /href=["']\/#about["']/);
+  assert.match(source, /href=["']\/flywheel["']/);
 });
 
 test("the portfolio no longer owns a private Girl Math invocation route", async () => {
@@ -119,6 +122,7 @@ test("catalogue schema rejects impossible maturity and proof pairs", async () =>
     lastVerified: "2026-07-15",
     ctaLabel: "Open fixture",
     highlights: ["A concise, public-safe product highlight."],
+    flywheel: "launch",
   };
 
   const expected = {
@@ -134,11 +138,22 @@ test("catalogue schema rejects impossible maturity and proof pairs", async () =>
     "public-live",
     "business-verified",
   ];
+  const flywheelForStatus = {
+    planned: "build",
+    wip: "build",
+    beta: "launch",
+    live: "launch",
+  };
 
   for (const [status, allowed] of Object.entries(expected)) {
     for (const proof of proofs) {
       assert.equal(
-        appSchema.safeParse({ ...base, status, proof }).success,
+        appSchema.safeParse({
+          ...base,
+          status,
+          proof,
+          flywheel: flywheelForStatus[status],
+        }).success,
         allowed.includes(proof),
         `${status} + ${proof}`,
       );
@@ -174,6 +189,72 @@ test("catalogue schema rejects impossible maturity and proof pairs", async () =>
   );
 });
 
+test("catalogue schema keeps flywheel stages honest against maturity and proof", async () => {
+  const { appSchema } = await import("../src/content/app-schema.ts");
+  const base = {
+    name: "Contract fixture",
+    url: "https://example.com/product",
+    category: "Example",
+    description: "A deterministic catalogue contract fixture.",
+    year: 2026,
+    tags: [],
+    access: "public",
+    lastVerified: "2026-07-15",
+    ctaLabel: "Open fixture",
+    highlights: ["A concise, public-safe product highlight."],
+  };
+
+  const expected = {
+    planned: ["build"],
+    wip: ["build"],
+    beta: ["launch", "acquire", "monetize"],
+    live: ["launch", "acquire", "monetize", "compound"],
+  };
+  const proofForStatus = {
+    planned: "not-yet-proven",
+    wip: "not-yet-proven",
+    beta: "public-live",
+    live: "business-verified",
+  };
+  const stages = ["build", "launch", "acquire", "monetize", "compound"];
+
+  for (const [status, allowed] of Object.entries(expected)) {
+    for (const flywheel of stages) {
+      assert.equal(
+        appSchema.safeParse({
+          ...base,
+          status,
+          proof: proofForStatus[status],
+          flywheel,
+        }).success,
+        allowed.includes(flywheel),
+        `${status} + ${flywheel}`,
+      );
+    }
+  }
+
+  // The compounding claim is a revenue claim: it demands business-verified
+  // proof even when the maturity pairing alone would allow it.
+  assert.equal(
+    appSchema.safeParse({
+      ...base,
+      status: "live",
+      proof: "public-live",
+      flywheel: "compound",
+    }).success,
+    false,
+  );
+  // A stage is required: a product cannot sit off the board.
+  assert.equal(
+    appSchema.safeParse({
+      ...base,
+      status: "beta",
+      proof: "public-live",
+    }).success,
+    false,
+  );
+});
+
 test("catalogue schema rejects control characters in inline fields", async () => {
   const { appSchema } = await import("../src/content/app-schema.ts");
   const base = {
@@ -182,6 +263,7 @@ test("catalogue schema rejects control characters in inline fields", async () =>
     status: "beta",
     access: "public",
     proof: "public-live",
+    flywheel: "launch",
     lastVerified: "2026-07-15",
     category: "Example",
     description: "A deterministic catalogue contract fixture.",
@@ -226,6 +308,7 @@ test("Markdown projection escapes hostile inline syntax", async () => {
     status: "beta",
     access: "public",
     proof: "public-live",
+    flywheel: "launch",
     lastVerified: "2026-07-15",
     category: "Travel # forged",
     description: "Try `code` or <unsafe> markup.",
@@ -254,6 +337,7 @@ test("Markdown projection cannot terminate slug formatting with a backtick", asy
     status: "beta",
     access: "public",
     proof: "public-live",
+    flywheel: "launch",
     lastVerified: "2026-07-15",
     category: "Travel",
     description: "A safe product description.",

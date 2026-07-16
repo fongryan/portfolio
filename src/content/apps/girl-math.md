@@ -4,6 +4,7 @@ url: "https://girl-math.armalo.ai"
 status: beta
 access: public
 proof: public-live
+flywheel: launch
 lastVerified: "2026-07-15"
 category: "Travel"
 description: "An award-travel reference board for comparing points redemptions, transfer routes, and premium-cabin value."
@@ -25,3 +26,7 @@ not live seat availability and should not be treated as a booking result.
 
 Personalized card, balance, and route-search tools remain a private beta behind
 sign-in.
+
+Girl Math is the first product on the [flywheel](/flywheel): it sits at the
+launch stage, earning its first users on its own subdomain before any paid
+acquisition or checkout is switched on.

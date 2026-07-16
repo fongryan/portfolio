@@ -12,7 +12,9 @@ export async function GET() {
 Machine-readable JSON: /agents/portfolio.json
 
 This surface contains public catalogue metadata only. Access describes how a
-visitor can use a product; proof names the strongest verified public claim.
+visitor can use a product; proof names the strongest verified public claim;
+the flywheel stage names where the product sits in the studio's build,
+launch, acquire, monetize, compound loop.
 
 ${products}
 `;
