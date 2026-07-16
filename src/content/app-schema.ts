@@ -47,6 +47,9 @@ const httpsUrl = z
   .url()
   .refine((value) => new URL(value).protocol === "https:", "Use an HTTPS URL");
 
+const boundedList = (maxLength: number) =>
+  z.array(singleLine(80)).min(1).max(maxLength);
+
 export const appSchema = z
   .object({
     name: singleLine(),
@@ -73,6 +76,25 @@ export const appSchema = z
     year: z.number().int().min(2000).max(2100),
     order: z.number().int().default(100),
     tags: z.array(singleLine()).max(3).default([]),
+    audiences: boundedList(4),
+    deliveryModes: z
+      .array(z.enum(["hosted", "custom-build", "dfy", "licensed", "partner"]))
+      .min(1)
+      .max(4),
+    offerModes: z
+      .array(
+        z.enum([
+          "pilot",
+          "team",
+          "agency",
+          "enterprise",
+          "commission",
+          "partner",
+        ]),
+      )
+      .min(1)
+      .max(5),
+    salesPosition: singleLine(180),
     owner: singleLine().optional(),
     platform: singleLine().optional(),
     ctaLabel: singleLine(40),

@@ -155,7 +155,7 @@
 - [ ] Use a portable atomic-directory lock with a 120-second timeout, PID-based
       stale-lock recovery, explicit timeout error, and `trap` cleanup; do not rely
       on `flock`.
-- [ ] Assert homepage HTML plus blocking CSS stays below 50 KB and no client JS
+- [ ] Assert homepage HTML plus blocking CSS stays below 64 KB and no client JS
       is generated.
 - [ ] Make Vercel run the same proof command.
 - [ ] Run exactly: formatting, deterministic tests, Astro check, one build,

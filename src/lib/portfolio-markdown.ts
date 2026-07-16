@@ -10,6 +10,10 @@ export interface CatalogueMarkdownProduct {
   description: string;
   year: number;
   tags: string[];
+  audiences: string[];
+  deliveryModes: string[];
+  offerModes: string[];
+  salesPosition: string;
   owner?: string;
   platform?: string;
   ctaLabel: string;
@@ -51,6 +55,10 @@ export function renderCatalogueProductMarkdown(
 - Category: ${inline(data.category)}
 - Year: ${inline(data.year)}
 - Tags: ${tags}
+- Audiences: ${data.audiences.map(inline).join(", ")}
+- Delivery modes: ${data.deliveryModes.map(inline).join(", ")}
+- Offer modes: ${data.offerModes.map(inline).join(", ")}
+- Sales position: ${inline(data.salesPosition)}
 - Owner: ${inline(data.owner ?? "Not specified")}
 - Platform: ${inline(data.platform ?? "Not specified")}
 - Action: ${inline(data.ctaLabel)}

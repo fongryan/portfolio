@@ -14,16 +14,20 @@ const canonicalOrigin = resolveCanonicalOrigin(process.env.PORTFOLIO_SITE_URL);
 const publicManifestKeys = ["generatedBy", "products", "schema"];
 const publicProductKeys = [
   "access",
+  "audiences",
   "category",
   "ctaLabel",
+  "deliveryModes",
   "description",
   "flywheel",
   "highlights",
   "lastVerified",
   "name",
+  "offerModes",
   "owner",
   "platform",
   "proof",
+  "salesPosition",
   "slug",
   "status",
   "tags",
@@ -219,8 +223,8 @@ test("the build contains the branded custom 404", async () => {
 
 test("homepage catalogue count preserves readable word spacing", async () => {
   const html = await readOutput("index.html");
-  assert.match(html, />1 product · 1 available</);
-  assert.doesNotMatch(html, />1product/);
+  assert.match(html, />13 products · 1 available</);
+  assert.doesNotMatch(html, />13products/);
 });
 
 test("generated machine surfaces expose only the public catalogue contract", async () => {

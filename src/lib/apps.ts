@@ -4,6 +4,8 @@ export type App = CollectionEntry<"apps">;
 export type Access = App["data"]["access"];
 export type Proof = App["data"]["proof"];
 export type Flywheel = App["data"]["flywheel"];
+export type DeliveryMode = App["data"]["deliveryModes"][number];
+export type OfferMode = App["data"]["offerModes"][number];
 
 export async function getApps(): Promise<App[]> {
   const apps = await getCollection("apps");
@@ -35,11 +37,6 @@ export const proofLabels: Record<Proof, string> = {
   "business-verified": "Business verified",
 };
 
-/**
- * The revenue flywheel every product moves through, in loop order. Stage
- * definitions stay public-safe: they describe the mechanism, never spend,
- * revenue, or account details — those live in the private operating system.
- */
 export const flywheelStages: Flywheel[] = [
   "build",
   "launch",
@@ -60,16 +57,31 @@ export const flywheelDescriptions: Record<Flywheel, string> = {
   build: "In production on app.armalo.ai; no public surface yet.",
   launch: "Public surface live on its own subdomain, earning first users.",
   acquire: "Paid social campaigns are driving measured traffic.",
-  monetize: "Paid checkout is live and the funnel collects revenue.",
-  compound: "Profitable; profit is reinvested into ads and the next build.",
+  monetize: "Paid checkout is live, with business-verified proof.",
+  compound: "Profit is funding campaigns and the next build.",
 };
 
 export function appsByFlywheelStage(apps: App[]): Map<Flywheel, App[]> {
   const board = new Map<Flywheel, App[]>(
     flywheelStages.map((stage) => [stage, []]),
   );
-  for (const app of apps) {
-    board.get(app.data.flywheel)?.push(app);
-  }
+  for (const app of apps) board.get(app.data.flywheel)?.push(app);
   return board;
 }
+
+export const deliveryLabels: Record<DeliveryMode, string> = {
+  hosted: "Hosted",
+  "custom-build": "Custom build",
+  dfy: "Done for you",
+  licensed: "Licensed",
+  partner: "Partner-ready",
+};
+
+export const offerLabels: Record<OfferMode, string> = {
+  pilot: "Pilot",
+  team: "Team",
+  agency: "Agency",
+  enterprise: "Enterprise",
+  commission: "Commission",
+  partner: "Partner",
+};

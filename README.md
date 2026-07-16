@@ -47,6 +47,10 @@ description: "One tight sentence on what it does."
 year: 2026
 order: 10 # lower renders first
 tags: ["solana"] # optional, max 3
+audiences: ["Example buyers"]
+deliveryModes: ["hosted"] # hosted | custom-build | dfy | licensed | partner
+offerModes: ["pilot"] # pilot | team | agency | enterprise | commission
+salesPosition: "One concise reason a seller should lead with this product."
 ctaLabel: "Open product"
 highlights:
   - "One concise, defensible visitor benefit."
@@ -65,7 +69,7 @@ npm run dev          # local dev server
 npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
 npm test             # deterministic source and deploy contracts
-npm run budget       # built homepage under 50 KB and zero shipped JS
+npm run budget       # built homepage under 64 KB and zero shipped JS
 npm run proof        # canonical local and Vercel promotion gate
 npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier

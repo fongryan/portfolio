@@ -11,6 +11,10 @@ description: "An award-travel reference board for comparing points redemptions, 
 year: 2026
 order: 20
 tags: ["award travel", "points", "research"]
+audiences: ["Travel teams", "Points communities"]
+deliveryModes: ["hosted", "custom-build"]
+offerModes: ["pilot", "team", "agency"]
+salesPosition: "A focused research surface that turns complicated award-travel decisions into a clearer buying conversation."
 owner: "Armalo AI"
 platform: "Public reference board"
 ctaLabel: "Browse Girl Math"

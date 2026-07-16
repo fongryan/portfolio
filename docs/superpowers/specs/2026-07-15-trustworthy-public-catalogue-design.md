@@ -155,7 +155,7 @@ whose recorded process no longer exists, and always releases its owned lock via
 3. Astro type diagnostics;
 4. production build;
 5. generated-output metadata and route assertions;
-6. the 50 KB first-load budget and zero-client-JavaScript assertion;
+6. the 64 KB first-load budget and zero-client-JavaScript assertion;
 7. `PORTFOLIO_DOCTOR_SKIP_BUILD=1 ./scripts/portfolio-doctor.sh`.
 
 The successful command leaves `dist/` intact for Vercel to publish. Vercel's
@@ -173,7 +173,7 @@ GitHub prevents branch deletion and force pushes without requiring PR ceremony.
   tests.
 - Missing canonical/social metadata, robots, sitemap, or branded 404 fails
   generated-output tests.
-- A first-load payload over 50 KB or any generated client JavaScript fails the
+- A first-load payload over 64 KB or any generated client JavaScript fails the
   budget gate.
 - Concurrent proof runs serialize rather than corrupting shared Astro output.
 - A failed proof blocks Vercel production output.

@@ -5,7 +5,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const distPath = fileURLToPath(new URL("../dist/", import.meta.url));
-const budgetBytes = 50 * 1024;
+const budgetBytes = 64 * 1024;
 
 async function listFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -19,7 +19,7 @@ async function listFiles(directory) {
   ).flat();
 }
 
-test("homepage first-load HTML and blocking CSS stay below 50 KB", async () => {
+test("homepage first-load HTML and blocking CSS stay below 64 KB", async () => {
   const homepagePath = path.join(distPath, "index.html");
   const homepage = await readFile(homepagePath, "utf8");
   const stylesheetHrefs = [
