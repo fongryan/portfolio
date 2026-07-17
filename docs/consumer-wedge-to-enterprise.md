@@ -59,6 +59,16 @@ differentiators are the consumer mechanics themselves:
 - **Output you can hand someone.** Sessions end in working software on a real
   URL — an artifact that markets the tool that made it.
 
+## The motion is already proven in miniature
+
+Girl Math (girl-math.armalo.ai) is the studio's existing consumer proof: a
+public, no-account-required surface launched on its own subdomain, earning
+first users before any paid acquisition or checkout — and it was vibe-coded
+inside app.armalo.ai itself. It demonstrates the exact launch mechanics the
+flagship now runs at full scale: ship a public consumer surface, let usage
+(not claims) advance the flywheel stage, monetize only once real users are in.
+The flagship applies that proven motion to the machine that built it.
+
 ## How the wedge feeds enterprise
 
 The enterprise offer is not a pivot; it is the top rung of the same ladder.
