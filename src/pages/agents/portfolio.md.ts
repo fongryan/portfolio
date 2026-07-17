@@ -17,19 +17,6 @@ the flywheel stage names where the product sits in the studio's build,
 launch, acquire, monetize, compound loop.
 
 ${products}
-
-## Hermes authority boundary
-
-This public surface contains metadata only. Hosted Armalo Hermes may use it to
-recall products, compare public positioning, and draft campaign or commerce
-proposals. Tenant-scoped work routes through the authenticated Armalo control
-plane at https://app.armalo.ai.
-
-Draft copy, creative briefs, product proposals, and experiment plans are
-non-mutating. Meta Ads writes, campaign activation, spend or budget changes,
-Stripe activation, refunds, payouts, and credential changes require explicit
-human approval. The portfolio never contains credentials, customer data,
-campaign spend, provider state, Stripe secrets, or financial account data.
 `;
 
   return new Response(body, {
