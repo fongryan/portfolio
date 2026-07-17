@@ -277,6 +277,14 @@ test("homepage shelf renders every catalogue product exactly once", async () => 
   }
 });
 
+test("AI product atlas exposes money-maker ranking and Hermes fit", async () => {
+  const html = await readOutput("research/ai-product-atlas/index.html");
+  assert.match(html, /Money-maker order/);
+  assert.match(html, /Priority <strong>\d+\/100<\/strong>/);
+  assert.match(html, /Hermes fulfillment fit/);
+  assert.match(html, /Planned · unavailable · not yet proven/);
+});
+
 test("generated machine surfaces expose only the public catalogue contract", async () => {
   const [jsonSource, markdown] = await Promise.all([
     readOutput("agents/portfolio.json"),

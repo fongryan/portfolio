@@ -10,6 +10,12 @@ export type AtlasProduct = {
   buyer: string;
   job: string;
   package: string;
+  rank: number;
+  moneyScore: number;
+  scaleScore: number;
+  hermesScore: number;
+  priorityScore: number;
+  revenueModel: string;
 };
 
 type Seed = [name: string, buyer: string, job: string, packageShape: string];
@@ -803,17 +809,166 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-export const productAtlas: AtlasProduct[] = categorySeeds.flatMap(
-  ([category, seeds]) =>
-    seeds.map(([name, buyer, job, packageShape]) => ({
-      slug: `${slugify(category)}-${slugify(name)}`,
-      category,
-      name,
-      buyer,
-      job,
-      package: packageShape,
-    })),
+type CategoryProfile = {
+  money: number;
+  scale: number;
+  hermes: number;
+  revenueModel: string;
+};
+
+// Scores are deliberately legible rather than pretending to be a forecast:
+// money = buyer willingness to pay and measurable economic value; scale = how
+// repeatable the same package is across customers; Hermes = how much of the
+// workflow can be fulfilled with bounded context, tools, and approvals. Each
+// dimension is scored 1–10 so close products do not disappear into ties.
+const categoryProfiles: Record<string, CategoryProfile> = {
+  "Revenue and sales": {
+    money: 9,
+    scale: 8,
+    hermes: 9,
+    revenueModel: "Pilot + recurring platform + outcome/usage tier",
+  },
+  "Customer service": {
+    money: 8,
+    scale: 9,
+    hermes: 9,
+    revenueModel: "Implementation + per-resolution or per-conversation",
+  },
+  "Finance and administration": {
+    money: 9,
+    scale: 7,
+    hermes: 7,
+    revenueModel: "Workflow subscription + implementation, approval-gated",
+  },
+  "Software and data": {
+    money: 8,
+    scale: 9,
+    hermes: 8,
+    revenueModel: "Team/enterprise subscription + usage",
+  },
+  "Agent infrastructure and studios": {
+    money: 9,
+    scale: 9,
+    hermes: 7,
+    revenueModel: "Platform subscription + metered runs + services",
+  },
+  "Knowledge and documents": {
+    money: 7,
+    scale: 9,
+    hermes: 9,
+    revenueModel: "Domain pilot + seat/workspace subscription",
+  },
+  "Marketing and growth": {
+    money: 7,
+    scale: 9,
+    hermes: 9,
+    revenueModel: "Retainer or subscription + campaign usage",
+  },
+  "Legal and compliance": {
+    money: 9,
+    scale: 7,
+    hermes: 5,
+    revenueModel: "High-value pilot + matter or seat subscription",
+  },
+  "Commerce, local, and field service": {
+    money: 6,
+    scale: 8,
+    hermes: 9,
+    revenueModel: "Location subscription + setup + usage",
+  },
+  "People and recruiting": {
+    money: 6,
+    scale: 7,
+    hermes: 9,
+    revenueModel: "Team subscription + implementation",
+  },
+  "Healthcare and care operations": {
+    money: 9,
+    scale: 7,
+    hermes: 4,
+    revenueModel: "Compliance-heavy pilot + per-provider subscription",
+  },
+  "Creators, education, and personal": {
+    money: 4,
+    scale: 8,
+    hermes: 9,
+    revenueModel: "Self-serve subscription + premium services",
+  },
+};
+
+const productAdjustments: Array<{
+  words: string[];
+  money?: number;
+  scale?: number;
+  hermes?: number;
+}> = [
+  { words: ["invoice", "cash-flow", "reconciliation", "close"], money: 1 },
+  {
+    words: ["appointment", "dialer", "qualifier", "renewal", "sales"],
+    money: 1,
+  },
+  { words: ["voice", "clinical", "patient", "pharmacy"], hermes: -2 },
+  { words: ["marketplace", "white-label", "managed agent", "byok"], scale: 1 },
+  { words: ["research", "briefing", "analyst", "knowledge"], hermes: 1 },
+  { words: ["proposal", "quote", "revenue intelligence"], money: 1, scale: 1 },
+  { words: ["support inbox", "customer health", "returns"], scale: 1 },
+];
+
+const clampScore = (score: number) => Math.max(1, Math.min(10, score));
+
+const scoreProduct = (category: string, name: string) => {
+  const profile = categoryProfiles[category];
+  if (!profile) throw new Error(`Missing atlas ranking profile: ${category}`);
+  const lowerName = name.toLowerCase();
+  const adjustment = productAdjustments.find(({ words }) =>
+    words.some((word) => lowerName.includes(word)),
+  );
+  const moneyScore = clampScore(profile.money + (adjustment?.money ?? 0));
+  const scaleScore = clampScore(profile.scale + (adjustment?.scale ?? 0));
+  const hermesScore = clampScore(profile.hermes + (adjustment?.hermes ?? 0));
+  return {
+    moneyScore,
+    scaleScore,
+    hermesScore,
+    priorityScore: moneyScore * 4 + scaleScore * 3 + hermesScore * 3,
+    revenueModel: profile.revenueModel,
+  };
+};
+
+const scoredAtlas = categorySeeds.flatMap(([category, seeds], categoryIndex) =>
+  seeds.map(([name, buyer, job, packageShape], productIndex) => ({
+    slug: `${slugify(category)}-${slugify(name)}`,
+    category,
+    name,
+    buyer,
+    job,
+    package: packageShape,
+    categoryIndex,
+    productIndex,
+    ...scoreProduct(category, name),
+  })),
 );
+
+export const productAtlas: AtlasProduct[] = scoredAtlas
+  .sort(
+    (left, right) =>
+      right.priorityScore - left.priorityScore ||
+      left.categoryIndex - right.categoryIndex ||
+      left.productIndex - right.productIndex,
+  )
+  .map(
+    (
+      {
+        categoryIndex: _categoryIndex,
+        productIndex: _productIndex,
+        ...product
+      },
+      index,
+    ) => ({
+      ...product,
+      rank: index + 1,
+    }),
+  );
 
 export const productAtlasCategories = [
   ...new Set(productAtlas.map((p) => p.category)),

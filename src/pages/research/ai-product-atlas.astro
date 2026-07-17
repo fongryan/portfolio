@@ -9,6 +9,7 @@ const groups = productAtlasCategories.map((category) => ({
   category,
   products: productAtlas.filter((product) => product.category === category),
 }));
+const topMoneyMakers = productAtlas.slice(0, 20);
 ---
 
 <Base title={title} description={description}>
@@ -18,7 +19,7 @@ const groups = productAtlasCategories.map((category) => ({
     </a>
     <header class="mt-10 max-w-3xl">
       <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-        Product atlas · 120 buildable offers · updated 2026-07-16
+        Product atlas · 120 buildable offers · ranked 2026-07-17
       </p>
       <h1 class="mt-3 text-4xl text-ink">
         The AI product surface is bigger than one app.
@@ -76,6 +77,54 @@ const groups = productAtlasCategories.map((category) => ({
           </p>
         </div>
       </div>
+    </section>
+
+    <section class="mt-16" aria-labelledby="ranking-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Money-maker order
+      </p>
+      <h2 id="ranking-heading" class="mt-2 text-2xl text-ink">
+        Sell these first. Fulfill them repeatedly.
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        The order is a prioritization instrument, not a revenue claim. Each
+        offer is scored out of 100: buyer money potential ×4, repeatable scale
+        ×3, and Hermes fulfillment fit ×3. Each dimension is scored from 1–10. A
+        score rewards a painful, budgeted workflow that can be packaged across
+        customers and operated with bounded tools, context, and human approvals.
+      </p>
+      <ol class="mt-8 divide-y divide-line border-y border-line">
+        {
+          topMoneyMakers.map((product) => (
+            <li class="grid gap-4 py-5 md:grid-cols-[2rem_1.4fr_1fr] md:gap-8">
+              <span class="text-sm font-medium tabular-nums text-accent">
+                {String(product.rank).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="text-lg text-ink">{product.name}</h3>
+                <p class="mt-1 text-xs uppercase tracking-wide text-ink-faint">
+                  {product.category}
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                  {product.job}
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-ink">
+                  Priority <strong>{product.priorityScore}/100</strong>
+                </p>
+                <p class="mt-1 text-xs leading-relaxed text-ink-soft">
+                  Money {product.moneyScore}/10 · Scale {product.scaleScore}/10
+                  · Hermes {product.hermesScore}/10
+                </p>
+                <p class="mt-2 text-xs leading-relaxed text-ink-faint">
+                  {product.revenueModel}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
     </section>
 
     <nav
@@ -150,8 +199,11 @@ const groups = productAtlasCategories.map((category) => ({
         The atlas follows current buying signals: customer service and marketing
         are among the leading business GenAI functions; small firms are adopting
         content, marketing, and service tools; and enterprise leaders are
-        planning agent integration across functions. These sources establish
-        category demand, not Armalo customer proof.
+        planning agent integration across functions. Current commercial
+        packaging also shows the shape of the market: outcome or conversation
+        pricing for service agents, consumption credits for enterprise agents,
+        and recurring enterprise knowledge subscriptions. These sources
+        establish category demand, not Armalo customer proof.
       </p>
       <ul class="mt-5 space-y-2 text-sm">
         <li>
@@ -159,7 +211,8 @@ const groups = productAtlasCategories.map((category) => ({
             class="link-quiet text-accent hover:text-ink"
             href="https://www.gartner.com/en/insights/generative-ai-for-business"
             target="_blank"
-            rel="noopener noreferrer">Gartner · business GenAI functions ↗</a>
+            rel="noopener noreferrer">Gartner · business GenAI functions ↗</a
+          >
         </li>
         <li>
           <a
@@ -167,7 +220,8 @@ const groups = productAtlasCategories.map((category) => ({
             href="https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-of-the-frontier-firm-is-born"
             target="_blank"
             rel="noopener noreferrer"
-            >Microsoft Work Trend Index · agentic enterprise planning ↗</a>
+            >Microsoft Work Trend Index · agentic enterprise planning ↗</a
+          >
         </li>
         <li>
           <a
@@ -175,7 +229,8 @@ const groups = productAtlasCategories.map((category) => ({
             href="https://www.uschamber.com/technology/empowering-small-business-the-impact-of-technology-on-u-s-small-business"
             target="_blank"
             rel="noopener noreferrer"
-            >U.S. Chamber · small-business AI adoption ↗</a>
+            >U.S. Chamber · small-business AI adoption ↗</a
+          >
         </li>
         <li>
           <a
@@ -183,7 +238,43 @@ const groups = productAtlasCategories.map((category) => ({
             href="https://sbecouncil.org/wp-content/uploads/2025/04/SBE-Small-Business-Technology-Survey-March-2025-Ver-2.0-1.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            >SBE Council · popular small-business AI applications ↗</a>
+            >SBE Council · popular small-business AI applications ↗</a
+          >
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.salesforce.com/agentforce/pricing/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Salesforce Agentforce · consumption and conversation pricing ↗</a
+          >
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.intercom.com/learning-center/ai-customer-service-agent-pricing-comparison"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Intercom · customer-agent pricing comparison ↗</a
+          >
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.glean.com/press/glean-surpasses-200m-in-arr-for-enterprise-ai-doubling-revenue-in-nine-months"
+            target="_blank"
+            rel="noopener noreferrer">Glean · enterprise AI ARR signal ↗</a
+          >
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.ipsos.com/en-ca/canadian-small-business-owners-embracing-ai-wide-variety-functions"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Ipsos / TD · small-business buying use cases ↗</a
+          >
         </li>
       </ul>
     </section>
