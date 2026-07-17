@@ -28,6 +28,10 @@ States: `active`, `stretch`, `done`, `retired`.
 
 ## Product
 
+- [active] Keep the Invoice Chaser and Proposal Generator quote-to-cash
+  catalogue truth evidence-gated — product records + public research route —
+  planned, unavailable, and not-yet-proven until product-specific source,
+  runtime, and business receipts justify promotion — continuous.
 - [active] Ship a non-vibe-coded portfolio hub that links all live Armalo
   mini-app subdomains — src/pages/index.astro + src/content/apps — a homepage
   a senior designer would not be embarrassed by — before the next mini-app

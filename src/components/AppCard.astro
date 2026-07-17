@@ -1,20 +1,13 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import {
-  accessLabels,
-  deliveryLabels,
-  flywheelLabels,
-  offerLabels,
-  proofLabels,
-  type DeliveryMode,
-  type OfferMode,
-} from "../lib/apps";
+import { accessLabels, flywheelLabels, proofLabels } from "../lib/apps";
 import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
   app: CollectionEntry<"apps">;
+  compact?: boolean;
 }
-const { app } = Astro.props;
+const { app, compact = false } = Astro.props;
 const {
   name,
   status,
@@ -25,85 +18,68 @@ const {
   description,
   year,
   audiences,
-  deliveryModes,
-  offerModes,
   salesPosition,
+  commercialPriority,
+  buyerHypothesis,
 } = app.data;
 const href = `/apps/${app.id}`;
+const buyerHypothesisText = buyerHypothesis?.replace(
+  /^Armalo hypothesis:\s*/,
+  "",
+);
 ---
 
-<a
-  href={href}
-  class:list={[
-    "group flex h-full flex-col rounded-md border border-line bg-paper p-5",
-    "transition-colors duration-150 hover:border-accent focus-visible:outline-none",
-  ]}
->
-  <div class="flex items-start justify-between gap-3">
-    <h3 class="text-lg font-semibold tracking-tight text-ink">{name}</h3>
-    <StatusBadge status={status} />
-  </div>
-
-  <p class="mt-1 text-sm text-ink-soft">{description}</p>
-  <p class="mt-4 text-sm leading-relaxed text-ink-soft">{salesPosition}</p>
-
-  <div class="mt-4 flex flex-wrap gap-1.5">
-    {
-      audiences
-        .slice(0, 3)
-        .map((audience: string) => (
-          <span class="rounded-sm bg-paper-recess px-2 py-1 text-2xs text-ink-soft">
-            {audience}
-          </span>
-        ))
-    }
-  </div>
-
-  <dl class="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4 text-xs">
-    <div>
-      <dt class="uppercase tracking-wide text-ink-faint">Access</dt>
-      <dd class="mt-1 text-ink">{accessLabels[access]}</dd>
-    </div>
-    <div>
-      <dt class="uppercase tracking-wide text-ink-faint">Proof</dt>
-      <dd class="mt-1 text-ink">{proofLabels[proof]}</dd>
-    </div>
-    <div>
-      <dt class="uppercase tracking-wide text-ink-faint">Stage</dt>
-      <dd class="mt-1 text-ink">{flywheelLabels[flywheel]}</dd>
-    </div>
-  </dl>
-
-  <div class="mt-4 grid gap-3 border-t border-line pt-4 text-xs sm:grid-cols-2">
-    <div>
-      <dt class="uppercase tracking-wide text-ink-faint">Delivery</dt>
-      <dd class="mt-1 text-ink">
-        {
-          deliveryModes
-            .map((mode: DeliveryMode) => deliveryLabels[mode])
-            .join(" · ")
-        }
-      </dd>
-    </div>
-    <div>
-      <dt class="uppercase tracking-wide text-ink-faint">Offer shape</dt>
-      <dd class="mt-1 text-ink">
-        {offerModes.map((mode: OfferMode) => offerLabels[mode]).join(" · ")}
-      </dd>
-    </div>
-  </div>
-
-  <div
-    class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-4 text-2xs uppercase tracking-wide text-ink-faint"
-  >
-    <span>{category}</span>
-    <span aria-hidden="true">·</span>
-    <span>{year}</span>
-    <span
-      class="ml-auto text-accent opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-      aria-hidden="true"
+{
+  compact ? (
+    <a href={href} class="demand-card">
+      <strong>{name}</strong>
+      <span class="demand-card__description">{description}</span>
+    </a>
+  ) : (
+    <a
+      href={href}
+      class:list={[
+        "group flex h-full flex-col rounded-md border border-line bg-paper p-5",
+        "transition-colors duration-150 hover:border-accent focus-visible:outline-none",
+      ]}
     >
-      Details →
-    </span>
-  </div>
-</a>
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="text-lg font-semibold tracking-tight text-ink">{name}</h3>
+        <StatusBadge status={status} />
+      </div>
+
+      <p class="mt-1 text-sm text-ink-soft">{description}</p>
+      {commercialPriority && buyerHypothesisText && (
+        <div class="mt-4 border-l border-accent pl-3">
+          <p class="text-2xs uppercase tracking-wide text-accent">
+            Commercial priority {String(commercialPriority).padStart(2, "0")}
+          </p>
+          <p class="mt-1 text-xs leading-relaxed text-ink-soft">
+            Our buyer hypothesis: {buyerHypothesisText}
+          </p>
+        </div>
+      )}
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">{salesPosition}</p>
+
+      <p class="mt-4 text-xs text-ink-faint">
+        For {audiences.slice(0, 2).join(" · ")}
+      </p>
+      <p class="mt-3 border-t border-line pt-3 text-2xs uppercase tracking-wide text-ink-faint">
+        {accessLabels[access]} · {proofLabels[proof]} ·{" "}
+        {flywheelLabels[flywheel]}
+      </p>
+
+      <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-4 text-2xs uppercase tracking-wide text-ink-faint">
+        <span>{category}</span>
+        <span aria-hidden="true">·</span>
+        <span>{year}</span>
+        <span
+          class="ml-auto text-accent opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+          aria-hidden="true"
+        >
+          Details →
+        </span>
+      </div>
+    </a>
+  )
+}

@@ -5,8 +5,9 @@
  */
 interface Props {
   status: "live" | "beta" | "wip" | "planned";
+  compact?: boolean;
 }
-const { status } = Astro.props;
+const { status, compact = false } = Astro.props;
 
 const label: Record<Props["status"], string> = {
   live: "Live",
@@ -16,20 +17,29 @@ const label: Record<Props["status"], string> = {
 };
 ---
 
-<span
-  class:list={[
-    "inline-flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide",
-    status === "live" && "bg-live/12 text-live",
-    status === "beta" && "bg-accent-soft text-accent",
-    status === "wip" && "bg-wip/15 text-wip",
-    status === "planned" && "bg-ink-faint/10 text-ink-faint",
-  ]}
-  aria-label={`Status: ${label[status]}`}
->
-  {
-    ["live", "beta"].includes(status) && (
-      <span class="size-1.5 rounded-full bg-live" aria-hidden="true" />
-    )
-  }
-  {label[status]}
-</span>
+{
+  compact ? (
+    <span
+      class={`status-chip status-chip--${status}`}
+      aria-label={`Status: ${label[status]}`}
+    >
+      {label[status]}
+    </span>
+  ) : (
+    <span
+      class:list={[
+        "inline-flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 text-2xs font-medium uppercase tracking-wide",
+        status === "live" && "bg-live/12 text-live",
+        status === "beta" && "bg-accent-soft text-accent",
+        status === "wip" && "bg-wip/15 text-wip",
+        status === "planned" && "bg-ink-faint/10 text-ink-faint",
+      ]}
+      aria-label={`Status: ${label[status]}`}
+    >
+      {["live", "beta"].includes(status) && (
+        <span class="size-1.5 rounded-full bg-live" aria-hidden="true" />
+      )}
+      {label[status]}
+    </span>
+  )
+}

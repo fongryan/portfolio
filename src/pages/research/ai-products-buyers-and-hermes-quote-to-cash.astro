@@ -1,0 +1,1663 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const title = "AI product buyers and bounded quote-to-cash agents";
+const description =
+  "A public research brief on who buys AI workflow products, why Invoice Chaser and Proposal Generator are narrow wedges, and how bounded Hermes goals could operate with evidence.";
+
+const sourceLinks = {
+  mckinsey:
+    "https://www.mckinsey.com/~/media/mckinsey/business%20functions/quantumblack/our%20insights/the%20state%20of%20ai/2025/the-state-of-ai-how-organizations-are-rewiring-to-capture-value_final.pdf",
+  pwc: "https://www.pwc.com/us/en/tech-effect/ai-analytics/ai-agent-survey.html",
+  upworkSkills: "https://www.upwork.com/research/in-demand-skills-2025",
+  chamber:
+    "https://www.uschamber.com/technology/artificial-intelligence/u-s-chambers-latest-empowering-small-business-report-shows-majority-of-businesses-in-all-50-states-are-embracing-ai",
+  quickbooks:
+    "https://quickbooks.intuit.com/r/small-business-data/small-business-late-payments-report-2025/",
+  qwilr: "https://qwilr.com/",
+  kolleno: "https://www.kolleno.com/",
+  pandadoc: "https://www.pandadoc.com/blog/proposal-software/",
+  upworkAi: "https://www.upwork.com/research/ai-impact-work-categories",
+};
+---
+
+<Base title={title} description={description}>
+  <article class="research-shell">
+    <header class="research-hero">
+      <a href="/#work" class="eyebrow-link">← Back to catalogue</a>
+      <p class="kicker">Research brief · July 2026</p>
+      <h1>
+        Two narrow agents for the work between a promising conversation and
+        cash.
+      </h1>
+      <p class="lede">
+        Our hypothesis is that buyers will prefer bounded workflow outcomes to
+        another general-purpose chatbot: a proposal prepared from trusted deal
+        context, an overdue invoice followed up without damaging the
+        relationship, and an accountable handoff at every consequential step.
+        Real willingness to pay for these Armalo offers is unproven. This brief
+        separates market evidence from vendor claims, product plans from
+        existing capability-level foundations, and evidence from inference.
+      </p>
+      <div class="truth-strip" aria-label="Research status">
+        <div><span>Products</span><strong>Planned</strong></div>
+        <div><span>Access</span><strong>Unavailable</strong></div>
+        <div><span>Proof</span><strong>Not yet proven</strong></div>
+        <div>
+          <span>Runtime review</span><strong>Capability level only</strong>
+        </div>
+      </div>
+    </header>
+
+    <nav class="contents" aria-label="Brief contents">
+      <p>In this brief</p>
+      <ol>
+        <li><a href="#market">Market and buyers</a></li>
+        <li><a href="#opportunities">Product opportunities</a></li>
+        <li><a href="#products">Two product wedges</a></li>
+        <li><a href="#contract">Hermes autonomy contract</a></li>
+        <li><a href="#boundaries">Proof and rollout boundaries</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <section id="market" class="chapter" aria-labelledby="market-conclusion">
+      <p class="chapter-number">01 / Market</p>
+      <h2 id="market-conclusion">Market conclusion</h2>
+      <p class="section-lede">
+        Our inference from the cited adoption, workflow, and trust signals is
+        that the strongest near-term product opportunity is not maximum
+        autonomy. It is a narrow outcome package that joins an existing system
+        of record, handles repetitive preparation and follow-up, pauses at
+        explicit checkpoints, and leaves enough evidence for a buyer to trust
+        the result.
+      </p>
+      <div class="finding-grid">
+        <article>
+          <p class="finding-number">71%</p>
+          <h3>Regular generative-AI use</h3>
+          <p>
+            McKinsey reports that 71% of surveyed organizations regularly use
+            generative AI in at least one business function. Marketing and
+            sales, product and service development, service operations, and
+            software engineering are among the most common functions.
+          </p>
+          <a href={sourceLinks.mckinsey}>McKinsey, State of AI 2025 (PDF)</a>
+        </article>
+        <article>
+          <p class="finding-number">88%</p>
+          <h3>Agent budgets expected to rise</h3>
+          <p>
+            PwC's May 2025 survey says 88% of surveyed executives planned to
+            increase AI-related budgets because of agentic AI. Among adopters,
+            66% reported measurable productivity value. Trust was lower for
+            financial transactions, reinforcing the case for human checkpoints.
+          </p>
+          <a href={sourceLinks.pwc}>PwC, AI agent survey</a>
+        </article>
+        <article>
+          <p class="finding-number">58%</p>
+          <h3>Small businesses using generative AI</h3>
+          <p>
+            The U.S. Chamber of Commerce reports that 58% of small businesses
+            use generative AI. Adoption makes a focused workflow easier to
+            explain, but it does not prove willingness to buy either product.
+          </p>
+          <a href={sourceLinks.chamber}
+            >U.S. Chamber, 2025 small-business report</a
+          >
+        </article>
+      </div>
+      <aside class="counterpoint">
+        <h3>Adoption is not outcome proof</h3>
+        <p>
+          McKinsey also reports that more than 80% of respondents did not see a
+          material enterprise-level EBIT impact from generative AI. The useful
+          reading is not “AI does not work.” It is that broad availability and
+          experimentation do not automatically produce an attributable business
+          result. A product needs a narrow baseline, a measurable workflow, and
+          a credible counterfactual.
+        </p>
+      </aside>
+
+      <h2>What buyers are buying</h2>
+      <p>
+        Our recommended purchase shape is an outcome attached to existing work,
+        not a replacement for the buyer's CRM, accounting system, document
+        stack, or judgment. This is a product hypothesis, not an observed Armalo
+        purchase pattern. Upwork reports that 49% of full-time workers rely on
+        freelancers to fill critical skill gaps and that 48% of CEOs planned to
+        increase freelance hiring. Its skill-gap data is not direct purchase
+        proof for AI workflow products. A separate Upwork analysis describes
+        rising interest in AI-agent work while also finding demand for human
+        verification. We interpret those signals as support for testing a named
+        workflow, accountable review, and legible evidence; real willingness to
+        pay for the Armalo products remains unproven.
+      </p>
+      <div class="purchase-list">
+        <div>
+          <strong>Preparation</strong><span
+            >Assemble a first draft from approved context.</span
+          >
+        </div>
+        <div>
+          <strong>Coordination</strong><span
+            >Move work across systems without replacing them.</span
+          >
+        </div>
+        <div>
+          <strong>Follow-up</strong><span
+            >Act at the right time and in the approved tone.</span
+          >
+        </div>
+        <div>
+          <strong>Exception handling</strong><span
+            >Recognize when the normal path no longer applies.</span
+          >
+        </div>
+        <div>
+          <strong>Evidence</strong><span
+            >Show what source, decision, approval, and outcome produced the
+            state.</span
+          >
+        </div>
+      </div>
+      <p>
+        The package therefore needs an explicit start state, a finite task
+        graph, declared approval points, stop conditions, a limited authority
+        scope, and deterministic receipts. “Automate sales” is too broad.
+        “Prepare an approved proposal from this deal record and stop before
+        sending” is buyable, testable, and reversible.
+      </p>
+
+      <h2>Who buys</h2>
+      <div class="buyer-grid">
+        <article>
+          <h3>Microbusiness / freelancer</h3>
+          <p>
+            The owner is also the seller, delivery lead, and collector. The pain
+            is context switching and emotional friction. A useful package is
+            simple, assisted, and connected to the tools already used. It should
+            save minutes per deal or invoice without introducing a new operating
+            system.
+          </p>
+          <p><strong>Likely buyer:</strong> owner-operator.</p>
+          <p>
+            <strong>Proof:</strong> faster first draft or reminder, fewer manual touches.
+          </p>
+        </article>
+        <article>
+          <h3>Agency / consultancy</h3>
+          <p>
+            Repeated proposals and relationship-sensitive receivables create a
+            high-frequency workflow with recognizable templates. The buyer
+            values brand voice, reusable proof, fast customization, and a clean
+            handoff from accepted scope into delivery.
+          </p>
+          <p>
+            <strong>Likely buyer:</strong> founder, operations lead, account lead.
+          </p>
+          <p>
+            <strong>Proof:</strong> proposal cycle time, acceptance rate, overdue
+            aging.
+          </p>
+        </article>
+        <article>
+          <h3>Service SMB</h3>
+          <p>
+            A service business often has enough volume to feel the cost of
+            manual follow-up but not enough operations capacity to build a
+            custom workflow. Integration and clear exceptions matter more than a
+            broad conversational interface.
+          </p>
+          <p>
+            <strong>Likely buyer:</strong> general manager, operations, finance.
+          </p>
+          <p>
+            <strong>Proof:</strong> time to first reminder, recovery rate, disputes.
+          </p>
+        </article>
+        <article>
+          <h3>Finance / AR</h3>
+          <p>
+            The team already has formal states, aging views, and escalation
+            responsibilities. It needs controlled prioritization and follow-up,
+            not invented payment truth. Reconciliation and false-close
+            prevention are central to trust.
+          </p>
+          <p>
+            <strong>Likely buyer:</strong> controller, AR manager, finance operations.
+          </p>
+          <p>
+            <strong>Proof:</strong> DSO, overdue aging, recovery rate, false closes.
+          </p>
+        </article>
+        <article>
+          <h3>Mid-market sales</h3>
+          <p>
+            Proposal work crosses CRM data, discovery notes, approved offers,
+            security material, legal language, and proof assets. The value is
+            orchestration and version integrity. Commercial approval remains an
+            accountable human responsibility.
+          </p>
+          <p>
+            <strong>Likely buyer:</strong> revenue operations or sales operations.
+          </p>
+          <p>
+            <strong>Proof:</strong> cycle time, review minutes, acceptance, rework.
+          </p>
+        </article>
+        <article>
+          <h3>Enterprise function</h3>
+          <p>
+            Enterprise adoption starts with one governed function and a clear
+            control model. Identity, scopes, auditability, separation of duties,
+            and reliable handoff matter more than headline autonomy. The proof
+            burden and integration surface are substantially higher.
+          </p>
+          <p>
+            <strong>Likely buyer:</strong> functional leader with IT and risk partners.
+          </p>
+          <p>
+            <strong>Proof:</strong> policy adherence, exception quality, attributable
+            outcome.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section
+      id="opportunities"
+      class="chapter"
+      aria-labelledby="ranked-opportunities"
+    >
+      <p class="chapter-number">02 / Opportunities</p>
+      <h2 id="ranked-opportunities">Ranked opportunities</h2>
+      <p class="section-lede">
+        Ranking favors painful recurring work, a visible budget owner, short
+        time to value, integrations over replacement, and outcomes that can be
+        measured without pretending correlation is causation.
+      </p>
+      <div
+        class="table-wrap"
+        role="region"
+        aria-label="Ranked AI workflow opportunities"
+        tabindex="0"
+      >
+        <table>
+          <caption
+            >Opportunity ranking by urgency, buyer, and proof burden</caption
+          >
+          <thead
+            ><tr
+              ><th>Rank</th><th>Wedge</th><th>Why now</th><th>Budget owner</th
+              ><th>Proof burden</th></tr
+            ></thead
+          >
+          <tbody>
+            <tr
+              ><td>1</td><td><strong>Invoice Chaser</strong></td><td
+                >Late payment is frequent, painful, and directly legible.</td
+              ><td>Owner, operations, finance</td><td
+                >Medium: payment causality and relationship safety matter.</td
+              ></tr
+            >
+            <tr
+              ><td>2</td><td><strong>Proposal Generator</strong></td><td
+                >Proposal preparation is repetitive and delays a visible revenue
+                step.</td
+              ><td>Founder, sales, revenue operations</td><td
+                >Medium: quality, acceptance, and commercial accuracy.</td
+              ></tr
+            >
+            <tr
+              ><td>3</td><td>Service follow-up coordinator</td><td
+                >Missed handoffs and stale next steps are common.</td
+              ><td>Operations, account leadership</td><td
+                >Medium: define a comparable completion baseline.</td
+              ></tr
+            >
+            <tr
+              ><td>4</td><td>Customer-service triage</td><td
+                >High volume and clear routing can create fast learning.</td
+              ><td>Service operations</td><td
+                >High: quality, safety, and customer impact.</td
+              ></tr
+            >
+            <tr
+              ><td>5</td><td>Enterprise function agent</td><td
+                >Budgets exist, but broad scope hides outcome attribution.</td
+              ><td>Functional executive</td><td
+                >Very high: governance, integration, change management.</td
+              ></tr
+            >
+          </tbody>
+        </table>
+      </div>
+      <p>
+        QuickBooks' 2025 U.S. small-business late-payments report provides the
+        clearest urgency signal for the first wedge: 56% of surveyed small
+        businesses reported being owed money from unpaid invoices, with an
+        average reported amount of $17,500, and 47% reported that some invoices
+        were more than 30 days overdue. These are survey findings, not a promise
+        that an agent will recover a particular amount.
+      </p>
+      <p>
+        Vendor pages position products in these categories. Qwilr positions
+        proposal creation, signature and payment steps, buyer analytics, and CRM
+        or accounting integrations as one proposal workflow. Kolleno positions
+        centralized AR work, automated follow-ups, payment tracking, and
+        configurable tone, escalation, and automation. These pages show how
+        vendors describe their offers; they do not establish buyer demand for
+        Armalo. Any outcome figures on those sites are vendor claims, not
+        independent validation of these planned products. PandaDoc's
+        proposal-software overview is also vendor-authored comparative evidence;
+        it helps map category language but is not neutral market research.
+      </p>
+    </section>
+
+    <section id="products" class="chapter" aria-labelledby="invoice-product">
+      <p class="chapter-number">03 / Products</p>
+      <h2 id="invoice-product">Invoice Chaser product</h2>
+      <p class="section-lede">
+        A policy-aware receivables workflow that prioritizes approved overdue
+        state, prepares the next permitted follow-up, and refuses to treat a
+        payment, dispute, or promise as resolved without sufficient evidence.
+      </p>
+      <div class="product-spec">
+        <div>
+          <h3>Outcome package</h3>
+          <p>
+            Begin with a bounded set of invoices whose source state has been
+            approved. Classify the next action by aging, prior communication,
+            relationship sensitivity, dispute state, and the allowed reminder
+            cadence. Draft or schedule the permitted message. Pause when a reply
+            changes the case. Reconcile against approved payment evidence before
+            recommending closure.
+          </p>
+        </div>
+        <div>
+          <h3>Human checkpoints</h3>
+          <ul>
+            <li>Approve the follow-up policy, channels, tone, and timing.</li>
+            <li>
+              Review escalation, disputes, hardship, or sensitive relationships.
+            </li>
+            <li>
+              Confirm payment state when evidence is incomplete or conflicting.
+            </li>
+            <li>Approve any action outside routine reminders.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Not the product</h3>
+          <ul>
+            <li>Not autonomous legal collection.</li>
+            <li>Not a new accounting source of truth.</li>
+            <li>Not permission to contact every customer.</li>
+            <li>Not a promise of recovery or reduced DSO.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Proposal Generator product</h2>
+      <p class="section-lede">
+        A proposal workflow that turns approved deal context, offers, proof, and
+        terms into a reviewable draft without inventing commercial facts.
+      </p>
+      <div class="product-spec">
+        <div>
+          <h3>Outcome package</h3>
+          <p>
+            Materialize a draft only when the required discovery context and
+            offer sources are present. Assemble buyer problem, scope,
+            exclusions, delivery plan, approved proof, commercial terms, and
+            next steps. Identify conflicts and missing decisions rather than
+            smoothing them over. Produce a versioned review packet and stop
+            before sending.
+          </p>
+        </div>
+        <div>
+          <h3>Human checkpoints</h3>
+          <ul>
+            <li>Approve scope, exclusions, claims, pricing, and terms.</li>
+            <li>Approve the recipient and final send.</li>
+            <li>Confirm acceptance, signature, and payment state.</li>
+            <li>
+              Approve fulfillment handoff and any non-standard commitment.
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Not the product</h3>
+          <ul>
+            <li>Not permission to invent pricing or legal language.</li>
+            <li>Not a replacement for CRM or document systems.</li>
+            <li>Not proof that a buyer read, accepted, or paid.</li>
+            <li>Not a generic content generator with a proposal template.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Quote-to-cash connection</h2>
+      <p>
+        The two wedges meet at an explicit state transition. Proposal Generator
+        can prepare a versioned commercial offer and, after accountable
+        approval, produce an accepted-scope handoff. Invoice Chaser can later
+        consume approved invoice and customer state created by the buyer's
+        existing systems. Neither agent should infer that acceptance created an
+        invoice, that an invoice was sent, or that a payment cleared. Each
+        transition requires an authoritative state or a human confirmation.
+      </p>
+      <ol class="sequence">
+        <li>
+          <span>01</span><div>
+            <strong>Discover</strong><p>
+              Capture approved buyer context and unresolved questions.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>02</span><div>
+            <strong>Propose</strong><p>
+              Prepare scope, proof, terms, and next steps for review.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>03</span><div>
+            <strong>Approve and send</strong><p>
+              A human approves commercial content and the recipient.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>04</span><div>
+            <strong>Accept and hand off</strong><p>
+              Record authoritative acceptance before fulfillment or billing
+              state changes.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>05</span><div>
+            <strong>Invoice and follow up</strong><p>
+              Use approved invoice state and bounded reminder policy.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>06</span><div>
+            <strong>Reconcile</strong><p>
+              Close only against sufficient payment or resolution evidence.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <h2>Buyer, package, and metrics</h2>
+      <div
+        class="table-wrap"
+        role="region"
+        aria-label="Buyer packages and outcome metrics"
+        tabindex="0"
+      >
+        <table>
+          <caption
+            >Recommended buyer packages, checkpoints, and pilot metrics</caption
+          >
+          <thead
+            ><tr
+              ><th>Buyer</th><th>Narrow package</th><th>Primary checkpoints</th
+              ><th>Useful metrics</th></tr
+            ></thead
+          >
+          <tbody>
+            <tr
+              ><td>Freelancer / microbusiness</td><td
+                >Proposal draft or overdue follow-up for one existing workflow</td
+              ><td>Pricing, send, payment state</td><td
+                >Proposal cycle time, time to first reminder, manual minutes</td
+              ></tr
+            >
+            <tr
+              ><td>Agency / consultancy</td><td
+                >Reusable proposal and receivables policy across accounts</td
+              ><td>Scope, claims, sensitive accounts, disputes</td><td
+                >Acceptance rate, overdue aging, recovery rate, rework</td
+              ></tr
+            >
+            <tr
+              ><td>Service SMB</td><td
+                >Connected quote-to-cash pilot for one team</td
+              ><td>Exceptions, escalation, reconciliation</td><td
+                >DSO, disputes, false closes, review minutes</td
+              ></tr
+            >
+            <tr
+              ><td>Finance / AR</td><td
+                >Prioritized reminder and exception queue</td
+              ><td>Escalation, dispute, payment confirmation</td><td
+                >DSO, overdue aging, recovery rate, false closes</td
+              ></tr
+            >
+            <tr
+              ><td>Mid-market sales</td><td
+                >Approved-source proposal assembly and versioning</td
+              ><td>Pricing, legal terms, recipient, acceptance</td><td
+                >Cycle time, acceptance, manual review, revisions</td
+              ></tr
+            >
+            <tr
+              ><td>Enterprise function</td><td
+                >One governed workflow with scoped integration</td
+              ><td>Authority, separation of duties, high-risk exceptions</td><td
+                >Policy adherence, exception quality, attributable outcome</td
+              ></tr
+            >
+          </tbody>
+        </table>
+      </div>
+      <p class="metric-note">
+        Metrics need definitions before a pilot. Proposal cycle time should have
+        a fixed start and end event. Acceptance rate needs a comparable cohort.
+        DSO and recovery rate need an agreed baseline and must account for mix,
+        seasonality, and unrelated collection activity. Manual review minutes,
+        disputes, and false closes are guardrail metrics, not secondary details.
+      </p>
+    </section>
+
+    <section id="contract" class="chapter" aria-labelledby="hermes-contract">
+      <p class="chapter-number">04 / Operating contract</p>
+      <h2 id="hermes-contract">Hermes autonomy contract</h2>
+      <p class="section-lede">
+        The conceptual design maps each product onto a bounded TaskPlan, an
+        external Goal Gate, explicit goal materialization, tenant-scoped
+        dispatch, capability scopes, leased execution with fencing, and evidence
+        receipts. This is a capability-level review, not a deployment claim.
+      </p>
+      <div class="contract-grid">
+        <article>
+          <h3>TaskPlan</h3><p>
+            A finite, versioned graph declares inputs, steps, dependencies,
+            approval nodes, stop states, and expected receipts before execution
+            begins.
+          </p>
+        </article>
+        <article>
+          <h3>External Goal Gate</h3><p>
+            A separate evaluator decides whether goal materialization is
+            permitted. The planner cannot grant itself authority by merely
+            producing a plausible plan.
+          </p>
+        </article>
+        <article>
+          <h3>Goal materialization</h3><p>
+            A goal becomes executable only when required inputs, scope, policy
+            version, and approvals exist. Missing or conflicting evidence keeps
+            it proposed.
+          </p>
+        </article>
+        <article>
+          <h3>Tenant-scoped dispatch</h3><p>
+            Work is dispatched only within the authenticated customer's logical
+            boundary. Public catalogue content never carries customer state or
+            execution authority.
+          </p>
+        </article>
+        <article>
+          <h3>Capability scopes</h3><p>
+            Each task receives the minimum read or write capability required for
+            that step. Drafting authority is distinct from sending, escalating,
+            or closing.
+          </p>
+        </article>
+        <article>
+          <h3>Leases and fencing</h3><p>
+            A time-bounded lease identifies the current worker. A monotonically
+            advancing fence prevents a stale worker from committing after
+            ownership changes.
+          </p>
+        </article>
+        <article>
+          <h3>Evidence receipts</h3><p>
+            Each material state transition records the input digest, plan
+            version, actor class, approval reference, result, and deterministic
+            output digest.
+          </p>
+        </article>
+        <article>
+          <h3>Independent verification</h3><p>
+            Completion is evaluated against expected evidence and authoritative
+            state, not the agent's narrative that the work succeeded.
+          </p>
+        </article>
+      </div>
+
+      <h2>Goal contract: Invoice Chaser</h2>
+      <dl class="goal-contract">
+        <div>
+          <dt>Goal</dt><dd>
+            Move each approved overdue case to the next permitted,
+            evidence-backed state without exceeding contact, tone, escalation,
+            or closure authority.
+          </dd>
+        </div>
+        <div>
+          <dt>Required inputs</dt><dd>
+            Approved invoice state, customer identity reference, aging state,
+            prior communication summary, reminder policy version, channel
+            permission, and any active exception.
+          </dd>
+        </div>
+        <div>
+          <dt>Success</dt><dd>
+            A permitted reminder is prepared or delivered through an approved
+            checkpoint, a reply or exception is routed, or a case is reconciled
+            against sufficient evidence; every transition has a receipt.
+          </dd>
+        </div>
+        <div>
+          <dt>Guardrails</dt><dd>
+            No invented balance or due date, no message beyond approved cadence,
+            no escalation of a sensitive case without review, and no paid or
+            closed state without authoritative evidence.
+          </dd>
+        </div>
+        <div>
+          <dt>Metrics</dt><dd>
+            Time to first reminder, DSO, overdue aging, recovery rate, manual
+            review minutes, dispute rate, and false closes.
+          </dd>
+        </div>
+      </dl>
+
+      <h2>Goal contract: Proposal Generator</h2>
+      <dl class="goal-contract">
+        <div>
+          <dt>Goal</dt><dd>
+            Produce a buyer-ready proposal review packet from approved sources
+            while preserving uncertainty and withholding send authority until
+            accountable approval.
+          </dd>
+        </div>
+        <div>
+          <dt>Required inputs</dt><dd>
+            Approved deal context, buyer problem, offer and scope sources,
+            exclusions, proof library, commercial terms source, recipient state,
+            and document policy version.
+          </dd>
+        </div>
+        <div>
+          <dt>Success</dt><dd>
+            A versioned proposal packet exposes source coverage, unresolved
+            decisions, approvals, and a deterministic content digest; accepted
+            state and fulfillment handoff remain separate authoritative events.
+          </dd>
+        </div>
+        <div>
+          <dt>Guardrails</dt><dd>
+            No invented price, scope, claim, term, testimonial, recipient,
+            acceptance, signature, payment, or fulfillment commitment.
+          </dd>
+        </div>
+        <div>
+          <dt>Metrics</dt><dd>
+            Proposal cycle time, acceptance rate, revision count, manual review
+            minutes, source-coverage failures, and corrections after approval.
+          </dd>
+        </div>
+      </dl>
+
+      <h2>Task graphs</h2>
+      <div class="graph-pair">
+        <article>
+          <h3>Invoice Chaser</h3>
+          <ol>
+            <li>
+              <strong>Validate intake.</strong> Reject absent, stale, or conflicting
+              invoice state.
+            </li>
+            <li>
+              <strong>Classify case.</strong> Identify aging band, history, sensitivity,
+              dispute, and allowed next action.
+            </li>
+            <li>
+              <strong>Plan reminder.</strong> Select the permitted template, channel,
+              timing, and evidence requirement.
+            </li>
+            <li>
+              <strong>Gate action.</strong> Require review whenever policy or case
+              state demands it.
+            </li>
+            <li>
+              <strong>Execute once.</strong> Use an idempotency key tied to case,
+              action, and policy version.
+            </li>
+            <li>
+              <strong>Observe.</strong> Ingest reply, delivery result, promise, dispute,
+              or approved payment evidence.
+            </li>
+            <li>
+              <strong>Reconcile or stop.</strong> Advance only when evidence satisfies
+              the next-state rule.
+            </li>
+          </ol>
+        </article>
+        <article>
+          <h3>Proposal Generator</h3>
+          <ol>
+            <li>
+              <strong>Validate intake.</strong> Identify missing discovery, offer,
+              scope, or commercial sources.
+            </li>
+            <li>
+              <strong>Build source map.</strong> Bind each proposal assertion to an
+              approved source or unresolved marker.
+            </li>
+            <li>
+              <strong>Draft.</strong> Assemble problem, approach, scope, exclusions,
+              proof, terms, and next steps.
+            </li>
+            <li>
+              <strong>Check conflicts.</strong> Stop on contradictory pricing, scope,
+              identity, or policy state.
+            </li>
+            <li>
+              <strong>Review.</strong> Require approval for scope, pricing, claims,
+              terms, recipient, and send.
+            </li>
+            <li>
+              <strong>Version and deliver.</strong> Preserve an immutable digest for
+              the approved version.
+            </li>
+            <li>
+              <strong>Observe and hand off.</strong> Treat engagement, acceptance,
+              and fulfillment as distinct evidence states.
+            </li>
+          </ol>
+        </article>
+      </div>
+
+      <h2>Approvals and stop conditions</h2>
+      <div
+        class="table-wrap"
+        role="region"
+        aria-label="Human approvals and mandatory stop conditions"
+        tabindex="0"
+      >
+        <table>
+          <caption
+            >Consequential events, approval owners, and stop conditions</caption
+          >
+          <thead
+            ><tr
+              ><th>Event</th><th>Human checkpoint</th><th
+                >Mandatory stop condition</th
+              ></tr
+            ></thead
+          >
+          <tbody>
+            <tr
+              ><td>Proposal pricing or terms</td><td
+                >Accountable commercial approver</td
+              ><td
+                >Missing source, conflict, non-standard commitment, or expired
+                approval</td
+              ></tr
+            >
+            <tr
+              ><td>Proposal send</td><td>Content and recipient approval</td><td
+                >Recipient ambiguity, changed version, unresolved review item</td
+              ></tr
+            >
+            <tr
+              ><td>Invoice reminder</td><td
+                >Policy approval; case review when required</td
+              ><td
+                >Contact suppression, cadence breach, sensitive relationship,
+                uncertain balance</td
+              ></tr
+            >
+            <tr
+              ><td>Escalation</td><td>Finance or relationship owner</td><td
+                >Dispute, hardship, legal signal, or action outside routine
+                policy</td
+              ></tr
+            >
+            <tr
+              ><td>Payment or acceptance state</td><td
+                >Authoritative source or accountable confirmation</td
+              ><td>Missing, stale, duplicated, or conflicting evidence</td></tr
+            >
+            <tr
+              ><td>Closure</td><td
+                >Rule-based verification, with review for exceptions</td
+              ><td
+                >Unresolved reply, unmatched payment, open dispute, incomplete
+                receipt chain</td
+              ></tr
+            >
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A stop is a successful safety outcome, not an agent failure. When the
+        system cannot prove that a state transition is permitted, it should
+        preserve the current state, emit a bounded exception, and request the
+        smallest decision needed to resume.
+      </p>
+    </section>
+
+    <section
+      id="boundaries"
+      class="chapter"
+      aria-labelledby="deterministic-proof"
+    >
+      <p class="chapter-number">05 / Proof</p>
+      <h2 id="deterministic-proof">
+        Deterministic proof and evidence receipts
+      </h2>
+      <p class="section-lede">
+        A fluent summary is not proof. The completion packet must let a separate
+        reviewer reconstruct which approved state entered the task, which plan
+        and policy applied, who or what approved the action, and what observable
+        result followed.
+      </p>
+      <div class="receipt-spec">
+        <div>
+          <span>01</span><p>
+            <strong>Goal identity</strong><br />Stable product, workflow, and
+            goal references without exposing customer data in the public design.
+          </p>
+        </div>
+        <div>
+          <span>02</span><p>
+            <strong>Input digest</strong><br />A deterministic digest of the
+            approved input envelope and its freshness.
+          </p>
+        </div>
+        <div>
+          <span>03</span><p>
+            <strong>Plan and policy version</strong><br />The exact task graph,
+            goal-gate result, and public contract version used.
+          </p>
+        </div>
+        <div>
+          <span>04</span><p>
+            <strong>Authority evidence</strong><br />The capability scope,
+            lease, fence, and approval reference active for the transition.
+          </p>
+        </div>
+        <div>
+          <span>05</span><p>
+            <strong>Action result</strong><br />A normalized result class,
+            timestamps, retry lineage, and output digest.
+          </p>
+        </div>
+        <div>
+          <span>06</span><p>
+            <strong>Outcome evidence</strong><br />Authoritative state or a
+            clearly labeled observation, never a narrative inference.
+          </p>
+        </div>
+      </div>
+      <p>
+        For Proposal Generator, deterministic proof includes source coverage,
+        unresolved markers, the approved content digest, and the version sent.
+        For Invoice Chaser, it includes the invoice-state digest, allowed-action
+        decision, message digest, delivery result, reply classification, and the
+        evidence used for reconciliation. Sensitive payloads belong in the
+        authorized customer system, not in this public contract.
+      </p>
+
+      <h2>Retry, lease, fencing, and idempotency rules</h2>
+      <ul class="rules">
+        <li>
+          <strong>Retry only retryable work.</strong> Transient transport failure
+          may retry; a policy rejection, conflicting source, or denied approval may
+          not.
+        </li>
+        <li>
+          <strong>Keep the action identity stable.</strong> A retry uses the same
+          idempotency key for the same logical action, preventing duplicate sends
+          or duplicate state transitions.
+        </li>
+        <li>
+          <strong>Expire ownership.</strong> Every worker acts under a bounded lease.
+          Expiration requires reacquisition and revalidation of current state.
+        </li>
+        <li>
+          <strong>Fence stale workers.</strong> A newer fence token invalidates commits
+          from a previous lease holder, even if the older worker finishes later.
+        </li>
+        <li>
+          <strong>Re-read before consequential writes.</strong> Pricing, send, escalation,
+          acceptance, payment, and closure steps must confirm that the approved version
+          and source state have not changed.
+        </li>
+        <li>
+          <strong>Bound attempts and time.</strong> Exhaustion creates a receipt and
+          review item; it does not silently loop or broaden authority.
+        </li>
+        <li>
+          <strong>Make observation idempotent.</strong> Duplicate webhooks, replies,
+          or payment observations must converge on the same normalized evidence record.
+        </li>
+        <li>
+          <strong>Never convert uncertainty into success.</strong> An unknown delivery,
+          acceptance, or payment result remains unknown until authoritative evidence
+          arrives.
+        </li>
+      </ul>
+
+      <h2>Capability and verification boundaries</h2>
+      <div class="boundary-grid">
+        <article class="foundation">
+          <p class="boundary-label">
+            Existing foundation · capability-level review
+          </p>
+          <h3>Concepts the design can map onto</h3>
+          <ul>
+            <li>TaskPlan-shaped bounded work</li>
+            <li>An independent external Goal Gate</li>
+            <li>Explicit goal materialization</li>
+            <li>Tenant-scoped dispatch</li>
+            <li>Capability scopes</li>
+            <li>Leases and fencing</li>
+            <li>Evidence receipt patterns</li>
+          </ul>
+          <p>
+            This says the conceptual interfaces were reviewed at a capability
+            level. It does not say these product workflows exist or are wired
+            end to end.
+          </p>
+        </article>
+        <article class="planned">
+          <p class="boundary-label">Planned productization</p>
+          <h3>Work still required</h3>
+          <ul>
+            <li>Product-specific intake and source adapters</li>
+            <li>Proposal and receivables task plans</li>
+            <li>Buyer-configurable public policy surfaces</li>
+            <li>Approval and exception experiences</li>
+            <li>Reconciliation and version-state rules</li>
+            <li>Metric definitions and pilot reporting</li>
+            <li>Customer-facing evidence views</li>
+          </ul>
+          <p>
+            Delivery modes listed in the catalogue describe intended packaging,
+            not current availability.
+          </p>
+        </article>
+        <article class="unverified">
+          <p class="boundary-label">Unverified</p>
+          <h3>Claims this brief does not make</h3>
+          <ul>
+            <li>No deployed or live product claim</li>
+            <li>
+              No live CRM, accounting, signature, or payment integration claim
+            </li>
+            <li>No customer usage or reliability claim</li>
+            <li>No recovery, acceptance, DSO, or revenue outcome claim</li>
+            <li>No production security or compliance claim</li>
+            <li>No general-availability timeline</li>
+          </ul>
+          <p>
+            These remain unverified until product-specific source, runtime, and
+            business evidence exists.
+          </p>
+        </article>
+      </div>
+
+      <h2>Rollout sequence</h2>
+      <ol class="rollout">
+        <li>
+          <span>1</span><div>
+            <h3>Offline fixtures</h3><p>
+              Define states, policies, task plans, goal gates, deterministic
+              receipts, and adversarial cases without contacting buyers or
+              changing external state.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>2</span><div>
+            <h3>Read-only shadow</h3><p>
+              Ingest approved exports, propose actions, and compare against
+              human decisions. No send, escalation, acceptance, payment, or
+              closure authority.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>3</span><div>
+            <h3>Draft-assist pilot</h3><p>
+              Generate proposals or reminders for human review. Measure cycle
+              time, review minutes, correction types, disputes, and false-close
+              risk.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>4</span><div>
+            <h3>Approved bounded action</h3><p>
+              Permit a narrow action only after explicit approval, with
+              idempotency, leases, fencing, receipts, and an immediate stop
+              control.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>5</span><div>
+            <h3>Policy-bounded routine work</h3><p>
+              Consider limited pre-approval only for low-risk repeated actions
+              whose false-positive rate, exception routing, and outcome evidence
+              meet an agreed threshold.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span>6</span><div>
+            <h3>Expand or stop</h3><p>
+              Expand one capability at a time when evidence supports it. Stop or
+              narrow when disputes, corrections, false closes, or unattributed
+              outcomes exceed the contract.
+            </p>
+          </div>
+        </li>
+      </ol>
+      <aside class="recommendation">
+        <h3>Recommended first package</h3>
+        <p>
+          Start with one agency or service-business workflow in draft-assist
+          mode. Integrate with the buyer's existing records rather than
+          replacing them. Keep human checkpoints for pricing, send, escalation,
+          acceptance, payment state, and closure. Define proposal cycle time,
+          acceptance rate, time to first reminder, DSO or overdue aging,
+          recovery rate, manual review minutes, disputes, and false closes
+          before the pilot.
+        </p>
+      </aside>
+    </section>
+
+    <section
+      id="sources"
+      class="chapter sources"
+      aria-labelledby="source-heading"
+    >
+      <p class="chapter-number">06 / References</p>
+      <h2 id="source-heading">Sources</h2>
+      <ol>
+        <li>
+          <a href={sourceLinks.mckinsey}
+            >McKinsey — The State of AI 2025 (PDF)</a
+          ><p>
+            Cross-industry survey evidence for adoption, common functions, and
+            the gap between use and enterprise EBIT impact.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.pwc}>PwC — AI agent survey, May 2025</a><p>
+            Executive survey evidence for planned budgets, reported adopter
+            productivity, use cases, and lower trust in financial transactions.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.upworkSkills}>Upwork — In-demand skills 2025</a
+          ><p>
+            Marketplace research on skill gaps, planned freelance hiring,
+            specialization, and proven expertise.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.upworkAi}
+            >Upwork — AI's impact on work categories</a
+          ><p>
+            Marketplace trend evidence for AI-agent interest and continued
+            demand for human verification.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.chamber}
+            >U.S. Chamber of Commerce — Small-business AI adoption 2025</a
+          ><p>
+            Small-business survey evidence for generative-AI use. Adoption is
+            not treated as willingness-to-pay proof.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.quickbooks}
+            >QuickBooks — Small Business Late Payments Report 2025</a
+          ><p>
+            Survey evidence on unpaid invoices, amounts owed, and overdue aging.
+            It does not establish product outcomes.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.qwilr}>Qwilr — proposal product site</a><p>
+            Direct vendor evidence for the recognized proposal-workflow
+            category. Any outcome figures are vendor claims.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.kolleno}
+            >Kolleno — accounts-receivable product site</a
+          ><p>
+            Direct vendor evidence for centralized AR, follow-up, payment
+            tracking, tone, escalation, and automation controls. Any outcome
+            figures are vendor claims.
+          </p>
+        </li>
+        <li>
+          <a href={sourceLinks.pandadoc}
+            >PandaDoc — proposal software overview</a
+          ><p>
+            Vendor-authored comparative category evidence, not independent
+            market research.
+          </p>
+        </li>
+      </ol>
+      <p class="source-note">
+        Research describes the cited sources as they present themselves. Survey
+        populations and methodologies differ, vendor materials are commercial,
+        and none of these sources validates the planned Armalo products. Product
+        claims should advance only when product-specific evidence exists.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .research-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 7rem;
+  }
+  .research-hero {
+    max-width: 60rem;
+    padding: 2rem 0 4rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .eyebrow-link {
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .eyebrow-link:hover {
+    color: var(--color-accent);
+  }
+  .kicker,
+  .chapter-number {
+    margin-top: 3rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  h1 {
+    max-width: 56rem;
+    margin-top: 1rem;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+  .lede {
+    max-width: 48rem;
+    margin-top: 2rem;
+    font-size: 1.25rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+  .truth-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 3rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .truth-strip div {
+    padding: 1rem;
+    background: var(--color-paper);
+  }
+  .truth-strip span,
+  .truth-strip strong {
+    display: block;
+  }
+  .truth-strip span {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-ink-faint);
+  }
+  .truth-strip strong {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+  }
+  .contents {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .contents p {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-ink-faint);
+  }
+  .contents ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem 1.5rem;
+    list-style: none;
+    padding: 0;
+  }
+  .contents a {
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .contents a:hover {
+    color: var(--color-accent);
+  }
+  .chapter {
+    padding: 5rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .chapter-number {
+    margin: 0 0 1.25rem;
+  }
+  .chapter > h2 {
+    max-width: 48rem;
+    margin-top: 4.5rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  .chapter > h2:first-of-type {
+    margin-top: 0;
+  }
+  .section-lede {
+    max-width: 48rem;
+    margin-top: 1.25rem;
+    font-size: 1.25rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+  .chapter
+    > p:not(.chapter-number):not(.section-lede):not(.metric-note):not(
+      .source-note
+    ) {
+    max-width: 48rem;
+    margin-top: 1.5rem;
+    color: var(--color-ink-soft);
+  }
+  .finding-grid,
+  .buyer-grid,
+  .contract-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .finding-grid article,
+  .buyer-grid article,
+  .contract-grid article {
+    padding: 1.5rem;
+    background: var(--color-paper);
+  }
+  .finding-number {
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--color-accent);
+  }
+  .finding-grid h3,
+  .buyer-grid h3,
+  .contract-grid h3,
+  .product-spec h3,
+  .graph-pair h3 {
+    margin-top: 0.5rem;
+    font-size: 1.125rem;
+  }
+  .finding-grid p:not(.finding-number),
+  .buyer-grid p,
+  .contract-grid p {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .finding-grid a {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-accent);
+  }
+  .counterpoint,
+  .recommendation {
+    max-width: 48rem;
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-paper-recess);
+  }
+  .counterpoint h3,
+  .recommendation h3 {
+    font-size: 1.125rem;
+  }
+  .counterpoint p,
+  .recommendation p {
+    margin-top: 0.75rem;
+    color: var(--color-ink-soft);
+  }
+  .purchase-list {
+    max-width: 48rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .purchase-list div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 1.5rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .purchase-list span {
+    color: var(--color-ink-soft);
+  }
+  .buyer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .table-wrap {
+    margin-top: 2.5rem;
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+  }
+  table {
+    width: 100%;
+    min-width: 48rem;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-line);
+  }
+  th {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-ink-faint);
+    background: var(--color-paper-recess);
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .product-spec {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .product-spec > div {
+    padding: 1.5rem;
+    background: var(--color-paper);
+  }
+  .product-spec p,
+  .product-spec li {
+    margin-top: 0.75rem;
+    color: var(--color-ink-soft);
+  }
+  .product-spec ul {
+    padding-left: 1.1rem;
+  }
+  .sequence {
+    max-width: 48rem;
+    margin-top: 2rem;
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .sequence li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .sequence li > span {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+  }
+  .sequence p {
+    margin-top: 0.25rem;
+    color: var(--color-ink-soft);
+  }
+  .metric-note,
+  .source-note {
+    max-width: 48rem;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+  .contract-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .goal-contract {
+    max-width: 56rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .goal-contract > div {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .goal-contract dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .goal-contract dd {
+    color: var(--color-ink-soft);
+  }
+  .graph-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .graph-pair article {
+    padding: 1.5rem;
+    background: var(--color-paper);
+  }
+  .graph-pair ol {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+  }
+  .graph-pair li {
+    margin-top: 0.75rem;
+    color: var(--color-ink-soft);
+  }
+  .receipt-spec {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .receipt-spec > div {
+    padding: 1.25rem;
+    background: var(--color-paper);
+  }
+  .receipt-spec span {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+  }
+  .receipt-spec p {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .rules {
+    max-width: 52rem;
+    margin-top: 2rem;
+    padding-left: 1.25rem;
+  }
+  .rules li {
+    margin-top: 1rem;
+    color: var(--color-ink-soft);
+  }
+  .boundary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .boundary-grid article {
+    padding: 1.5rem;
+    background: var(--color-paper);
+  }
+  .boundary-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .boundary-grid h3 {
+    margin-top: 0.75rem;
+    font-size: 1.125rem;
+  }
+  .boundary-grid ul {
+    margin-top: 1rem;
+    padding-left: 1.1rem;
+  }
+  .boundary-grid li,
+  .boundary-grid article > p:last-child {
+    margin-top: 0.65rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .rollout {
+    max-width: 52rem;
+    margin-top: 2rem;
+    list-style: none;
+    padding: 0;
+  }
+  .rollout li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .rollout li > span {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+  }
+  .rollout h3 {
+    font-size: 1.125rem;
+  }
+  .rollout p {
+    margin-top: 0.35rem;
+    color: var(--color-ink-soft);
+  }
+  .sources {
+    border-bottom: 0;
+  }
+  .sources > ol {
+    max-width: 52rem;
+    margin-top: 2rem;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+  }
+  .sources li {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .sources a {
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 0.2em;
+  }
+  .sources li p {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  @media (max-width: 800px) {
+    .truth-strip,
+    .finding-grid,
+    .buyer-grid,
+    .contract-grid,
+    .product-spec,
+    .graph-pair,
+    .receipt-spec,
+    .boundary-grid {
+      grid-template-columns: 1fr;
+    }
+    .contents {
+      grid-template-columns: 1fr;
+    }
+    .contents ol {
+      grid-template-columns: 1fr 1fr;
+    }
+    .research-shell {
+      padding-top: 2rem;
+    }
+    .chapter {
+      padding: 3.5rem 0;
+    }
+    .goal-contract > div {
+      grid-template-columns: 1fr;
+    }
+    .purchase-list div {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+  @media (max-width: 520px) {
+    .contents ol {
+      grid-template-columns: 1fr;
+    }
+    .research-shell {
+      padding-inline: 1rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    .lede,
+    .section-lede {
+      font-size: 1.075rem;
+    }
+  }
+</style>

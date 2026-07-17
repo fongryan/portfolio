@@ -14,7 +14,7 @@ catalogue is packaged output of that machine.
 ## Why consumer first
 
 Enterprise software is bought slowly, by committee, on references we do not
-yet have. Consumer software is *tried* — instantly, alone, with no
+yet have. Consumer software is _tried_ — instantly, alone, with no
 permission. The classic wedge (Slack, Notion, Figma, Vercel) is not a
 metaphor; it is a repeatable mechanism:
 
@@ -31,7 +31,7 @@ Armalo App is built so each step is structural, not aspirational:
 
 - **Step 1 is the URL.** Visiting app.armalo.ai mints a live workspace with
   the agent already present. No sign-up wall, no demo video, no waitlist. The
-  first minute *is* the product.
+  first minute _is_ the product.
 - **Step 2 is the thread.** The unit of work is a multiplayer conversation —
   several people, one AI, one growing thread on a shared canvas. Sharing a
   workspace is how you use it, so distribution is a side effect of usage.

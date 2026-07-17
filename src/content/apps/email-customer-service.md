@@ -23,3 +23,6 @@ highlights:
 
 The catalogue does not expose mailbox access, customer data, or sending
 authority. Those belong to a private implementation plan.
+
+Sending messages, issuing refunds, and making account changes require explicit
+human approval.

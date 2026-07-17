@@ -54,7 +54,7 @@ export const flywheelLabels: Record<Flywheel, string> = {
 };
 
 export const flywheelDescriptions: Record<Flywheel, string> = {
-  build: "In production on app.armalo.ai; no public surface yet.",
+  build: "Being designed or tested; no public product surface yet.",
   launch: "Public surface live on its own subdomain, earning first users.",
   acquire: "Paid social campaigns are driving measured traffic.",
   monetize: "Paid checkout is live, with business-verified proof.",

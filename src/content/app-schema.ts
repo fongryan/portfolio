@@ -95,12 +95,41 @@ export const appSchema = z
       .min(1)
       .max(5),
     salesPosition: singleLine(180),
+    commercialPriority: z.number().int().min(1).max(10).optional(),
+    buyerHypothesis: singleLine(180).optional(),
+    researchRefs: z
+      .array(
+        singleLine(80).regex(
+          /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+          "Use a lowercase kebab-case research reference",
+        ),
+      )
+      .min(1)
+      .max(4)
+      .optional(),
     owner: singleLine().optional(),
     platform: singleLine().optional(),
     ctaLabel: singleLine(40),
     highlights: z.array(singleLine(90)).min(1).max(3),
   })
   .superRefine((entry, context) => {
+    const priorityFields = [
+      entry.commercialPriority,
+      entry.buyerHypothesis,
+      entry.researchRefs,
+    ];
+    if (
+      priorityFields.some((value) => value !== undefined) &&
+      priorityFields.some((value) => value === undefined)
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["commercialPriority"],
+        message:
+          "Commercial priorities require a buyer hypothesis and research references",
+      });
+    }
+
     const allowedProof = proofByStatus[entry.status] as readonly string[];
     if (!allowedProof.includes(entry.proof)) {
       context.addIssue({

@@ -1,0 +1,315 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getApps } from "../../lib/apps";
+import {
+  businessDemandProducts,
+  consumerLabScopeLabel,
+  consumerLabSlugs,
+  operatorPatterns,
+} from "../../lib/demand-catalogue";
+
+const title = "Demand-backed AI product catalogue research";
+const description =
+  "The evidence, scoring methodology, safety boundaries, and ethical operator patterns behind Armalo's ranked business AI catalogue.";
+const independenceDisclosure =
+  "Armalo is not affiliated with the named people or companies below.";
+const apps = await getApps();
+const appsBySlug = new Map(apps.map((app) => [app.id, app]));
+const productName = (slug: string) =>
+  appsBySlug.get(slug)?.data.name ?? slug.replaceAll("-", " ");
+const consumerLabApps = consumerLabSlugs.map((slug) => {
+  const app = appsBySlug.get(slug);
+  if (!app) throw new Error(`Consumer lab references missing product: ${slug}`);
+  return app;
+});
+---
+
+<Base title={title} description={description}>
+  <article class="mx-auto max-w-5xl px-6 pt-16 pb-24">
+    <header class="max-w-3xl">
+      <a href="/#demand" class="text-sm text-accent link-quiet hover:text-ink">
+        ← Back to the ranked catalogue
+      </a>
+      <p class="mt-10 text-2xs uppercase tracking-[0.18em] text-accent">
+        Research brief · accessed 2026-07-15
+      </p>
+      <h1 class="mt-3 text-4xl text-ink">
+        Build what buyers already understand—and prove each Armalo offer from
+        zero.
+      </h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+        This is a B2B business AI opportunity ranking, not a claim that Armalo
+        has already sold these products. Pricing, usage billing, paid
+        deployment, and adoption evidence show how established vendors package
+        commercial demand; they do not prove a completed purchase for every
+        category. Every Armalo entry remains planned, unavailable, and not yet
+        proven until its own paid pilot and outcome evidence exist.
+      </p>
+      <div
+        class="mt-8 border-y border-line py-5 text-sm leading-relaxed text-ink-soft"
+      >
+        <p>
+          Market demand does not establish Armalo customers, revenue, retention,
+          or product-market fit. Vendor pages document offers and
+          seller-authored claims, not typical customer results. {
+            independenceDisclosure
+          }
+        </p>
+      </div>
+    </header>
+
+    <section class="mt-16" aria-labelledby="methodology-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Methodology
+      </p>
+      <h2 id="methodology-heading" class="mt-2 text-2xl text-ink">
+        Equal-weight ranking, explicit limits
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        The evidence window is 2025-01-01 through 2026-07-15 and covers the
+        English-language US and global commercial business-AI market. The
+        candidate universe is commercially available workflow AI in customer
+        service, back-office operations, voice, sales, enterprise knowledge,
+        finance, marketing production, software engineering, legal work, and
+        clinical administration with a public commercial signal and a bounded
+        studio implementation path. We exclude foundation models, general chat,
+        hardware, pure infrastructure, unbounded transformation consulting,
+        autonomous diagnosis or money movement, and security or governance
+        products better treated as cross-cutting controls.
+      </p>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        Each candidate receives one to five points for urgency, repeatability,
+        time to value, feasibility, compliance safety, and proofability. The six
+        dimensions are weighted equally. Ties break by higher buyer urgency,
+        shorter time to value, lower regulatory risk, then stronger Armalo
+        delivery fit. Evidence is classified as a commercial offer,
+        commercial-traction signal, or adoption signal; none proves demand for
+        an Armalo-branded implementation.
+      </p>
+    </section>
+
+    <section class="mt-16" aria-labelledby="ranking-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Business demand · ranked 2026-07-15
+      </p>
+      <h2 id="ranking-heading" class="mt-2 text-2xl text-ink">
+        Ten product families worth testing first
+      </h2>
+      <ol class="mt-8 divide-y divide-line border-y border-line">
+        {
+          businessDemandProducts.map((product) => (
+            <li class="grid gap-5 py-7 md:grid-cols-[2.5rem_1.3fr_1fr] md:gap-8">
+              <span class="text-sm font-medium tabular-nums text-accent">
+                {String(product.rank).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="text-lg text-ink">
+                  <a
+                    href={`/apps/${product.slug}`}
+                    class="link-quiet hover:text-accent"
+                  >
+                    {productName(product.slug)}
+                  </a>
+                </h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                  <strong class="font-medium text-ink">Buyer:</strong>{" "}
+                  {product.buyer}
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-ink-soft">
+                  <strong class="font-medium text-ink">Job:</strong>{" "}
+                  {product.job}
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-ink-soft">
+                  <strong class="font-medium text-ink">Package:</strong>{" "}
+                  {product.packaging}
+                </p>
+              </div>
+              <div>
+                <p class="text-sm text-ink">
+                  Score <strong>{product.total}/30</strong>
+                </p>
+                <dl class="score-grid" aria-label="Score dimensions">
+                  <div>
+                    <>
+                      <dt>Urgency</dt>
+                      <dd>{product.score.urgency}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Repeat</dt>
+                      <dd>{product.score.repeatability}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Speed</dt>
+                      <dd>{product.score.timeToValue}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Build</dt>
+                      <dd>{product.score.feasibility}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Safety</dt>
+                      <dd>{product.score.complianceSafety}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Proof</dt>
+                      <dd>{product.score.proofability}</dd>
+                    </>
+                  </div>
+                </dl>
+                <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+                  Risk: {product.risk}
+                </p>
+                <ul class="mt-4 space-y-2 text-xs">
+                  {product.evidence.map((entry) => (
+                    <li>
+                      <a
+                        href={entry.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link-quiet text-accent hover:text-ink"
+                      >
+                        {entry.label} ↗
+                      </a>
+                      <span class="ml-2 uppercase tracking-wide text-ink-faint">
+                        {entry.kind} · accessed {entry.accessed}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="mt-16" aria-labelledby="consumer-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Consumer lab
+      </p>
+      <h2 id="consumer-heading" class="mt-2 text-2xl text-ink">
+        Personal products stay visible, but unranked
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        {consumerLabScopeLabel}. These products can still earn their place
+        through direct buyer interviews, paid tests, retention, and referrals;
+        this research pass simply found weaker comparable commercial evidence.
+        Unranked here does not prevent a product from appearing in Armalo's
+        separate internal validation sequence.
+      </p>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {
+          consumerLabApps.map((app) => (
+            <li class="border-t border-line pt-3">
+              <a
+                href={`/apps/${app.id}`}
+                class="text-sm font-medium text-ink link-quiet hover:text-accent"
+              >
+                {app.data.name}
+              </a>
+              <p class="mt-1 text-xs leading-relaxed text-ink-soft">
+                {app.data.description}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-16" aria-labelledby="patterns-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Operator patterns
+      </p>
+      <h2 id="patterns-heading" class="mt-2 text-2xl text-ink">
+        Study the mechanics. Build original products.
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        These public offer systems are useful because they expose packaging and
+        distribution mechanics. The ethical adaptation is to borrow the
+        structure—not names, copy, proprietary material, identity, or unverified
+        outcome claims. “HYROS,” not “Hyrox,” is the attribution platform
+        associated with Alex Becker.
+      </p>
+      <div class="mt-8 space-y-8">
+        {
+          operatorPatterns.map((pattern) => (
+            <section class="grid gap-4 border-t border-line pt-6 md:grid-cols-[1fr_2fr] md:gap-8">
+              <div>
+                <h3 class="text-lg text-ink">{pattern.operator}</h3>
+                <p class="mt-1 text-xs text-ink-faint">
+                  {pattern.companies.join(" · ")}
+                </p>
+              </div>
+              <div class="text-sm leading-relaxed text-ink-soft">
+                <p>
+                  <strong class="font-medium text-ink">
+                    Observed mechanic:
+                  </strong>{" "}
+                  {pattern.mechanic}
+                </p>
+                <p class="mt-3">
+                  <strong class="font-medium text-ink">
+                    Ethical adaptation:
+                  </strong>{" "}
+                  {pattern.ethicalAdaptation}
+                </p>
+                <p class="mt-3">
+                  <strong class="font-medium text-ink">
+                    Armalo catalogue fit:
+                  </strong>{" "}
+                  {pattern.armaloProducts.map(productName).join(" · ")}
+                </p>
+                <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs">
+                  {pattern.sources.map((source) => (
+                    <li>
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link-quiet text-accent hover:text-ink"
+                      >
+                        {source.label} ↗
+                      </a>
+                      <span class="ml-2 text-ink-faint">
+                        accessed {source.accessed}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+
+    <section
+      class="mt-16 border-y border-line py-8"
+      aria-labelledby="proof-heading"
+    >
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Proof policy
+      </p>
+      <h2 id="proof-heading" class="mt-2 text-2xl text-ink">
+        Revenue signals need the right label
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        Observed attribution links an event to an outcome under a stated rule.
+        Modeled attribution estimates credit. A forecast estimates what may
+        happen. Experimentally verified incrementality requires a credible
+        counterfactual. They are different proof classes, and none should be
+        presented as guaranteed causal lift.
+      </p>
+    </section>
+  </article>
+</Base>

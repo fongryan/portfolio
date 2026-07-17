@@ -1,0 +1,191 @@
+---
+import Base from "../../layouts/Base.astro";
+import { productAtlas, productAtlasCategories } from "../../lib/product-atlas";
+
+const title = "AI product atlas — Armalo";
+const description =
+  "A public-safe atlas of 120 buildable AI products for businesses, SMBs, teams, creators, and individuals, fulfilled through Hermes.";
+const groups = productAtlasCategories.map((category) => ({
+  category,
+  products: productAtlas.filter((product) => product.category === category),
+}));
+---
+
+<Base title={title} description={description}>
+  <article class="mx-auto max-w-5xl px-6 pt-16 pb-24">
+    <a href="/#atlas" class="text-sm text-accent link-quiet hover:text-ink">
+      ← Back to the catalogue
+    </a>
+    <header class="mt-10 max-w-3xl">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Product atlas · 120 buildable offers · updated 2026-07-16
+      </p>
+      <h1 class="mt-3 text-4xl text-ink">
+        The AI product surface is bigger than one app.
+      </h1>
+      <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+        Buyers are not shopping for “AI” in the abstract. They are buying a
+        faster response, a cleaner close, fewer unpaid invoices, better
+        documentation, more useful marketing, and time back. This atlas turns
+        those jobs into recognizable offers that can be piloted, packaged, and
+        fulfilled.
+      </p>
+      <div
+        class="mt-8 border-y border-line py-5 text-sm leading-relaxed text-ink-soft"
+      >
+        <p>
+          Hermes Agent is the fulfillment brain behind the catalogue: it turns
+          the sold brief into tuning, integrations, approvals, testing, launch,
+          and support. The public status boundary still matters. An atlas entry
+          is a buildable category hypothesis, not evidence of a live
+          destination, customer, revenue, or business outcome.
+        </p>
+      </div>
+    </header>
+
+    <section class="mt-14" aria-labelledby="how-to-buy-heading">
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">How to buy</p>
+      <h2 id="how-to-buy-heading" class="mt-2 text-2xl text-ink">
+        Start with a job. End with a measured handoff.
+      </h2>
+      <div
+        class="mt-6 grid gap-6 text-sm leading-relaxed text-ink-soft md:grid-cols-4"
+      >
+        <div>
+          <h3 class="text-base text-ink">1. Diagnose</h3><p class="mt-2">
+            Choose the workflow, owner, system of record, and costly failure
+            mode.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-base text-ink">2. Pilot</h3><p class="mt-2">
+            Bound the data, authority, and success metric before broadening
+            scope.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-base text-ink">3. Fulfill</h3><p class="mt-2">
+            Hermes tunes the agent, wires the integrations, and keeps human
+            approvals visible.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-base text-ink">4. Prove</h3><p class="mt-2">
+            Advance from planned to live only with runtime and business
+            evidence.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <nav
+      aria-label="Atlas categories"
+      class="mt-14 flex flex-wrap gap-x-4 gap-y-2 border-y border-line py-4 text-sm text-ink-soft"
+    >
+      {
+        groups.map((group) => (
+          <a
+            class="link-quiet hover:text-ink"
+            href={`#${group.category.toLowerCase().replaceAll(" ", "-")}`}
+          >
+            {group.category}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="mt-12 space-y-14">
+      {
+        groups.map((group) => {
+          const id = group.category.toLowerCase().replaceAll(" ", "-");
+          return (
+            <section id={id} aria-labelledby={`${id}-heading`}>
+              <div class="flex items-baseline justify-between gap-4 border-b border-line pb-3">
+                <h2 id={`${id}-heading`} class="text-2xl text-ink">
+                  {group.category}
+                </h2>
+                <span class="text-xs text-ink-faint">
+                  {group.products.length} offers
+                </span>
+              </div>
+              <ul class="mt-5 grid gap-5 md:grid-cols-2">
+                {group.products.map((product) => (
+                  <li id={product.slug} class="border-t border-line pt-4">
+                    <h3 class="text-lg text-ink">{product.name}</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                      <strong class="font-medium text-ink">Buyer:</strong>{" "}
+                      {product.buyer}
+                    </p>
+                    <p class="mt-1 text-sm leading-relaxed text-ink-soft">
+                      <strong class="font-medium text-ink">Job:</strong>{" "}
+                      {product.job}
+                    </p>
+                    <p class="mt-1 text-sm leading-relaxed text-ink-soft">
+                      <strong class="font-medium text-ink">Package:</strong>{" "}
+                      {product.package}
+                    </p>
+                    <p class="mt-3 text-2xs uppercase tracking-wide text-ink-faint">
+                      Planned · unavailable · not yet proven
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
+      }
+    </div>
+
+    <section
+      class="mt-16 border-t border-line pt-8"
+      aria-labelledby="sources-heading"
+    >
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Demand signals
+      </p>
+      <h2 id="sources-heading" class="mt-2 text-2xl text-ink">
+        Why these categories are here
+      </h2>
+      <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-soft">
+        The atlas follows current buying signals: customer service and marketing
+        are among the leading business GenAI functions; small firms are adopting
+        content, marketing, and service tools; and enterprise leaders are
+        planning agent integration across functions. These sources establish
+        category demand, not Armalo customer proof.
+      </p>
+      <ul class="mt-5 space-y-2 text-sm">
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.gartner.com/en/insights/generative-ai-for-business"
+            target="_blank"
+            rel="noopener noreferrer">Gartner · business GenAI functions ↗</a>
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-of-the-frontier-firm-is-born"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Microsoft Work Trend Index · agentic enterprise planning ↗</a>
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://www.uschamber.com/technology/empowering-small-business-the-impact-of-technology-on-u-s-small-business"
+            target="_blank"
+            rel="noopener noreferrer"
+            >U.S. Chamber · small-business AI adoption ↗</a>
+        </li>
+        <li>
+          <a
+            class="link-quiet text-accent hover:text-ink"
+            href="https://sbecouncil.org/wp-content/uploads/2025/04/SBE-Small-Business-Technology-Survey-March-2025-Ver-2.0-1.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            >SBE Council · popular small-business AI applications ↗</a>
+        </li>
+      </ul>
+    </section>
+  </article>
+</Base>

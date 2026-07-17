@@ -14,6 +14,9 @@ export interface CatalogueMarkdownProduct {
   deliveryModes: string[];
   offerModes: string[];
   salesPosition: string;
+  commercialPriority?: number;
+  buyerHypothesis?: string;
+  researchRefs?: string[];
   owner?: string;
   platform?: string;
   ctaLabel: string;
@@ -59,6 +62,9 @@ export function renderCatalogueProductMarkdown(
 - Delivery modes: ${data.deliveryModes.map(inline).join(", ")}
 - Offer modes: ${data.offerModes.map(inline).join(", ")}
 - Sales position: ${inline(data.salesPosition)}
+- Commercial priority: ${inline(data.commercialPriority ?? "Not prioritized")}
+- Buyer hypothesis: ${inline(data.buyerHypothesis ?? "Not prioritized")}
+- Research references: ${inline(data.researchRefs?.join(", ") ?? "None")}
 - Owner: ${inline(data.owner ?? "Not specified")}
 - Platform: ${inline(data.platform ?? "Not specified")}
 - Action: ${inline(data.ctaLabel)}

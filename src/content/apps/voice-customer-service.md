@@ -24,3 +24,6 @@ highlights:
 Armalo can shape the assistant around an organization’s approved knowledge,
 handoff rules, voice, and service boundaries. Public catalogue status does not
 claim a live deployment or regulated advice capability.
+
+Calls require consent and recording disclosure where applicable, with an
+emergency handoff to a person. The assistant does not autonomously cold call.

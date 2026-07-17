@@ -15,7 +15,9 @@ const publicManifestKeys = ["generatedBy", "products", "schema"];
 const publicProductKeys = [
   "access",
   "audiences",
+  "buyerHypothesis",
   "category",
+  "commercialPriority",
   "ctaLabel",
   "deliveryModes",
   "description",
@@ -27,6 +29,7 @@ const publicProductKeys = [
   "owner",
   "platform",
   "proof",
+  "researchRefs",
   "salesPosition",
   "slug",
   "status",
@@ -34,8 +37,21 @@ const publicProductKeys = [
   "url",
   "year",
 ];
+
+const commercialShortlist = [
+  ["hermes-revenue-agents", "Hermes Revenue Agents", 1],
+  ["ai-customer-service-desk", "AI Customer Service Desk", 2],
+  ["ai-dialer", "AI Dialer", 3],
+  ["hermes-ai-crm", "Hermes AI CRM", 4],
+  ["internal-knowledge-assistant", "Internal Knowledge Assistant", 5],
+  ["ai-forward-deployed-engineer", "AI Forward Deployed Engineer", 6],
+  ["ai-attribution-remarketing", "AI Attribution & Remarketing", 7],
+  ["ai-digital-product-studio", "AI Digital Product Studio", 8],
+  ["expert-knowledge-assistant", "Expert Knowledge Assistant", 9],
+  ["ai-stylist", "AI Stylist", 10],
+];
 const forbiddenMachinePatterns = [
-  /\boperator\b/i,
+  /\boperator(?:-only|\s+(?:profile|identity|notes?|instructions?|control\s+plane))\b/i,
   /\bproviders?\b/i,
   /\bprivate\s+control\s+plane\b/i,
   /\bprivateControlPlane\b/i,
@@ -222,9 +238,43 @@ test("the build contains the branded custom 404", async () => {
 });
 
 test("homepage catalogue count preserves readable word spacing", async () => {
-  const html = await readOutput("index.html");
-  assert.match(html, />13 products · 1 available</);
-  assert.doesNotMatch(html, />13products/);
+  const [html, jsonSource] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("agents/portfolio.json"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+  const count = manifest.products.length;
+  const availableCount = manifest.products.filter((product) =>
+    ["live", "beta"].includes(product.status),
+  ).length;
+
+  assert.match(
+    html,
+    new RegExp(`>${count} products · ${availableCount} available<`),
+  );
+  assert.doesNotMatch(html, new RegExp(`>${count}products`));
+});
+
+test("homepage shelf renders every catalogue product exactly once", async () => {
+  const [html, jsonSource] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("agents/portfolio.json"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+  const shelfStart = html.indexOf('<section id="work"');
+  const shelfEnd = html.indexOf('<section id="about"', shelfStart);
+  assert.notEqual(shelfStart, -1, "expected the catalogue shelf");
+  assert.notEqual(shelfEnd, -1, "expected the shelf boundary");
+  const shelf = html.slice(shelfStart, shelfEnd);
+
+  for (const product of manifest.products) {
+    const href = `href="/apps/${product.slug}"`;
+    assert.equal(
+      shelf.split(href).length - 1,
+      1,
+      `${product.slug} must appear exactly once in the shelf`,
+    );
+  }
 });
 
 test("generated machine surfaces expose only the public catalogue contract", async () => {
@@ -247,9 +297,149 @@ test("generated machine surfaces expose only the public catalogue contract", asy
   assertNoForbiddenMachinePolicy(markdown);
 });
 
+test("commercial shortlist ships in rank order across human and machine surfaces", async () => {
+  const [homepage, jsonSource, markdown] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("agents/portfolio.json"),
+    readOutput("agents/portfolio.md"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+  assert.equal(manifest.schema, "armalo.portfolio.catalogue.v4");
+  assert.match(homepage, /Internal validation candidates/);
+  assert.match(homepage, /Studio hypotheses/);
+  assert.match(homepage, /not the market-evidence ranking/i);
+
+  const ranked = manifest.products
+    .filter((product) => product.commercialPriority !== null)
+    .sort((a, b) => a.commercialPriority - b.commercialPriority);
+  assert.equal(ranked.length, 10);
+
+  for (const [index, [slug, name, priority]] of commercialShortlist.entries()) {
+    const product = ranked[index];
+    assert.equal(product.slug, slug);
+    assert.equal(product.name, name);
+    assert.equal(product.commercialPriority, priority);
+    assert.match(product.buyerHypothesis, /^Armalo hypothesis:/);
+    assert.ok(product.researchRefs.length > 0);
+    assert.match(homepage, new RegExp(`href="/apps/${slug}"`));
+    assert.match(markdown, new RegExp(`^## ${name.replace("&", "\\&")}$`, "m"));
+    assert.match(markdown, new RegExp(`Commercial priority: ${priority}`));
+
+    const detail = await readOutput(`apps/${slug}/index.html`);
+    assert.match(detail, /Commercial priority/);
+    assert.match(detail, /Our buyer hypothesis/);
+  }
+});
+
+test("Invoice Chaser and Proposal Generator ship in generated machine surfaces", async () => {
+  const [jsonSource, markdown] = await Promise.all([
+    readOutput("agents/portfolio.json"),
+    readOutput("agents/portfolio.md"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+
+  for (const [slug, name] of [
+    ["invoice-chaser", "Invoice Chaser"],
+    ["proposal-generator", "Proposal Generator"],
+  ]) {
+    const product = manifest.products.find((entry) => entry.slug === slug);
+    assert.ok(product, `expected ${name} in JSON catalogue`);
+    assert.equal(product.status, "planned");
+    assert.equal(product.access, "unavailable");
+    assert.equal(product.proof, "not-yet-proven");
+    assert.match(markdown, new RegExp(`^## ${name}$`, "m"));
+  }
+});
+
+test("Invoice Chaser and Proposal Generator detail routes preserve claim status", async () => {
+  for (const [slug, name] of [
+    ["invoice-chaser", "Invoice Chaser"],
+    ["proposal-generator", "Proposal Generator"],
+  ]) {
+    const html = await readOutput(`apps/${slug}/index.html`);
+    assert.match(html, new RegExp(`<h1[^>]*>${name}</h1>`));
+    assert.match(
+      html,
+      /<span[^>]*aria-label="Status: Planned"[^>]*>Planned<\/span>/,
+    );
+    assert.match(html, /<p[^>]*>Access<\/p><p[^>]*>Unavailable<\/p>/);
+    assert.match(html, /<p[^>]*>Proof<\/p><p[^>]*>Not yet proven<\/p>/);
+  }
+});
+
+test("quote-to-cash research route ships canonical zero-script output", async () => {
+  const route = "/research/ai-products-buyers-and-hermes-quote-to-cash";
+  const html = await readOutput(`${route.slice(1)}/index.html`);
+
+  assert.match(
+    html,
+    /Two narrow agents for the work between a promising conversation and cash\./,
+  );
+  assert.equal(
+    metadataUrl(html, /<link rel="canonical" href="([^"]+)">/),
+    new URL(route, canonicalOrigin).href,
+  );
+  assert.doesNotMatch(html, /<script\b/i);
+});
+
+test("AI Forward Deployed Engineer ships across human and machine catalogue surfaces", async () => {
+  const [homepage, detail, jsonSource, markdown] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("apps/ai-forward-deployed-engineer/index.html"),
+    readOutput("agents/portfolio.json"),
+    readOutput("agents/portfolio.md"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+  const product = manifest.products.find(
+    (entry) => entry.slug === "ai-forward-deployed-engineer",
+  );
+
+  assert.match(homepage, /href="\/apps\/ai-forward-deployed-engineer"/);
+  assert.match(homepage, /AI engineering services/);
+  assert.match(detail, /AI Forward Deployed Engineer/);
+  assert.match(detail, /Not yet proven/);
+  assert.ok(product, "expected AI FDE in JSON catalogue");
+  assert.equal(product.status, "planned");
+  assert.equal(product.access, "unavailable");
+  assert.equal(product.proof, "not-yet-proven");
+  assert.deepEqual(product.audiences, [
+    "AI startups",
+    "Software companies",
+    "Small businesses",
+    "Brick-and-mortar operators",
+  ]);
+  assert.match(markdown, /^- Slug: ai-forward-deployed-engineer$/m);
+  assert.match(markdown, /Status: planned/);
+  assert.match(markdown, /Proof: not-yet-proven/);
+});
+
+test("AI Stylist ships across human and machine catalogue surfaces", async () => {
+  const [homepage, detail, jsonSource, markdown] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("apps/ai-stylist/index.html"),
+    readOutput("agents/portfolio.json"),
+    readOutput("agents/portfolio.md"),
+  ]);
+  const manifest = JSON.parse(jsonSource);
+  const product = manifest.products.find(
+    (entry) => entry.slug === "ai-stylist",
+  );
+
+  assert.match(homepage, /href="\/apps\/ai-stylist"/);
+  assert.match(homepage, /Personal style/);
+  assert.match(detail, /AI Stylist/);
+  assert.match(detail, /Not yet proven/);
+  assert.ok(product, "expected AI Stylist in JSON catalogue");
+  assert.equal(product.status, "planned");
+  assert.equal(product.access, "unavailable");
+  assert.equal(product.proof, "not-yet-proven");
+  assert.match(markdown, /^## AI Stylist$/m);
+  assert.match(markdown, /^- Slug: ai-stylist$/m);
+});
+
 test("machine-policy guard rejects forbidden fields and values", () => {
   for (const fixture of [
-    '{"operator":"internal"}',
+    '{"description":"operator instructions"}',
     '{"description":"provider mutation policy"}',
     "Private control plane: authenticated only",
     "disallowedWithoutApproval: Meta Ads",

@@ -23,3 +23,6 @@ highlights:
 
 This catalogue entry intentionally avoids a claim of legal advice, legal
 representation, or professional-client privilege.
+
+Every output preserves source provenance and remains subject to qualified
+professional review.

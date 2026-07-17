@@ -42,7 +42,13 @@ const {
   deliveryModes,
   offerModes,
   salesPosition,
+  commercialPriority,
+  buyerHypothesis,
 } = app.data;
+const buyerHypothesisText = buyerHypothesis?.replace(
+  /^Armalo hypothesis:\s*/,
+  "",
+);
 ---
 
 <Base title={`${name} — Armalo product catalogue`} description={description}>
@@ -129,7 +135,32 @@ const {
           {year}
         </p>
       </div>
+      {
+        commercialPriority && (
+          <div>
+            <p class="text-2xs uppercase tracking-wide text-ink-faint">
+              Commercial priority
+            </p>
+            <p class="mt-1 text-ink">
+              {String(commercialPriority).padStart(2, "0")} of 10
+            </p>
+          </div>
+        )
+      }
     </div>
+
+    {
+      commercialPriority && buyerHypothesisText && (
+        <aside class="mt-8 border-l border-accent pl-4">
+          <p class="text-2xs uppercase tracking-wide text-accent">
+            Our buyer hypothesis
+          </p>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
+            {buyerHypothesisText}
+          </p>
+        </aside>
+      )
+    }
 
     <div
       class="mt-8 grid gap-6 border-b border-line pb-8 text-sm sm:grid-cols-3"
