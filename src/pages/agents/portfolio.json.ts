@@ -5,13 +5,6 @@ export async function GET() {
   const body = {
     schema: "armalo.portfolio.catalogue.v4",
     generatedBy: "portfolio",
-    operator: {
-      name: "Hermes",
-      mode: "hosted-admin-only",
-      runtime: "Armalo hosted relay",
-      authority: "plan-and-propose",
-      liveMutations: "approval-required",
-    },
     products: apps.map(({ id, data }) => ({
       slug: id,
       name: data.name,
@@ -37,30 +30,6 @@ export async function GET() {
       ctaLabel: data.ctaLabel,
       highlights: data.highlights,
     })),
-    capabilities: {
-      marketing: [
-        "catalogue recall",
-        "campaign planning",
-        "copy variants",
-        "creative brief",
-        "Meta Ads proposal",
-      ],
-      commerce: [
-        "Stripe product proposal",
-        "pricing proposal",
-        "catalogue mapping",
-        "reconciliation plan",
-      ],
-      disallowedWithoutApproval: [
-        "ad spend",
-        "campaign activation",
-        "Stripe activation",
-        "payout",
-        "refund",
-        "credential changes",
-      ],
-    },
-    privateControlPlane: "https://app.armalo.ai",
   };
 
   return new Response(JSON.stringify(body, null, 2), {

@@ -39,3 +39,15 @@ test("machine marketing library exposes complete JSON and Markdown packs", async
   assert.match(markdown, /## AI Stylist/i);
   assert.match(markdown, /### Evidence loop/i);
 });
+
+test("catalogue marketing links use the canonical no-trailing-slash route", async () => {
+  const [homepage, stylist] = await Promise.all([
+    readOutput("index.html"),
+    readOutput("apps/ai-stylist/index.html"),
+  ]);
+
+  for (const html of [homepage, stylist]) {
+    assert.match(html, /href="\/marketing(?:#ai-stylist)?"/);
+    assert.doesNotMatch(html, /href="\/marketing\//);
+  }
+});
