@@ -22,12 +22,12 @@ not belong in this repository.
 
 ## Roles and authority
 
-| Role | Owns | Does not silently own |
-| --- | --- | --- |
-| Ryan / developer | platform, integrations, schemas, deploys, policies, runtime reliability | publishing ads, changing money movement rules without review |
-| Therese / marketer | briefs, audience hypotheses, positioning, copy/creative selection, experiment decisions | infrastructure, secrets, unrestricted financial transfers |
-| Agent workers | research, drafting, variant generation, comparison, reporting, recommendations | irreversible provider mutations or unsupported claims |
-| Approval owner | explicit approval for the next irreversible action | retroactive approval of an already executed action |
+| Role               | Owns                                                                                    | Does not silently own                                        |
+| ------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Ryan / developer   | platform, integrations, schemas, deploys, policies, runtime reliability                 | publishing ads, changing money movement rules without review |
+| Therese / marketer | briefs, audience hypotheses, positioning, copy/creative selection, experiment decisions | infrastructure, secrets, unrestricted financial transfers    |
+| Agent workers      | research, drafting, variant generation, comparison, reporting, recommendations          | irreversible provider mutations or unsupported claims        |
+| Approval owner     | explicit approval for the next irreversible action                                      | retroactive approval of an already executed action           |
 
 The product must show who is acting, for which workspace, against which provider
 account, with what approval state. Every external mutation gets an idempotency
