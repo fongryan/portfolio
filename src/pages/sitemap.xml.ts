@@ -18,6 +18,7 @@ export const GET: APIRoute = async ({ site }) => {
   const paths = [
     "/",
     "/flywheel",
+    "/marketing",
     "/research/ai-product-atlas",
     "/research/ai-products-buyers-and-hermes-quote-to-cash",
     "/research/demand-backed-ai-catalogue",

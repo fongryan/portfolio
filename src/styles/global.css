@@ -1,4 +1,11 @@
 @import "tailwindcss";
+/* These are prose/data/test surfaces, not templates. Excluding them prevents
+ * ordinary words such as "fixed" or "hidden" from becoming phantom utilities. */
+@source not "../content";
+@source not "../lib";
+@source not "../pages/agents";
+@source not "../../docs";
+@source not "../../scripts";
 
 /*
  * Portfolio design tokens.

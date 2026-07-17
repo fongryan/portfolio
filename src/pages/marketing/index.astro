@@ -1,0 +1,277 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getApps } from "../../lib/apps";
+import {
+  buildMarketingLibrary,
+  marketingMechanics,
+  type MarketingProduct,
+} from "../../lib/marketing-content";
+
+const apps = await getApps();
+const products = apps.map(({ id, data }) => ({
+  slug: id,
+  ...data,
+})) as MarketingProduct[];
+const library = buildMarketingLibrary(products);
+const campaignCount = library.reduce(
+  (total, product) => total + product.campaigns.length,
+  0,
+);
+---
+
+<Base
+  title="Marketing angle library — Armalo product catalogue"
+  description="Original, evidence-aware campaign starters for every product in the Armalo catalogue, organized by five researched offer mechanics."
+>
+  <article class="mx-auto max-w-5xl px-6 pt-16 pb-20">
+    <a href="/#work" class="text-sm text-ink-soft link-quiet hover:text-ink">
+      ← Back to the catalogue
+    </a>
+
+    <header class="mt-10 max-w-3xl">
+      <p class="text-2xs font-medium uppercase tracking-[0.18em] text-accent">
+        Marketing operating library
+      </p>
+      <h1 class="mt-3 text-4xl text-ink">
+        {campaignCount} campaign starters. One claim-honest catalogue.
+      </h1>
+      <p class="mt-6 text-xl leading-relaxed text-ink-soft">
+        Five distinct offer mechanics for every Armalo product—built to seed
+        landing pages, emails, sales conversations, social posts, and campaign
+        briefs without borrowing another operator’s identity.
+      </p>
+      <div
+        class="mt-6 border-l border-accent pl-4 text-sm leading-relaxed text-ink-soft"
+      >
+        <p class="font-medium text-ink">Mechanics, not impersonations.</p>
+        <p class="mt-1">
+          These are original Armalo drafts informed by public packaging
+          mechanics associated with the named research references. They are not
+          quotations, endorsements, affiliations, or attempts to reproduce any
+          person’s distinctive voice. Validate every claim before publication.
+        </p>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+        <a
+          href="/agents/marketing.md"
+          class="text-accent link-quiet hover:text-ink"
+        >
+          Agent-ready Markdown →
+        </a>
+        <a
+          href="/agents/marketing.json"
+          class="text-accent link-quiet hover:text-ink"
+        >
+          Structured JSON →
+        </a>
+      </div>
+    </header>
+
+    <section class="mt-16" aria-labelledby="mechanics-heading">
+      <div class="border-b border-line pb-8">
+        <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+          The five lenses
+        </p>
+        <h2 id="mechanics-heading" class="mt-2 text-2xl text-ink">
+          One product. Five ways to make the buying logic legible.
+        </h2>
+      </div>
+      <ol class="divide-y divide-line">
+        {
+          marketingMechanics.map((mechanic, index) => (
+            <li class="grid gap-3 py-6 md:grid-cols-3 md:gap-10">
+              <span class="text-xs tabular-nums text-ink-faint">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="text-base text-ink">{mechanic.label}</h3>
+                <p class="mt-1 text-xs text-ink-faint">
+                  {mechanic.researchReference}
+                </p>
+              </div>
+              <div class="max-w-2xl text-sm leading-relaxed text-ink-soft">
+                <p>{mechanic.principle}</p>
+                <p class="mt-2">{mechanic.adaptation}</p>
+                <p class="mt-2 text-xs text-ink-faint">
+                  <a
+                    href={mechanic.sourceUrl}
+                    rel="noopener noreferrer"
+                    class="link-quiet hover:text-accent"
+                  >
+                    Source reference ↗
+                  </a>
+                  {" · "}
+                  {mechanic.disclosure}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <nav
+      class="mt-16 border-y border-line py-6"
+      aria-label="Marketing packs by product"
+    >
+      <p class="text-2xs uppercase tracking-[0.18em] text-accent">
+        Jump to a product
+      </p>
+      <ul class="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+        {
+          library.map((product) => (
+            <li>
+              <a
+                href={`#${product.slug}`}
+                class="text-ink-soft link-quiet hover:text-accent"
+              >
+                {product.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-16 space-y-12">
+      {
+        library.map((product, productIndex) => (
+          <section
+            id={product.slug}
+            data-product-campaigns={product.campaigns.length}
+            aria-labelledby={`${product.slug}-heading`}
+          >
+            <header class="border-b border-line pb-8">
+              <div class="flex flex-wrap items-baseline justify-between gap-3">
+                <div>
+                  <p class="text-2xs tabular-nums uppercase tracking-[0.18em] text-accent">
+                    Pack {String(productIndex + 1).padStart(2, "0")} ·{" "}
+                    {product.category}
+                  </p>
+                  <h2
+                    id={`${product.slug}-heading`}
+                    class="mt-2 text-2xl text-ink"
+                  >
+                    {product.name}
+                  </h2>
+                </div>
+                <a
+                  href={`/apps/${product.slug}`}
+                  class="text-sm text-ink-soft link-quiet hover:text-accent"
+                >
+                  Product record →
+                </a>
+              </div>
+              <p class="mt-4 max-w-3xl text-sm leading-relaxed text-ink-faint">
+                {product.claimBoundary}
+              </p>
+            </header>
+
+            <div class="divide-y divide-line">
+              {product.campaigns.map((campaign, index) => {
+                const mechanic = marketingMechanics.find(
+                  (item) => item.lens === campaign.lens,
+                );
+                return (
+                  <details class="py-6" open={index === 0}>
+                    <summary class="cursor-pointer list-none">
+                      <div class="grid gap-2 sm:grid-cols-3 sm:items-baseline sm:gap-4">
+                        <span class="text-xs tabular-nums text-ink-faint">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span class="text-sm font-medium text-ink">
+                          {mechanic?.label}
+                        </span>
+                        <span class="text-sm leading-relaxed text-ink-soft">
+                          {campaign.headline}
+                        </span>
+                      </div>
+                    </summary>
+                    <div class="mt-6 grid gap-6 border-l border-line pl-4">
+                      <div>
+                        <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                          Offer
+                        </h3>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                          {campaign.offer}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                          Mechanism
+                        </h3>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                          {campaign.mechanism}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                          Proof plan
+                        </h3>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                          {campaign.proofPlan}
+                        </p>
+                      </div>
+                      <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                          <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                            Objection
+                          </h3>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {campaign.objection}
+                          </p>
+                        </div>
+                        <div>
+                          <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                            Response
+                          </h3>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {campaign.response}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="grid gap-5 sm:grid-cols-3">
+                        <div>
+                          <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                            Email subject
+                          </h3>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {campaign.emailSubject}
+                          </p>
+                        </div>
+                        <div>
+                          <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                            Social hook
+                          </h3>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {campaign.socialHook}
+                          </p>
+                        </div>
+                        <div>
+                          <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                            CTA
+                          </h3>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {campaign.cta}
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 class="text-2xs uppercase tracking-wide text-ink-faint">
+                          Landing-page lead
+                        </h3>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                          {campaign.landingLead}
+                        </p>
+                      </div>
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Base>
