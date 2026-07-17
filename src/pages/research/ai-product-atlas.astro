@@ -160,22 +160,86 @@ const topMoneyMakers = productAtlas.slice(0, 20);
               <ul class="mt-5 grid gap-5 md:grid-cols-2">
                 {group.products.map((product) => (
                   <li id={product.slug} class="border-t border-line pt-4">
-                    <h3 class="text-lg text-ink">{product.name}</h3>
-                    <p class="mt-2 text-sm leading-relaxed text-ink-soft">
-                      <strong class="font-medium text-ink">Buyer:</strong>{" "}
-                      {product.buyer}
-                    </p>
-                    <p class="mt-1 text-sm leading-relaxed text-ink-soft">
-                      <strong class="font-medium text-ink">Job:</strong>{" "}
-                      {product.job}
-                    </p>
-                    <p class="mt-1 text-sm leading-relaxed text-ink-soft">
-                      <strong class="font-medium text-ink">Package:</strong>{" "}
-                      {product.package}
-                    </p>
-                    <p class="mt-3 text-2xs uppercase tracking-wide text-ink-faint">
-                      Planned · unavailable · not yet proven
-                    </p>
+                    <details open={product.rank <= 20}>
+                      <summary class="cursor-pointer list-none">
+                        <div class="flex items-start justify-between gap-3">
+                          <h3 class="text-lg text-ink">{product.name}</h3>
+                          <span class="text-2xs font-medium tabular-nums text-accent">
+                            #{String(product.rank).padStart(2, "0")} ·{" "}
+                            {product.priorityScore}/100
+                          </span>
+                        </div>
+                        <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                          <strong class="font-medium text-ink">Job:</strong>{" "}
+                          {product.job}
+                        </p>
+                      </summary>
+                      <div class="mt-4 space-y-5 border-l border-line pl-4">
+                        <div>
+                          <p class="text-2xs uppercase tracking-wide text-accent">
+                            Feature blueprint
+                          </p>
+                          <ul class="mt-2 space-y-1 text-sm leading-relaxed text-ink-soft">
+                            {product.features.map((feature) => (
+                              <li>— {feature}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <p class="text-2xs uppercase tracking-wide text-accent">
+                            ICP and buying trigger
+                          </p>
+                          <dl class="mt-2 space-y-2 text-sm leading-relaxed text-ink-soft">
+                            <div>
+                              <dt class="font-medium text-ink">Company</dt>
+                              <dd>{product.icp.company}</dd>
+                            </div>
+                            <div>
+                              <dt class="font-medium text-ink">Buyer</dt>
+                              <dd>{product.icp.buyer}</dd>
+                            </div>
+                            <div>
+                              <dt class="font-medium text-ink">Trigger</dt>
+                              <dd>{product.icp.trigger}</dd>
+                            </div>
+                            <div>
+                              <dt class="font-medium text-ink">Disqualifier</dt>
+                              <dd>{product.icp.disqualifier}</dd>
+                            </div>
+                          </dl>
+                        </div>
+                        <div>
+                          <p class="text-2xs uppercase tracking-wide text-accent">
+                            Marketing and expansion
+                          </p>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            {product.marketing.positioning}
+                          </p>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            <strong class="font-medium text-ink">
+                              Channels:
+                            </strong>{" "}
+                            {product.marketing.channels.join(" · ")}
+                          </p>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            <strong class="font-medium text-ink">
+                              Proof asset:
+                            </strong>{" "}
+                            {product.marketing.proofAsset}
+                          </p>
+                          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+                            <strong class="font-medium text-ink">
+                              Expansion:
+                            </strong>{" "}
+                            {product.marketing.expansion}
+                          </p>
+                        </div>
+                        <p class="text-2xs uppercase tracking-wide text-ink-faint">
+                          Planned · unavailable · not yet proven · Hermes
+                          fulfillment candidate
+                        </p>
+                      </div>
+                    </details>
                   </li>
                 ))}
               </ul>

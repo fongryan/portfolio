@@ -18,6 +18,9 @@ export const GET: APIRoute = async ({ site }) => {
   const paths = [
     "/",
     "/flywheel",
+    "/research/ai-product-atlas",
+    "/research/ai-products-buyers-and-hermes-quote-to-cash",
+    "/research/demand-backed-ai-catalogue",
     ...apps.map((app: CollectionEntry<"apps">) => `/apps/${app.id}`),
   ].sort();
   const urls = paths

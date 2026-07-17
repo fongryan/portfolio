@@ -285,6 +285,28 @@ test("AI product atlas exposes money-maker ranking and Hermes fit", async () => 
   assert.match(html, /Planned · unavailable · not yet proven/);
 });
 
+test("atlas machine surfaces expose features, ICP, and marketing for every offer", async () => {
+  const [jsonSource, markdown] = await Promise.all([
+    readOutput("agents/atlas.json"),
+    readOutput("agents/atlas.md"),
+  ]);
+  const atlas = JSON.parse(jsonSource);
+  assert.equal(atlas.schema, "armalo.portfolio.product-atlas.v1");
+  assert.equal(atlas.products.length, 120);
+  assert.equal(atlas.products[0].rank, 1);
+  for (const product of atlas.products) {
+    assert.equal(product.features.length, 5);
+    assert.ok(product.icp.company);
+    assert.ok(product.icp.trigger);
+    assert.ok(product.marketing.positioning);
+    assert.ok(product.marketing.channels.length >= 3);
+    assert.match(product.availability, /planned.*unavailable.*not yet proven/i);
+  }
+  assert.match(markdown, /Hermes Agent is the fulfillment brain/);
+  assert.match(markdown, /ICP company:/);
+  assert.match(markdown, /Marketing channels:/);
+});
+
 test("generated machine surfaces expose only the public catalogue contract", async () => {
   const [jsonSource, markdown] = await Promise.all([
     readOutput("agents/portfolio.json"),
