@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { loadEnv } from '@fongryan/dotenv-schema'
+import { loadEnv } from '/Users/ryanfong/dotfiles/configs/env-schema/index.mjs'
 
 export const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
