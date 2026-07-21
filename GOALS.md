@@ -71,6 +71,11 @@ States: `active`, `stretch`, `done`, `retired`.
 
 ## Self-Improvement
 
+- [active] Maintain a versioned, digest-pinned starter bundle for every product
+  we make reusable — `docs/PORTFOLIO-STARTER-SYSTEM.md` + `starters/` — every
+  published starter has a manifest, Hermes pack, acceptance command, and proof
+  status — continuous.
+
 - [active] Turn any instruction repeated twice into a loop, skill, test, guard,
   or Firstmate backlog item — LOOPS.md + skills/ — at least one new durable
   improvement per meaningful work unit — continuous.

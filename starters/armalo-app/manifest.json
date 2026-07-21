@@ -1,0 +1,72 @@
+{
+  "schema": "armalo.starter.manifest.v1",
+  "id": "armalo.app",
+  "version": "1.0.0",
+  "productSlug": "armalo-app",
+  "name": "Armalo App workspace",
+  "visibility": "public-safe",
+  "maturity": "source-tested",
+  "source": {
+    "repository": "https://github.com/fongryan/app",
+    "commit": "7af941cf",
+    "digest": "sha256:7392f0c028e2e2bfe4a58e076a8f43e30d8415cbb6c2f86e70fb8ee21022237e"
+  },
+  "capabilities": [
+    "workspace.multiplayer",
+    "agent.hermes",
+    "buildout.plan",
+    "sandbox.isolated"
+  ],
+  "modules": [
+    {
+      "id": "workspace.foundation",
+      "kind": "foundation",
+      "description": "Room, event-log, and project namespace foundation.",
+      "provides": ["workspace.room", "workspace.events"],
+      "artifact": {
+        "path": "modules/workspace-foundation.md",
+        "digest": "sha256:37236a16c31d25727f3ce952652e1b9d9743a864f650754f47ba993d660cb0d4"
+      }
+    },
+    {
+      "id": "workspace.multiplayer",
+      "kind": "ui",
+      "description": "Shared thread, presence, and live preview surfaces.",
+      "dependsOn": ["workspace.foundation"],
+      "provides": ["workspace.multiplayer"],
+      "artifact": {
+        "path": "modules/workspace-multiplayer.md",
+        "digest": "sha256:f92c31b30b24b1f42461ccaaba1a2931e96ea0d390ba8f47a95a0cff77e76ad3"
+      }
+    },
+    {
+      "id": "hermes.operator",
+      "kind": "hermes",
+      "description": "Durable product operator pack with scoped buildout behavior.",
+      "dependsOn": ["workspace.foundation"],
+      "provides": ["agent.hermes"],
+      "artifact": {
+        "path": "modules/hermes-operator.md",
+        "digest": "sha256:87831a6200eff9039c2f78f415df03a1f614ed8efbef619cf1d8b24ff9306bfc"
+      }
+    }
+  ],
+  "hermes": {
+    "soul": "starters/armalo-app/hermes/soul.md",
+    "goals": "starters/armalo-app/hermes/goals.md",
+    "skills": ["starters/armalo-app/hermes/skills/buildout/SKILL.md"],
+    "loops": ["starters/armalo-app/hermes/loops/build-verify.md"]
+  },
+  "acceptance": [
+    {
+      "id": "catalogue-contract",
+      "command": "npm test -- scripts/starter-system-contract.test.mjs",
+      "purpose": "Validate manifest shape, public projection, and graph behavior."
+    },
+    {
+      "id": "portfolio-proof",
+      "command": "npm run proof",
+      "purpose": "Run the complete public portfolio release gate."
+    }
+  ]
+}

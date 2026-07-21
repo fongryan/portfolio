@@ -5,6 +5,11 @@ hosting the mini-apps built for Armalo, and the public strategy board for the
 studio's product flywheel (build → launch → acquire → monetize → compound).
 See [`docs/flywheel-operating-model.md`](./docs/flywheel-operating-model.md).
 
+The reusable starter-bundle and Hermes composition contract lives in
+[`docs/PORTFOLIO-STARTER-SYSTEM.md`](./docs/PORTFOLIO-STARTER-SYSTEM.md). The
+public machine-readable starter index is `/agents/starters.json`; it is a
+discovery surface, never a runtime installation authority.
+
 This is a **public** repo. It is a product surface, not a private memory vault.
 Read [`AGENTS.md`](./AGENTS.md) before doing anything non-trivial here; it is the
 single source of truth for every coding agent and locks in the cracked dev

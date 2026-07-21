@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "doctor": "./scripts/portfolio-doctor.sh",
-    "test": "node --test scripts/catalogue-contract.test.mjs scripts/portfolio-deploy-contract.test.mjs scripts/portfolio-doctor-contract.test.mjs scripts/portfolio-proof-contract.test.mjs scripts/demand-catalogue-contract.test.mjs scripts/managed-agent-infrastructure-contract.test.mjs scripts/product-atlas-contract.test.mjs scripts/marketing-content-contract.test.mjs",
+    "test": "node --test scripts/catalogue-contract.test.mjs scripts/portfolio-deploy-contract.test.mjs scripts/portfolio-doctor-contract.test.mjs scripts/portfolio-proof-contract.test.mjs scripts/demand-catalogue-contract.test.mjs scripts/managed-agent-infrastructure-contract.test.mjs scripts/product-atlas-contract.test.mjs scripts/marketing-content-contract.test.mjs scripts/starter-system-contract.test.mjs",
     "test:deploy": "npm test",
     "test:output": "node --test scripts/site-output.test.mjs scripts/demand-catalogue-output.test.mjs scripts/managed-agent-infrastructure-output.test.mjs scripts/marketing-content-output.test.mjs",
     "budget": "node --test scripts/performance-budget.test.mjs",

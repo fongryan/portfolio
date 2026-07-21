@@ -1,10 +1,14 @@
-import { z } from 'zod'
-import { loadEnv } from '/Users/ryanfong/dotfiles/configs/env-schema/index.mjs'
+import { config } from "dotenv";
+import { z } from "zod";
+
+config();
 
 export const schema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
   PORT: z.coerce.number().int().positive().default(3000),
-})
+});
 
-export const env = loadEnv(schema)
-export type Env = typeof env
+export const env = schema.parse(import.meta.env);
+export type Env = typeof env;

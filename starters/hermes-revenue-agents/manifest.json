@@ -1,0 +1,56 @@
+{
+  "schema": "armalo.starter.manifest.v1",
+  "id": "hermes.revenue-agents",
+  "version": "1.0.0",
+  "productSlug": "hermes-revenue-agents",
+  "name": "Hermes revenue operator",
+  "visibility": "public-safe",
+  "maturity": "source-tested",
+  "source": {
+    "repository": "https://github.com/fongryan/app",
+    "commit": "7af941cf",
+    "digest": "sha256:7392f0c028e2e2bfe4a58e076a8f43e30d8415cbb6c2f86e70fb8ee21022237e"
+  },
+  "capabilities": [
+    "revenue.pipeline",
+    "operator.approvals",
+    "operator.receipts"
+  ],
+  "modules": [
+    {
+      "id": "revenue.pipeline",
+      "kind": "data",
+      "description": "Outcome and pipeline entities for a revenue operator.",
+      "dependsOn": ["workspace.foundation"],
+      "provides": ["revenue.pipeline"],
+      "artifact": {
+        "path": "modules/revenue-pipeline.md",
+        "digest": "sha256:04111c29e069581afd51e1997487538f5072ac6dec604a3d6af2a41e615bc7fd"
+      }
+    },
+    {
+      "id": "operator.approval-gates",
+      "kind": "hermes",
+      "description": "Approval and receipt loop for consequential actions.",
+      "dependsOn": ["revenue.pipeline"],
+      "provides": ["operator.approvals", "operator.receipts"],
+      "artifact": {
+        "path": "modules/operator-approval-gates.md",
+        "digest": "sha256:63951664da9b31fc000176640a41fbc74f52701f43355484ab1b3bd8c166b141"
+      }
+    }
+  ],
+  "hermes": {
+    "soul": "starters/hermes-revenue-agents/hermes/soul.md",
+    "goals": "starters/hermes-revenue-agents/hermes/goals.md",
+    "skills": ["starters/hermes-revenue-agents/hermes/skills/revenue/SKILL.md"],
+    "loops": ["starters/hermes-revenue-agents/hermes/loops/revenue-review.md"]
+  },
+  "acceptance": [
+    {
+      "id": "approval-required",
+      "command": "npm test -- scripts/starter-system-contract.test.mjs",
+      "purpose": "Keep consequential actions approval-gated in the starter contract."
+    }
+  ]
+}
