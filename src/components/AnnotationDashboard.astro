@@ -1,0 +1,336 @@
+<section
+  class="annotation-dashboard"
+  aria-labelledby="review-desk-title"
+  data-annotation-dashboard
+>
+  <div class="annotation-dashboard__header">
+    <div>
+      <p class="eyebrow">Private review desk</p>
+      <h2 id="review-desk-title">
+        A living shelf, with room for your <em>notes.</em>
+      </h2>
+      <p class="annotation-dashboard__lede">
+        Tap a panel to leave an idea, question, or next move. Notes stay in this
+        browser so a family review never becomes public portfolio content.
+      </p>
+    </div>
+    <div class="annotation-dashboard__actions" aria-label="Review desk actions">
+      <button class="button button--quiet" type="button" data-open-comments
+        >Open notes <span data-note-count>0</span></button
+      >
+      <button class="button button--quiet" type="button" data-export-notes
+        >Export notes</button
+      >
+    </div>
+  </div>
+
+  <div class="annotation-dashboard__layout">
+    <div
+      class="annotation-dashboard__grid"
+      aria-label="Annotatable portfolio panels"
+    >
+      <button
+        class="annotation-panel annotation-panel--ink"
+        type="button"
+        data-annotation-anchor="direction"
+        data-annotation-label="Point of view"
+      >
+        <span class="annotation-panel__meta">01 / direction</span>
+        <strong>Make the useful part obvious.</strong>
+        <span>What should feel clearer to the person arriving here?</span>
+        <span class="annotation-panel__footer"
+          >Add a note <span aria-hidden="true">+</span></span
+        >
+      </button>
+      <button
+        class="annotation-panel"
+        type="button"
+        data-annotation-anchor="live"
+        data-annotation-label="Live products"
+      >
+        <span class="annotation-panel__meta">02 / live</span>
+        <strong>Two doors in.</strong>
+        <span>Which live product deserves the next conversation?</span>
+        <span class="annotation-panel__footer"
+          >Add a note <span aria-hidden="true">+</span></span
+        >
+      </button>
+      <button
+        class="annotation-panel"
+        type="button"
+        data-annotation-anchor="demand"
+        data-annotation-label="Market signal"
+      >
+        <span class="annotation-panel__meta">03 / signal</span>
+        <strong>What people already pay to fix.</strong>
+        <span>Capture a sharper buyer story or an objection here.</span>
+        <span class="annotation-panel__footer"
+          >Add a note <span aria-hidden="true">+</span></span
+        >
+      </button>
+      <button
+        class="annotation-panel"
+        type="button"
+        data-annotation-anchor="catalogue"
+        data-annotation-label="Full catalogue"
+      >
+        <span class="annotation-panel__meta">04 / shelf</span>
+        <strong>There is more under the hood.</strong>
+        <span>Mark the idea that should become the next experiment.</span>
+        <span class="annotation-panel__footer"
+          >Add a note <span aria-hidden="true">+</span></span
+        >
+      </button>
+    </div>
+
+    <aside class="annotation-summary" aria-label="Notes summary">
+      <div class="annotation-summary__top">
+        <span>Review queue</span><span data-summary-status>Ready</span>
+      </div>
+      <p class="annotation-summary__count">
+        <strong data-open-count>0</strong> open notes
+      </p>
+      <p class="annotation-summary__hint">
+        Your notes are saved locally on this device. Export a JSON copy before
+        switching browsers.
+      </p>
+      <button class="arrow-link" type="button" data-open-comments
+        >View the thread <span aria-hidden="true">↗</span></button
+      >
+    </aside>
+  </div>
+
+  <dialog
+    class="annotation-dialog"
+    data-annotation-dialog
+    aria-labelledby="annotation-dialog-title"
+  >
+    <form method="dialog" class="annotation-dialog__card" data-annotation-form>
+      <div class="annotation-dialog__header">
+        <div>
+          <p class="eyebrow">New note</p><h3
+            id="annotation-dialog-title"
+            data-dialog-anchor
+          >
+            Review note
+          </h3>
+        </div><button
+          class="icon-button"
+          value="cancel"
+          aria-label="Close note composer">×</button
+        >
+      </div>
+      <label for="annotation-text">What do you want to remember?</label>
+      <textarea
+        id="annotation-text"
+        name="text"
+        rows="5"
+        maxlength="600"
+        placeholder="A question, a sharper angle, or a next move…"
+        required></textarea>
+      <div class="annotation-dialog__footer">
+        <span>Saved only in this browser</span><button
+          class="button button--dark"
+          value="default">Save note</button
+        >
+      </div>
+    </form>
+  </dialog>
+
+  <dialog
+    class="annotation-dialog annotation-dialog--thread"
+    data-thread-dialog
+    aria-labelledby="thread-dialog-title"
+  >
+    <div class="annotation-dialog__card">
+      <div class="annotation-dialog__header">
+        <div>
+          <p class="eyebrow">Review queue</p><h3 id="thread-dialog-title">
+            Notes &amp; ideas
+          </h3>
+        </div><button
+          class="icon-button"
+          type="button"
+          data-close-thread
+          aria-label="Close notes">×</button
+        >
+      </div>
+      <div class="annotation-filters" role="group" aria-label="Filter notes">
+        <button class="filter-button is-active" type="button" data-filter="open"
+          >Open <span data-filter-open>0</span></button
+        ><button class="filter-button" type="button" data-filter="resolved"
+          >Resolved <span data-filter-resolved>0</span></button
+        >
+      </div>
+      <div class="annotation-list" data-annotation-list>
+        <p class="annotation-list__empty">
+          No notes yet. Tap a panel to start the thread.
+        </p>
+      </div>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  // @ts-nocheck — this progressive-enhancement script is DOM-only and guarded
+  // so the static page remains fully usable when JavaScript is unavailable.
+  const storageKey = "portfolio-review-notes-v1";
+  const dashboard = document.querySelector("[data-annotation-dashboard]");
+  if (dashboard) {
+    const composer = dashboard.querySelector("[data-annotation-dialog]");
+    const thread = dashboard.querySelector("[data-thread-dialog]");
+    const form = dashboard.querySelector("[data-annotation-form]");
+    const textarea = dashboard.querySelector("#annotation-text");
+    const list = dashboard.querySelector("[data-annotation-list]");
+    const noteCount = dashboard.querySelector("[data-note-count]");
+    const openCount = dashboard.querySelector("[data-open-count]");
+    const status = dashboard.querySelector("[data-summary-status]");
+    const dialogAnchor = dashboard.querySelector("[data-dialog-anchor]");
+    let activeAnchor = { id: "direction", label: "Point of view" };
+    let filter = "open";
+    let notes = [];
+    try {
+      notes = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    } catch {
+      notes = [];
+    }
+
+    const persist = () =>
+      localStorage.setItem(storageKey, JSON.stringify(notes));
+    const escape = (value) =>
+      String(value).replace(
+        /[&<>"']/g,
+        (char) =>
+          ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;",
+          })[char],
+      );
+    const formatDate = (value) =>
+      new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(value));
+    const refresh = () => {
+      const open = notes.filter((note) => !note.resolved).length;
+      noteCount.textContent = notes.length;
+      openCount.textContent = open;
+      status.textContent = open ? `${open} to review` : "All clear";
+      dashboard.querySelector("[data-filter-open]").textContent = open;
+      dashboard.querySelector("[data-filter-resolved]").textContent =
+        notes.length - open;
+      const visible = notes.filter((note) =>
+        filter === "open" ? !note.resolved : note.resolved,
+      );
+      list.innerHTML = visible.length
+        ? visible
+            .map(
+              (note) =>
+                `<article class="annotation-item" data-note-id="${escape(note.id)}"><div class="annotation-item__meta"><span>${escape(note.anchorLabel)}</span><time datetime="${escape(note.createdAt)}">${escape(formatDate(note.createdAt))}</time></div><p>${escape(note.text)}</p>${note.replies?.map((reply) => `<div class="annotation-reply"><strong>${escape(reply.author)}</strong><span>${escape(reply.text)}</span></div>`).join("") || ""}<div class="annotation-item__actions"><button type="button" data-reply>Reply</button><button type="button" data-resolve>${note.resolved ? "Reopen" : "Resolve"}</button><button type="button" data-delete>Delete</button></div><form class="annotation-reply-form" data-reply-form hidden><label><span class="sr-only">Reply to this note</span><input name="reply" maxlength="300" placeholder="Add a reply…" required /></label><button type="submit">Send</button></form></article>`,
+            )
+            .join("")
+        : `<p class="annotation-list__empty">${filter === "open" ? "No open notes. Tap a panel to start the thread." : "No resolved notes yet."}</p>`;
+    };
+    const openDialog = (anchor) => {
+      activeAnchor = anchor;
+      dialogAnchor.textContent = `Note on ${anchor.label}`;
+      form.reset();
+      composer.showModal();
+      textarea.focus();
+    };
+    dashboard.querySelectorAll("[data-annotation-anchor]").forEach((panel) =>
+      panel.addEventListener("click", () =>
+        openDialog({
+          id: panel.dataset.annotationAnchor,
+          label: panel.dataset.annotationLabel,
+        }),
+      ),
+    );
+    dashboard.querySelectorAll("[data-open-comments]").forEach((button) =>
+      button.addEventListener("click", () => {
+        refresh();
+        thread.showModal();
+      }),
+    );
+    dashboard
+      .querySelector("[data-close-thread]")
+      .addEventListener("click", () => thread.close());
+    dashboard.querySelectorAll("[data-filter]").forEach((button) =>
+      button.addEventListener("click", () => {
+        filter = button.dataset.filter;
+        dashboard
+          .querySelectorAll("[data-filter]")
+          .forEach((item) =>
+            item.classList.toggle("is-active", item === button),
+          );
+        refresh();
+      }),
+    );
+    dashboard
+      .querySelector("[data-export-notes]")
+      .addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(notes, null, 2)], {
+          type: "application/json",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "portfolio-review-notes.json";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const text = new FormData(form).get("text")?.toString().trim();
+      if (!text) return;
+      notes.unshift({
+        id: crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`,
+        anchorId: activeAnchor.id,
+        anchorLabel: activeAnchor.label,
+        text,
+        author: "You",
+        createdAt: new Date().toISOString(),
+        resolved: false,
+        replies: [],
+      });
+      persist();
+      refresh();
+      composer.close();
+    });
+    list.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const item = target.closest("[data-note-id]");
+      if (!item) return;
+      const note = notes.find((entry) => entry.id === item.dataset.noteId);
+      if (!note) return;
+      if (target.matches("[data-resolve]")) note.resolved = !note.resolved;
+      if (target.matches("[data-delete]"))
+        notes = notes.filter((entry) => entry.id !== note.id);
+      if (target.matches("[data-reply]"))
+        item.querySelector("[data-reply-form]").hidden = false;
+      persist();
+      refresh();
+    });
+    list.addEventListener("submit", (event) => {
+      const replyForm = event.target;
+      if (!(replyForm instanceof HTMLFormElement)) return;
+      event.preventDefault();
+      const item = replyForm.closest("[data-note-id]");
+      const note = notes.find((entry) => entry.id === item?.dataset.noteId);
+      const text = new FormData(replyForm).get("reply")?.toString().trim();
+      if (!note || !text) return;
+      note.replies = [
+        ...(note.replies || []),
+        { author: "You", text, createdAt: new Date().toISOString() },
+      ];
+      persist();
+      refresh();
+    });
+    refresh();
+  }
+</script>

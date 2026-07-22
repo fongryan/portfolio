@@ -167,7 +167,7 @@ test("exact metadata URL checks reject same-origin suffixes", () => {
   );
 });
 
-test("generated HTML remains zero-script and free of inline style attributes", async () => {
+test("generated HTML keeps scripts scoped to the review desk and has no inline styles", async () => {
   const htmlFiles = (await listFiles(distPath)).filter((file) =>
     file.endsWith(".html"),
   );
@@ -175,7 +175,15 @@ test("generated HTML remains zero-script and free of inline style attributes", a
   for (const file of htmlFiles) {
     const html = await readFile(file, "utf8");
     const relative = path.relative(distPath, file);
-    assert.doesNotMatch(html, /<script\b/i, `${relative} script element`);
+    const hasScript = /<script\b/i.test(html);
+    if (hasScript) {
+      assert.equal(
+        relative,
+        "index.html",
+        `${relative} unexpected script element`,
+      );
+      assert.match(html, /data-annotation-dashboard/);
+    }
     assert.doesNotMatch(html, /\sstyle\s*=/i, `${relative} inline style`);
   }
 });

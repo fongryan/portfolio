@@ -74,7 +74,7 @@ npm run dev          # local dev server
 npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
 npm test             # deterministic source and deploy contracts
-npm run budget       # built homepage under 64 KB and zero shipped JS
+npm run budget       # built homepage under 96 KB; review-desk enhancement is scoped to index
 npm run proof        # canonical local and Vercel promotion gate
 npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier

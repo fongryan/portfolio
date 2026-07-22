@@ -305,7 +305,7 @@ test("market-led research resolves shortlist evidence and keeps claims bounded",
 
   assert.match(homepage, /Internal validation candidates/);
   assert.match(homepage, /Studio hypotheses/);
-  assert.match(homepage, /not\s+the market-evidence ranking/i);
+  assert.match(homepage, /not\s+the market-evidence\s+ranking/i);
   for (const category of [
     "Marketing intelligence",
     "Creator commerce",
