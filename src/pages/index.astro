@@ -22,414 +22,113 @@ const availableCount = countAvailable(apps);
 const total = apps.length;
 const hasReal = hasRealApps(apps);
 const catalogueSummary = `${total} ${total === 1 ? "product" : "products"}${hasReal ? ` · ${availableCount} available` : " · coming soon"}`;
-const commercialShortlist = apps
-  .filter((app) => app.data.commercialPriority !== undefined)
-  .sort(
-    (a, b) =>
-      (a.data.commercialPriority ?? 99) - (b.data.commercialPriority ?? 99),
-  );
 const groups = buildCatalogueGroups(apps);
 const appsBySlug = new Map(apps.map((app) => [app.id, app]));
 const requireApps = (slugs: string[], label: string) =>
   slugs.map((slug) => {
     const app = appsBySlug.get(slug);
-    if (!app)
-      throw new Error(`${label} references missing catalogue product: ${slug}`);
+    if (!app) throw new Error(`${label} references missing catalogue product: ${slug}`);
     return app;
   });
+const liveApps = apps.filter((app) => app.data.status === "live" || app.data.status === "beta");
+const commercialShortlist = apps
+  .filter((app) => app.data.commercialPriority !== undefined)
+  .sort((a, b) => (a.data.commercialPriority ?? 99) - (b.data.commercialPriority ?? 99));
 const rankedDemandApps = businessDemandProducts.map((product) => ({
   product,
   app: requireApps([product.slug], "Demand ranking")[0],
 }));
 const consumerLabApps = requireApps(consumerLabSlugs, "Consumer lab");
-const atlasPreview = productAtlas.slice(0, 12);
+const atlasPreview = productAtlas.slice(0, 8);
 ---
 
 <Base>
-  <section class="mx-auto max-w-5xl px-6 pt-20 pb-12">
-    <p class="text-2xs font-medium uppercase tracking-[0.18em] text-accent">
-      Portfolio
-    </p>
-    <h1 class="mt-4 max-w-2xl text-4xl text-ink">
-      A catalogue of AI products your team can actually sell.
-    </h1>
-    <p class="mt-5 max-w-xl text-lg text-ink-soft">
-      Armalo builds and tunes practical AI assistants for businesses, agencies,
-      and teams. It leads with one consumer flagship —
-      <a
-        href="https://app.armalo.ai"
-        class="link-quiet text-ink hover:text-accent">app.armalo.ai</a
-      > — and this shelf of packaged offers it produces: pick the job, choose the
-      audience, shape the offer, then route the build through the flywheel and a separate
-      delivery lane.
-    </p>
-    <p class="mt-6 text-sm text-ink-faint">{catalogueSummary}</p>
-    <p
-      class="mt-8 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-2xs uppercase tracking-wide text-ink-faint"
-    >
-      {
-        flywheelStages.map((stage, index) => (
-          <Fragment>
-            {index > 0 && <span aria-hidden="true">→</span>}
-            <span>{flywheelLabels[stage]}</span>
-          </Fragment>
-        ))
-      }
-      <span aria-hidden="true">↺</span>
-      <a href="/flywheel" class="link-quiet text-accent hover:text-ink"
-        >The loop</a
-      >
-    </p>
-  </section>
-
-  <section
-    aria-labelledby="flagship-heading"
-    class="mx-auto max-w-5xl px-6 pb-16"
-  >
-    <div
-      class="border-y border-line py-6 md:grid md:grid-cols-[1fr_2fr] md:gap-10"
-    >
-      <div>
-        <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-          Consumer flagship
+  <section class="hero-wrap">
+    <div class="hero mx-auto max-w-6xl px-6 py-8 sm:px-10 sm:py-12">
+      <div class="hero__copy">
+        <p class="eyebrow eyebrow--light">Ryan Fong / Armalo studio</p>
+        <h1>Useful AI,<br /><em>made tangible.</em></h1>
+        <p class="hero__lede">
+          I build small, sharp products that turn messy work into a place you can act.
+          One live workspace. A growing shelf of focused tools. No theatre.
         </p>
-        <h2 id="flagship-heading" class="mt-2 text-2xl text-ink">
-          Start consumer. Land enterprise.
-        </h2>
-        <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-          The wedge: an app anyone can open, share, and outgrow into a
-          company-wide deployment.
-        </p>
+        <div class="hero__actions">
+          <a class="button button--bright" href="https://app.armalo.ai">Open Armalo App <span aria-hidden="true">↗</span></a>
+          <a class="hero__text-link" href="#live">See the work <span aria-hidden="true">↓</span></a>
+        </div>
       </div>
-      <div class="mt-7 space-y-4 text-sm leading-relaxed text-ink-soft md:mt-0">
-        <p>
-          <a
-            href="https://app.armalo.ai"
-            class="link-quiet font-medium text-ink hover:text-accent"
-            >Armalo App</a
-          > is a multiplayer AI workspace — several people, one AI, one growing conversation.
-          Opening the URL mints a live workspace with the agent already present; no
-          sign-up wall, no demo video. It is our likeliest viral consumer product,
-          and it is deliberately the front door to the enterprise business.
-        </p>
-        <p>
-          The ladder is structural: a builder tries it alone, the shared thread
-          pulls in teammates, the team's work accumulates until it converts to
-          paid seats, and the company that now depends on it buys the dedicated
-          tier — self-host, SSO, audit, white-label. Same product, deeper
-          boundary. Every other offer on this shelf is built and operated inside
-          it.
-        </p>
-        <p class="text-ink-faint">
-          <a href="/apps/armalo-app" class="link-quiet hover:text-ink"
-            >Product record</a
-          >
-          · thesis: docs/consumer-wedge-to-enterprise.md · pricing &amp; templates
-          plan: docs/vibe-cloud-pricing-and-templates.md ·
-          <a href="/flywheel" class="link-quiet hover:text-ink"
-            >flywheel stage: launch</a
-          >
-        </p>
+      <div class="hero__signal" aria-label="Portfolio signal: 41 products, 2 available, one operating system">
+        <div class="signal-ring signal-ring--outer"></div>
+        <div class="signal-ring signal-ring--inner"></div>
+        <div class="signal-core"><span>ARMALO</span><strong>01</strong></div>
+        <div class="signal-label signal-label--top">{catalogueSummary}</div>
+        <div class="signal-label signal-label--right">build · launch · compound</div>
+        <div class="signal-label signal-label--bottom">a public work log</div>
       </div>
+    </div>
+    <div class="hero__rail mx-auto max-w-6xl px-6 sm:px-10">
+      {flywheelStages.map((stage, index) => (
+        <span><b>{String(index + 1).padStart(2, "0")}</b> {flywheelLabels[stage]}</span>
+      ))}
     </div>
   </section>
 
-  <section
-    aria-labelledby="commercial-shortlist-heading"
-    class="mx-auto max-w-5xl px-6 pb-16"
-  >
-    <div
-      class="border-y border-line py-6 md:grid md:grid-cols-[1fr_2fr] md:gap-10"
-    >
+    <section class="intro-grid mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28">
       <div>
-        <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-          Armalo execution lens
-        </p>
-        <h2 id="commercial-shortlist-heading" class="mt-2 text-2xl text-ink">
-          Internal validation candidates
-        </h2>
-        <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-          A separate studio sequence based on delivery fit and current focus—not
-          the market-evidence ranking below, and not a claim that Armalo has
-          sold or proven these offers.
-        </p>
+        <p class="eyebrow">The point of view</p>
+        <h2>Make the useful<br />part <em>obvious.</em></h2>
       </div>
-      <div class="mt-7 md:mt-0">
-        <p class="mb-3 text-2xs uppercase tracking-wide text-ink-faint">
-          Studio hypotheses
-        </p>
-        <ol class="divide-y divide-line border-t border-line">
-          {
-            commercialShortlist.map((app) => (
-              <li class="grid gap-2 py-3 sm:grid-cols-[1fr_1.5fr] sm:items-baseline sm:gap-4">
-                <a
-                  href={`/apps/${app.id}`}
-                  class="text-sm font-medium text-ink link-quiet hover:text-accent"
-                >
-                  {app.data.name}
-                </a>
-                <span class="text-sm leading-relaxed text-ink-soft">
-                  {app.data.buyerHypothesis?.replace(
-                    /^Armalo hypothesis:\s*/,
-                    "",
-                  )}
-                </span>
-              </li>
-            ))
-          }
+      <div class="intro-grid__body">
+        <p class="lead-copy">Most AI products stop at a clever answer. Armalo is interested in what happens next: the decision, the handoff, the work that compounds.</p>
+        <p>These are public records of that build. The live products are live. The planned products are labelled planned. The catalogue is allowed to be ambitious without pretending it is finished.</p>
+        <a class="arrow-link" href="/flywheel">See how the loop works <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section id="live" class="work-section mx-auto max-w-6xl px-6 pb-20 sm:px-10 sm:pb-32">
+      <div class="section-heading">
+        <div><p class="eyebrow">Live / in the world</p><h2>Two doors in.</h2></div>
+        <p>Small experiments with real users, real edges, and a clear next step.</p>
+      </div>
+      <div class="live-grid">
+        {liveApps.map((app, index) => (
+          <a class:list={["live-card", index === 0 ? "live-card--dark" : "live-card--light"]} href={app.data.url}>
+            <div class="live-card__top"><span class="card-index">0{index + 1}</span><StatusBadge status={app.data.status} /></div>
+            <div class="live-card__body"><p class="card-kicker">{app.data.category}</p><h3>{app.data.name}</h3><p>{app.data.description}</p></div>
+            <div class="live-card__foot"><span>{app.data.ctaLabel}</span><span aria-hidden="true">↗</span></div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="shortlist-band">
+      <div class="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:px-10 md:grid-cols-[0.8fr_1.2fr] md:py-28">
+        <div><p class="eyebrow eyebrow--light">Internal validation candidates</p><h2>Problems worth<br /><em>staying with.</em></h2><p class="band-copy">Studio hypotheses for the next releases, not the market-evidence ranking. These are not customer claims.</p></div>
+        <ol class="shortlist">
+          {commercialShortlist.slice(0, 6).map((app, index) => (
+            <li><a href={`/apps/${app.id}`}><span class="shortlist__number">{String(index + 1).padStart(2, "0")}</span><span><strong>{app.data.name}</strong><small>{app.data.buyerHypothesis?.replace(/^Armalo hypothesis:\s*/, "")}</small></span><span class="shortlist__arrow" aria-hidden="true">↗</span></a></li>
+          ))}
         </ol>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section
-    id="demand"
-    aria-labelledby="demand-heading"
-    class="mx-auto max-w-5xl px-6 pb-16"
-  >
-    <div class="border-y border-line py-8">
-      <div class="grid gap-6 md:grid-cols-[1fr_2fr] md:gap-10">
-        <div>
-          <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-            Business demand · ranked 2026-07-15
-          </p>
-          <h2 id="demand-heading" class="mt-2 text-2xl text-ink">
-            Where paid AI offers are established
-          </h2>
-          <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-            Ten product families ranked by urgency, repeatability, time to
-            value, build feasibility, safety, and proofability. The evidence
-            identifies a commercial category—not completed purchases, Armalo
-            sales, or product-market fit.
-          </p>
-          <a
-            href="/research/demand-backed-ai-catalogue/"
-            class="mt-4 inline-block text-sm text-accent link-quiet hover:text-ink"
-          >
-            Read the research and sources →
-          </a>
-        </div>
-        <ol class="grid gap-4 sm:grid-cols-2">
-          {
-            rankedDemandApps.map(({ product, app }) => (
-              <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-3">
-                <span class="pt-5 text-2xs font-medium tabular-nums text-accent">
-                  {String(product.rank).padStart(2, "0")}
-                </span>
-                <AppCard app={app} compact />
-              </li>
-            ))
-          }
-        </ol>
-      </div>
+    <section id="demand" class="demand-section mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28">
+      <div class="section-heading"><div><p class="eyebrow">Market signal</p><h2>What people already<br />pay to fix.</h2></div><div><p>Ten product families ranked by urgency, repeatability, time to value, build feasibility, safety, and proofability.</p><a class="arrow-link" href="/research/demand-backed-ai-catalogue/">Read the research <span aria-hidden="true">↗</span></a></div></div>
+      <ol class="demand-list">
+        {rankedDemandApps.map(({ product, app }) => (
+          <li><span class="demand-list__rank">{String(product.rank).padStart(2, "0")}</span><AppCard app={app} compact /></li>
+        ))}
+      </ol>
+      <aside id="consumer-lab" class="consumer-lab" aria-label="Consumer lab"><div><p class="eyebrow">Consumer lab</p><p>{consumerLabScopeLabel}</p></div><div class="consumer-lab__links">{consumerLabApps.map((app) => <a href={`/apps/${app.id}`}>{app.data.name} <span aria-hidden="true">↗</span></a>)}</div></aside>
+    </section>
 
-      <aside
-        id="consumer-lab"
-        aria-labelledby="consumer-lab-heading"
-        class="mt-8 border-t border-line pt-6"
-      >
-        <div
-          class="flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between"
-        >
-          <div>
-            <h3 id="consumer-lab-heading" class="text-base text-ink">
-              Consumer product lab
-            </h3>
-            <p class="mt-1 text-xs text-ink-faint">{consumerLabScopeLabel}</p>
-          </div>
-          <ul class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            {
-              consumerLabApps.map((app) => (
-                <li>
-                  <a
-                    href={`/apps/${app.id}`}
-                    class="link-quiet text-ink-soft hover:text-accent"
-                  >
-                    {app.data.name}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </aside>
-    </div>
-  </section>
+    <section id="work" class="catalogue-section mx-auto max-w-6xl px-6 pb-20 sm:px-10 sm:pb-28">
+      <div class="section-heading"><div><p class="eyebrow">The full catalogue</p><h2>There is more<br />under the hood.</h2></div><div><p>One canonical record for every product family. Browse by category, or jump straight to the atlas.</p><a class="arrow-link" href="/marketing">Open the campaign library <span aria-hidden="true">↗</span></a></div></div>
+      <nav class="category-nav" aria-label="Catalogue categories">{groups.map((group) => <a href={`#${group.id}`}>{group.label}</a>)}</nav>
+      <div class="catalogue-groups">{groups.map((group) => <section id={group.id} aria-labelledby={`${group.id}-heading`}><div class="catalogue-group__header"><h3 id={`${group.id}-heading`}>{group.label}</h3><span>{group.apps.length} {group.apps.length === 1 ? "offer" : "offers"}</span></div><ul class="catalogue-group__list">{group.apps.map((app) => <li><a href={`/apps/${app.id}`} class="catalogue-product"><span class="catalogue-product__name">{app.data.name}</span><StatusBadge status={app.data.status} compact /></a></li>)}</ul></section>)}</div>
+    </section>
 
-  <section id="work" class="mx-auto max-w-5xl px-6 pb-8">
-    <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-          The shelf
-        </p>
-        <h2 class="mt-2 text-2xl text-ink">
-          Sell the product. Fulfill the build.
-        </h2>
-      </div>
-      <span class="max-w-xs text-right text-sm text-ink-faint">
-        Each card is one canonical product family with multiple buyer and
-        delivery lenses. <a
-          href="/marketing"
-          class="text-accent link-quiet hover:text-ink"
-          >Open 205 campaign starters →</a
-        >
-      </span>
-    </div>
+    <section class="atlas-band"><div class="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:px-10 sm:py-28 md:grid-cols-[0.8fr_1.2fr]"><div><p class="eyebrow">The buildable universe</p><h2>{productAtlas.length} ways to make work <em>lighter.</em></h2><p class="band-copy band-copy--ink">A product atlas spanning revenue, service, marketing, finance, people, healthcare, legal, commerce, software, education, and agent infrastructure.</p><a class="arrow-link" href="/research/ai-product-atlas/">Browse the atlas <span aria-hidden="true">↗</span></a></div><ul class="atlas-list">{atlasPreview.map((product, index) => <li><span>{String(index + 1).padStart(2, "0")}</span><a href={`/research/ai-product-atlas/#${product.slug}`}>{product.name}</a><small>{product.category}</small></li>)}</ul></div></section>
 
-    <nav
-      aria-label="Catalogue categories"
-      class="mb-10 flex flex-wrap gap-x-4 gap-y-2 border-y border-line py-4 text-sm text-ink-soft"
-    >
-      {
-        groups.map((group) => (
-          <a class="link-quiet hover:text-ink" href={`#${group.id}`}>
-            {group.label}
-          </a>
-        ))
-      }
-    </nav>
-
-    {
-      apps.length === 0 ? (
-        <p class="text-ink-soft">
-          The first product is being prepared for the catalogue.
-        </p>
-      ) : (
-        <div class="space-y-12">
-          {groups.map((group) => {
-            return (
-              <section id={group.id} aria-labelledby={`${group.id}-heading`}>
-                <div class="catalogue-group__header">
-                  <h3 id={`${group.id}-heading`}>{group.label}</h3>
-                  <span>
-                    {group.apps.length}{" "}
-                    {group.apps.length === 1 ? "offer" : "offers"}
-                  </span>
-                </div>
-                <ul class="catalogue-group__list">
-                  {group.apps.map((app) => (
-                    <li>
-                      <a href={`/apps/${app.id}`} class="catalogue-product">
-                        <span>
-                          <span class="catalogue-product__name">
-                            {app.data.name}
-                          </span>
-                        </span>
-                        <StatusBadge status={app.data.status} compact />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
-        </div>
-      )
-    }
-  </section>
-
-  <section
-    id="atlas"
-    aria-labelledby="atlas-heading"
-    class="mx-auto max-w-5xl px-6 pt-12 pb-16"
-  >
-    <div
-      class="border-y border-line py-8 md:grid md:grid-cols-[1fr_2fr] md:gap-10"
-    >
-      <div>
-        <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-          The buildable universe
-        </p>
-        <h2 id="atlas-heading" class="mt-2 text-2xl text-ink">
-          If a business pays for the job, Hermes can fulfill the build.
-        </h2>
-        <p class="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-          A 120-offer product atlas spanning revenue, service, marketing,
-          finance, people, healthcare, legal, commerce, software, education, and
-          agent infrastructure. These are public category hypotheses—not a claim
-          that every offer is live.
-        </p>
-        <a
-          href="/research/ai-product-atlas/"
-          class="mt-4 inline-block text-sm text-accent link-quiet hover:text-ink"
-        >
-          Browse the full atlas and buying logic →
-        </a>
-      </div>
-      <div class="mt-7 md:mt-0">
-        <p class="mb-3 text-2xs uppercase tracking-wide text-ink-faint">
-          Preview · {productAtlas.length} offers, ordered by money · scale · Hermes
-          fit
-        </p>
-        <ul class="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-          {
-            atlasPreview.map((product) => (
-              <li class="border-t border-line pt-2">
-                <a
-                  href={`/research/ai-product-atlas/#${product.slug}`}
-                  class="text-sm text-ink link-quiet hover:text-accent"
-                >
-                  {product.name}
-                </a>
-                <p class="mt-1 text-xs text-ink-faint">{product.category}</p>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="mx-auto max-w-5xl px-6 pt-16 pb-20">
-    <p class="text-2xs uppercase tracking-[0.18em] text-accent">
-      Operating model
-    </p>
-    <h2 class="mt-3 max-w-2xl text-2xl text-ink">
-      One catalogue. Many funnels. A separate delivery lane.
-    </h2>
-    <div class="mt-6 grid gap-8 text-ink-soft md:grid-cols-3">
-      <div>
-        <h3 class="text-base text-ink">Catalogue</h3><p class="mt-2 text-sm">
-          The public source of truth for product families, audiences, packaging
-          shapes, access, and proof.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-base text-ink">Marketing & sales</h3><p
-          class="mt-2 text-sm"
-        >
-          Private operators can create audience-specific copy, funnels, Meta
-          campaigns, pricing, commission rules, and handoff paths from the same
-          product record.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-base text-ink">Fulfillment</h3><p class="mt-2 text-sm">
-          A separate delivery brief turns the sold package into an
-          implementation: tuning, integrations, approvals, access, QA, launch,
-          and support.
-        </p>
-      </div>
-    </div>
-    <div class="mt-10 space-y-4 text-ink-soft">
-      <p>
-        The shelf is intentionally longer than a single flagship. Salespeople
-        need a scrollable set of recognizable problems and offers, while the
-        delivery team needs a stable handoff seam instead of rebuilding the
-        pitch inside fulfillment. Each entry still separates maturity, access,
-        proof, and its <a
-          href="/flywheel"
-          class="link-quiet text-ink hover:text-accent">flywheel stage</a
-        > so planned inventory is never mistaken for a finished, earning service.
-      </p>
-      <p>
-        Armalo is the thread between them: proprietary Hermes Agent tunings,
-        product packaging, and implementation discipline. The order of
-        operations is deliberate — the consumer flagship earns attention and
-        adoption, and the catalogue converts that adoption into team, agency,
-        and enterprise revenue. Public status remains honest: planned products
-        are catalogue inventory, not live claims.
-      </p>
-    </div>
-  </section>
+    <section id="about" class="about-section mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28"><p class="eyebrow">About the build</p><div class="about-grid"><h2>One catalogue.<br />Many ways <em>forward.</em></h2><div><p class="lead-copy">Armalo is the thread between product packaging, agent tuning, and implementation discipline.</p><p>The public shelf is deliberately honest. It shows what exists, what is being tested, and what is still a strong idea waiting for its first proof.</p><p class="about-links"><a class="arrow-link" href="https://github.com/fongryan">GitHub <span aria-hidden="true">↗</span></a><a class="arrow-link" href="/agents/portfolio.md">Machine-readable catalogue <span aria-hidden="true">↗</span></a></p></div></div></section>
 </Base>
