@@ -5,6 +5,11 @@ hosting the mini-apps built for Armalo, and the public strategy board for the
 studio's product flywheel (build → launch → acquire → monetize → compound).
 See [`docs/flywheel-operating-model.md`](./docs/flywheel-operating-model.md).
 
+The canonical live URL is `https://portfolio.armalo.ai/` (hosted on the Armalo
+vibe Hetzner box behind the unified Caddy; see `infra/handoff.md` for the
+cutover packet). The historical `portfolio-peach-sigma-85.vercel.app`
+preview URL still resolves while the Vercel project is being archived.
+
 The reusable starter-bundle and Hermes composition contract lives in
 [`docs/PORTFOLIO-STARTER-SYSTEM.md`](./docs/PORTFOLIO-STARTER-SYSTEM.md). The
 public machine-readable starter index is `/agents/starters.json`; it is a
@@ -86,7 +91,7 @@ npm test             # deterministic source and deploy contracts
                       #  advisories closed in commit 5f43656; see
                       #  docs/security/dependency-updates.md for the policy)
 npm run budget       # built homepage under 96 KB; review-desk enhancement is scoped to index
-npm run proof        # canonical local and Vercel promotion gate
+npm run proof        # canonical local proof (also wired into scripts/deploy-vibe.sh)
 npm run doctor       # standalone repo health + public-safety gate
 npm run format       # format with prettier
 npm run format:check # verify formatting without changing files
@@ -120,7 +125,9 @@ This repo participates in Ryan's cross-agent cracked dev workflow:
   work on `main`; preserve unrelated work and never force-push.
 - **treehouse** remains available when isolation is explicitly required.
 - **repo-native proof** (`npm run proof`) is the promotion gate used locally and
-  by Vercel. GitHub Actions is intentionally disabled while the owner billing
+  by `scripts/deploy-vibe.sh` (the Hetzner `vibe` box is the live target;
+  `infra/handoff.md` is the operator packet for the cutover from Vercel).
+  GitHub Actions is intentionally disabled while the owner billing
   gate is closed; do not add workflows or re-enable Actions without Ryan's
   direct approval. `no-mistakes` is an optional legacy wrapper.
 - **lavish-axi** is used for dense plans, comparisons, and visual review — and

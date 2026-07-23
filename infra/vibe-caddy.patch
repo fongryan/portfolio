@@ -1,0 +1,17 @@
+# infra/vibe-caddy.patch — append this block to /root/Caddyfile.unified on vibe.
+#
+# The file lives on the host at /root/Caddyfile.unified and is bind-mounted
+# read-only into the armalo-caddy-unified container as /etc/caddy/Caddyfile.
+# Apply by appending the block, then:
+#
+#     docker exec armalo-caddy-unified \
+#       caddy reload --config /etc/caddy/Caddyfile
+#
+# Pair this with infra/vibe-container.sh (boots armalo-portfolio-web) and
+# infra/route53-portfolio.json (adds the public A record) so Caddy has
+# something to reverse-proxy to when portfolio.armalo.ai starts resolving.
+
+portfolio.armalo.ai {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3030
+}

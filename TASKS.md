@@ -91,19 +91,31 @@ exited with 1`.
 
 ### Decide the portfolio.armalo.ai hosting path
 
-- Status: pending (dismissed question in this session)
-- Owner: AWS-OPS / Vercel
-- Surface: `portfolio.armalo.ai` does not exist in Route53 (verified
-  via `aws-axi dns portfolio.armalo.ai` -> no records, no ALB match).
-- Action: pick one of (a) Vercel custom domain attached to the
-  existing portfolio project with a Route53 CNAME, (b) AWS ECS +
-  CloudFront in front of a new `armalo-app-web`-style target group,
-  (c) S3 + CloudFront for a static-only path. The current
-  `astro.config.mjs:10-12` already reads `PORTFOLIO_SITE_URL` for
-  the custom-domain swap.
-- Evidence: `curl -I https://portfolio.armalo.ai/` returns
-  `HTTP 200` with a Vercel or AWS response and serves the same
-  `dist/index.html` content as `portfolio-peach-sigma-85.vercel.app`.
+- Status: done (T1+ / owner-gated handoff pending)
+- Owner: T1+ agent or Ryan (per AWS-OPS.md Creation gate; lane
+  contract: MiniMax/T0 cannot pass `--yes` on AWS mutations even with
+  spend markers set)
+- Surface: `portfolio.armalo.ai` is being moved from Vercel to the
+  Armalo vibe Hetzner box (5.78.90.97). The repo-side artifacts are
+  shipped in commit `TBD-with-deploy-vibe-sh`:
+  - scripts/deploy-vibe.sh — rsyncs `dist/` to vibe and restarts the
+    static-file container.
+  - infra/vibe-caddy.patch — append block for /root/Caddyfile.unified
+    (reverse_proxy 127.0.0.1:3030).
+  - infra/vibe-container.sh — `docker run` for armalo-portfolio-web
+    (nginx:alpine, --restart unless-stopped, bind-mounted dist).
+  - infra/route53-portfolio.json — UPSERT A record
+    portfolio.armalo.ai -> 5.78.90.97.
+  - infra/handoff.md — the operator packet (DNS, Caddy reload,
+    container run, dist upload, end-to-end verification, Vercel
+    disconnect, rollback).
+- Evidence: `curl -I https://portfolio.armalo.ai/` should return
+  HTTP 200 with the approved security headers after the operator
+  packet is executed; the proof is `PORTFOLIO_VERIFY_PRODUCTION=1
+PORTFOLIO_PRODUCTION_URL=https://portfolio.armalo.ai npm test
+scripts/portfolio-production-smoke.test.mjs` returning 4/4
+  pass. Until then, the canonical live URL is still
+  `https://portfolio-peach-sigma-85.vercel.app/`.
 
 ### Add a Dependabot configuration file
 

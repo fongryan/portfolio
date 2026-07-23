@@ -200,6 +200,13 @@ Agents must ask before:
   and confirm `scripts/portfolio-deps-security.test.mjs` (wired into
   `npm test`) stays green. The test is the regression guard for the
   three GitHub Dependabot advisories closed in commit 5f43656.
+- For shipping the static build to the live cluster, run
+  `./scripts/deploy-vibe.sh --apply` after a green proof. The script
+  rsyncs `dist/` to `vibe` (`5.78.90.97`) under
+  `/opt/portfolio/dist/` and restarts `armalo-portfolio-web`. The
+  Caddyfile patch, container run, and Route53 A record that complete
+  the cutover live under `infra/` and are documented in
+  `infra/handoff.md`.
 
 <!-- BEGIN RYAN CRACKED DEV WORKFLOW -->
 ## Ryan Cracked Dev Workflow

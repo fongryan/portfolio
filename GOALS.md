@@ -55,7 +55,8 @@ States: `active`, `stretch`, `done`, `retired`.
   declared owner surface, never a sidecar queue — AGENTS.md — zero competing
   TODO surfaces — continuous.
 - [active] Every shippable change passes the same deterministic repo-native
-  proof locally and in Vercel — `npm run proof` — 100% of production builds are
+  proof locally and ships via `scripts/deploy-vibe.sh --apply` to the
+  vibe Hetzner box — `npm run proof` — 100% of production builds are
   proof-gated; GitHub Actions remains disabled until Ryan directly approves
   reactivation after the owner billing gate is healthy — continuous.
 - [active] Keep committed deployment configuration inside the proof contract
@@ -82,9 +83,17 @@ States: `active`, `stretch`, `done`, `retired`.
   scripts/portfolio-deploy-contract.test.mjs — no pnpm-lock.yaml,
   yarn.lock, or .pnpm-store/ can land in a Vercel upload; the
   2026-07-15 to 2026-07-21 Error streak was caused by this slipping
-  — continuous.
+  — continuous. (Pending Vercel archival — see infra/handoff.md.)
+- [active] Keep `portfolio.armalo.ai` live on the vibe Hetzner box
+  with the approved security headers and the canonical catalogue
+  rendering — scripts/deploy-vibe.sh +
+  scripts/portfolio-production-smoke.test.mjs +
+  infra/handoff.md — HTTP 200, all six security headers match,
+  catalogue grid + 41 products, single review-desk script only —
+  continuous.
 - [active] Keep the static-site response headers pinned to the
-  approved security policy — vercel.json +
+  approved security policy — vercel.json (during transition) +
+  infra/vibe-container.sh (vibe nginx.conf) +
   scripts/portfolio-deploy-contract.test.mjs +
   scripts/portfolio-production-smoke.test.mjs — CSP, X-Frame-Options
   DENY, X-Content-Type-Options nosniff, Referrer-Policy
@@ -96,12 +105,14 @@ States: `active`, `stretch`, `done`, `retired`.
   an acknowledgement within one business day and a triage within
   three business days; CVSS >= 7.0 issues get triage within 24
   hours — continuous.
-- [stretch] Wire the production smoke test into the Vercel deploy
+- [stretch] Wire the production smoke test into the vibe deploy
   hook so the catalogue + headers contract is checked on every
-  production push, not only on demand — Vercel Deploy Hook + a
-  small runner that exec's `PORTFOLIO_VERIFY_PRODUCTION=1 npm test
-scripts/portfolio-production-smoke.test.mjs` — before the next
-  mini-app launch.
+  production push, not only on demand — extend
+  scripts/deploy-vibe.sh to invoke `PORTFOLIO_VERIFY_PRODUCTION=1
+PORTFOLIO_PRODUCTION_URL=https://portfolio.armalo.ai npm test
+scripts/portfolio-production-smoke.test.mjs` after the rsync, so
+  a broken deploy fails the deploy — before the next mini-app
+  launch.
 
 ## Self-Improvement
 

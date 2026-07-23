@@ -3,16 +3,17 @@
 The portfolio is a public static site that mirrors the canonical
 catalogue in `src/content/apps/` and links the live mini-app
 subdomains. Security here is mostly about supply chain hygiene (the
-npm dependency tree and the Vercel deployment pipeline) and the
-response headers the static site itself ships.
+npm dependency tree and the Hetzner deployment pipeline on the Armalo
+vibe box) and the response headers the static site itself ships.
 
 ## Supported versions
 
 The portfolio tracks `main` and ships from the latest commit. There
-is no LTS branch; security patches land on `main` and are deployed
-by Vercel's GitHub integration as soon as the canonical
-`npm run proof` passes. The current commit is the latest "Ready"
-production deploy listed in `vercel ls --prod`.
+is no LTS branch; security patches land on `main` and ship via
+`scripts/deploy-vibe.sh --apply` once `npm run proof` passes on the
+local box. The current commit is the latest "Ready" production deploy
+listed by `hetzner-axi status` / `vercel ls --prod` (the Vercel
+project is being archived — see `infra/handoff.md`).
 
 ## Reporting a vulnerability
 
@@ -43,10 +44,11 @@ will guard against re-introducing.
   actively-exploited issues, triage is within 24 hours.
 - **Patch and deploy**: the canonical fix path is a dependency
   bump (direct floor in `package.json` or `overrides` for
-  transitives), a green `npm run proof`, and a merge to `main` that
-  Vercel auto-deploys. The proof gate includes the regression
-  guard `scripts/portfolio-deps-security.test.mjs` so the patch
-  cannot regress.
+  transitives), a green `npm run proof`, a merge to `main`, and
+  `./scripts/deploy-vibe.sh --apply` to ship the new `dist/` to the
+  vibe box. The proof gate includes the regression guard
+  `scripts/portfolio-deps-security.test.mjs` so the patch cannot
+  regress.
 
 ## Disclosure preference
 
@@ -74,4 +76,4 @@ mechanism is:
 
     npm run proof
     PORTFOLIO_VERIFY_PRODUCTION=1 npm test
-    curl -I https://portfolio-peach-sigma-85.vercel.app/
+    curl -I https://portfolio.armalo.ai/
