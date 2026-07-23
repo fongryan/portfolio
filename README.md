@@ -74,6 +74,10 @@ npm run dev          # local dev server
 npm run build        # production build (static)
 npm run check        # TypeScript + Astro diagnostics
 npm test             # deterministic source and deploy contracts
+                      # (also runs scripts/portfolio-deps-security.test.mjs,
+                      #  the regression guard for the three Dependabot
+                      #  advisories closed in commit 5f43656; see
+                      #  docs/security/dependency-updates.md for the policy)
 npm run budget       # built homepage under 96 KB; review-desk enhancement is scoped to index
 npm run proof        # canonical local and Vercel promotion gate
 npm run doctor       # standalone repo health + public-safety gate

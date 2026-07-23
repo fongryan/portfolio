@@ -195,6 +195,11 @@ Agents must ask before:
 - `bash /Users/ryanfong/workspace/check-captain-stack.sh` — workspace audit must
   show `ok workspace AGENTS.md` / `CLAUDE.md` for portfolio.
 - For shippable code, run the repo-native proof command and record its receipt.
+- For dependency-security changes, follow
+  [`docs/security/dependency-updates.md`](./docs/security/dependency-updates.md)
+  and confirm `scripts/portfolio-deps-security.test.mjs` (wired into
+  `npm test`) stays green. The test is the regression guard for the
+  three GitHub Dependabot advisories closed in commit 5f43656.
 
 <!-- BEGIN RYAN CRACKED DEV WORKFLOW -->
 ## Ryan Cracked Dev Workflow
