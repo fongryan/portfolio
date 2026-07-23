@@ -1,5 +1,5 @@
 {
-  "Comment": "Route53 change batch: add portfolio.armalo.ai A record pointing at vibe (5.78.90.97). Apply with: aws route53 change-resource-record-sets --hosted-zone-id Z052129738FEO6BQJEN9J --change-batch file://infra/route53-portfolio.json. T1+ or human only; not for MiniMax/T0 per AWS-OPS.md Creation gate.",
+  "Comment": "portfolio.armalo.ai A -> vibe (5.78.90.97) cutover. Owner-approved.",
   "Changes": [
     {
       "Action": "UPSERT",

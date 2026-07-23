@@ -19,14 +19,17 @@
 # Required env:
 #   PORTFOLIO_VIBE_HOST       vibe box IP (default 5.78.90.97 — the prod cluster)
 #   PORTFOLIO_VIBE_USER       ssh user (default root)
-#   PORTFOLIO_VIBE_SSH_KEY    ssh key path (default ~/.ssh/armalo-hetzner-test)
+#   PORTFOLIO_VIBE_SSH_KEY    ssh key path (default ~/.ssh/armalo-vibe-test — the
+#                              key already on this box's known_hosts for the
+#                              armalo-vibe host alias; use hetzner-axi ssh
+#                              in CI instead, which manages its own config)
 #   PORTFOLIO_VIBE_DIST       remote dist path (default /opt/portfolio/dist)
 #   PORTFOLIO_VIBE_CONTAINER  container name (default armalo-portfolio-web)
 set -euo pipefail
 
 HOST="${PORTFOLIO_VIBE_HOST:-5.78.90.97}"
 USER="${PORTFOLIO_VIBE_USER:-root}"
-KEY="${PORTFOLIO_VIBE_SSH_KEY:-$HOME/.ssh/armalo-hetzner-test}"
+KEY="${PORTFOLIO_VIBE_SSH_KEY:-$HOME/.ssh/armalo-vibe-test}"
 REMOTE_DIST="${PORTFOLIO_VIBE_DIST:-/opt/portfolio/dist}"
 CONTAINER="${PORTFOLIO_VIBE_CONTAINER:-armalo-portfolio-web}"
 APPLY=0

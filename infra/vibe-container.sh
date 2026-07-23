@@ -83,6 +83,14 @@ docker run -d \
   -v "${DIST_PATH}/../nginx.conf:${NGINX_CONF_PATH}:ro" \
   "${IMAGE}"
 
+# nginx:alpine ships a default.conf that listens on port 80 in parallel
+# with portfolio.conf; both server blocks exist in conf.d/, and
+# default.conf wins by alphabetic sort order, so the add_header directives
+# in portfolio.conf are silently ignored. Remove the default and reload
+# so our security headers actually go out.
+docker exec "${CONTAINER}" rm -f /etc/nginx/conf.d/default.conf
+docker exec "${CONTAINER}" kill -HUP 1
+
 echo "[vibe-container] checking local probe"
 sleep 3
 curl -sS -o /dev/null -w 'local probe: HTTP %{http_code}, %{size_download} bytes\n' \
