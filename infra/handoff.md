@@ -143,6 +143,13 @@ The Vercel auto-deploy fires on every push to `main`. After the
 This step is owner-only — Vercel-side, no API path that I (or any agent
 on this box) can hit without a personal token.
 
+(2026-07-23: `vercel git disconnect --yes` was run from the portfolio
+repo, so the GitHub integration is now disconnected. The Vercel
+project itself still exists and serves the previous build at
+`portfolio-peach-sigma-85.vercel.app`; `vercel project remove portfolio`
+would delete it but requires interactive confirmation and is the
+owner's call.)
+
 ## Step 7 — Update portfolio repo
 
 Once the live cutover is verified, the repo can move `vercel.json` to a

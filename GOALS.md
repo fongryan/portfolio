@@ -90,7 +90,9 @@ States: `active`, `stretch`, `done`, `retired`.
   scripts/portfolio-production-smoke.test.mjs +
   infra/handoff.md — HTTP 200, all six security headers match,
   catalogue grid + 41 products, single review-desk script only —
-  continuous.
+  continuous. (Live as of 2026-07-23; commit 74fc882; Vercel
+  GitHub integration disconnected the same day. Vercel project
+  archive pending the owner's interactive `vercel project remove`.)
 - [active] Keep the static-site response headers pinned to the
   approved security policy — vercel.json (during transition) +
   infra/vibe-container.sh (vibe nginx.conf) +

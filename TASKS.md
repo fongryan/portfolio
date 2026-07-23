@@ -91,13 +91,13 @@ exited with 1`.
 
 ### Decide the portfolio.armalo.ai hosting path
 
-- Status: done (T1+ / owner-gated handoff pending)
+- Status: done (2026-07-23)
 - Owner: T1+ agent or Ryan (per AWS-OPS.md Creation gate; lane
   contract: MiniMax/T0 cannot pass `--yes` on AWS mutations even with
   spend markers set)
-- Surface: `portfolio.armalo.ai` is being moved from Vercel to the
-  Armalo vibe Hetzner box (5.78.90.97). The repo-side artifacts are
-  shipped in commit `TBD-with-deploy-vibe-sh`:
+- Surface: `portfolio.armalo.ai` is moved from Vercel to the Armalo
+  vibe Hetzner box (5.78.90.97). The repo-side artifacts shipped in
+  commit `1ac4663` and the live cutover landed in `74fc882`:
   - scripts/deploy-vibe.sh — rsyncs `dist/` to vibe and restarts the
     static-file container.
   - infra/vibe-caddy.patch — append block for /root/Caddyfile.unified
@@ -105,17 +105,25 @@ exited with 1`.
   - infra/vibe-container.sh — `docker run` for armalo-portfolio-web
     (nginx:alpine, --restart unless-stopped, bind-mounted dist).
   - infra/route53-portfolio.json — UPSERT A record
-    portfolio.armalo.ai -> 5.78.90.97.
+    portfolio.armalo.ai -> 5.78.90.97 (applied via
+    `aws route53 change-resource-record-sets`,
+    change `/change/C03083821HK130XMU0OV9`).
   - infra/handoff.md — the operator packet (DNS, Caddy reload,
     container run, dist upload, end-to-end verification, Vercel
     disconnect, rollback).
-- Evidence: `curl -I https://portfolio.armalo.ai/` should return
-  HTTP 200 with the approved security headers after the operator
-  packet is executed; the proof is `PORTFOLIO_VERIFY_PRODUCTION=1
-PORTFOLIO_PRODUCTION_URL=https://portfolio.armalo.ai npm test
-scripts/portfolio-production-smoke.test.mjs` returning 4/4
-  pass. Until then, the canonical live URL is still
-  `https://portfolio-peach-sigma-85.vercel.app/`.
+- Evidence: `curl -I https://portfolio.armalo.ai/` returns
+  HTTP 200 with all six approved security headers (CSP, X-Frame-Options
+  DENY, X-Content-Type-Options nosniff, Referrer-Policy
+  strict-origin-when-cross-origin, Permissions-Policy
+  camera/mic/geolocation/payment/usb disabled, HSTS
+  includeSubDomains preload); the smoke test at
+  `PORTFOLIO_PRODUCTION_URL=https://portfolio.armalo.ai
+PORTFOLIO_VERIFY_PRODUCTION=1 PORTFOLIO_SKIP_NPM_AUDIT=1 npm test
+scripts/portfolio-production-smoke.test.mjs` returns 4/4 pass.
+  Vercel GitHub integration was disconnected via
+  `vercel git disconnect --yes`; the project itself still serves the
+  previous build at `portfolio-peach-sigma-85.vercel.app` and will be
+  removed by the owner via `vercel project remove portfolio`.
 
 ### Add a Dependabot configuration file
 
