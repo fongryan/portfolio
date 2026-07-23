@@ -1,6 +1,8 @@
 # Per-repo no-mistakes overrides for the portfolio hub.
 #
-# The repo-native proof is authoritative locally, in CI, and in Vercel.
+# The repo-native proof is authoritative locally; the deploy target is
+# the vibe Hetzner box (scripts/deploy-vibe.sh), not Vercel. See
+# infra/handoff.md for the cutover packet.
 
 commands:
   test: "npm run proof"

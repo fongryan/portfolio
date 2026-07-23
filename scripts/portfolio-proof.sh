@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# portfolio-proof.sh — the canonical local and Vercel promotion gate.
+# portfolio-proof.sh — the canonical local proof. The deploy target is
+# the vibe Hetzner box (scripts/deploy-vibe.sh), not Vercel.
 set -euo pipefail
 
 root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"

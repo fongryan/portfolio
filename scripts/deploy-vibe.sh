@@ -8,13 +8,20 @@
 #
 # Run LOCALLY after `npm run build`:
 #     ./scripts/deploy-vibe.sh                    # dry-run (prints what would happen)
-#     ./scripts/deploy-vibe.sh --apply            # rsync dist/ to vibe, restart container
+#     ./scripts/deploy-vibe.sh --apply            # rsync + restart + smoke-test gate
+#     ./scripts/deploy-vibe.sh --apply --no-smoke  # skip the post-deploy smoke gate
+#                                                 # (only for the first interactive run;
+#                                                 #  CI / non-interactive deploys must keep
+#                                                 #  the smoke gate enabled)
 #
-# The --apply half never executes on its own — the call sites that flip dry-run
-# off live in `infra/handoff.md` and are T1+ / human-gated per AWS-OPS.md
-# "Mutations are dry-run by default". This script only ever mutates the local
-# dist/ upload + the named container on vibe; it never touches Route53, the
-# Caddyfile, or any other armalo.ai-shared resource.
+# The --apply half runs the dist upload + container restart. It also runs
+# scripts/portfolio-production-smoke.test.mjs against the live URL by default,
+# so a broken deploy fails the deploy. The smoke gate is opt-out via
+# --no-smoke, but CI / batch deploys must keep it on.
+#
+# This script only ever mutates the local dist/ upload + the named container
+# on vibe; it never touches Route53, the Caddyfile, or any other
+# armalo.ai-shared resource.
 #
 # Required env:
 #   PORTFOLIO_VIBE_HOST       vibe box IP (default 5.78.90.97 — the prod cluster)
@@ -25,6 +32,8 @@
 #                              in CI instead, which manages its own config)
 #   PORTFOLIO_VIBE_DIST       remote dist path (default /opt/portfolio/dist)
 #   PORTFOLIO_VIBE_CONTAINER  container name (default armalo-portfolio-web)
+#   PORTFOLIO_PRODUCTION_URL  live URL the smoke gate probes (default
+#                              https://portfolio.armalo.ai/)
 set -euo pipefail
 
 HOST="${PORTFOLIO_VIBE_HOST:-5.78.90.97}"
@@ -32,8 +41,17 @@ USER="${PORTFOLIO_VIBE_USER:-root}"
 KEY="${PORTFOLIO_VIBE_SSH_KEY:-$HOME/.ssh/armalo-vibe-test}"
 REMOTE_DIST="${PORTFOLIO_VIBE_DIST:-/opt/portfolio/dist}"
 CONTAINER="${PORTFOLIO_VIBE_CONTAINER:-armalo-portfolio-web}"
+PRODUCTION_URL="${PORTFOLIO_PRODUCTION_URL:-https://portfolio.armalo.ai/}"
 APPLY=0
-[[ "${1:-}" == "--apply" ]] && APPLY=1
+SMOKE=1
+for arg in "$@"; do
+  case "$arg" in
+    --apply) APPLY=1 ;;
+    --no-smoke) SMOKE=0 ;;
+    --help|-h)
+      sed -n '4,30p' "$0"; exit 0 ;;
+  esac
+done
 
 if [[ ! -f dist/index.html ]]; then
   echo "error: dist/index.html missing — run \`npm run build\` first" >&2
@@ -48,12 +66,15 @@ log() { printf '\033[36m[vibe-deploy]\033[0m %s\n' "$*"; }
 log "target host       $HOST"
 log "target dist path   $REMOTE_DIST"
 log "container name     $CONTAINER"
+log "smoke probe URL    $PRODUCTION_URL"
 log "dist size on disk  $(du -sh dist | cut -f1)"
 log "dry-run            $([[ $APPLY -eq 1 ]] && echo no || echo yes)"
+log "smoke gate         $([[ $SMOKE -eq 1 ]] && echo on || echo off)"
 
 if [[ $APPLY -eq 0 ]]; then
   log "dry-run: would ssh + rsync dist/ -> $HOST:$REMOTE_DIST"
   log "dry-run: would restart container $CONTAINER if present"
+  log "dry-run: would smoke-test against $PRODUCTION_URL"
   log "use --apply to execute"
   exit 0
 fi
@@ -67,7 +88,24 @@ log "syncing dist/ -> $HOST:$REMOTE_DIST"
 log "restarting container $CONTAINER (if present)"
 "${SSH[@]}" "docker ps --format '{{.Names}}' | grep -q '^${CONTAINER}\$' && docker restart ${CONTAINER} || echo 'container absent; the operator must run infra/vibe-container.sh first'"
 
-log "smoke test from box"
+log "local probe"
 "${SSH[@]}" "curl -s -o /dev/null -w 'local http %{http_code} %{size_download}b\\n' http://127.0.0.1:3030/ || echo 'local probe failed; is the container running?'"
+
+if [[ $SMOKE -eq 1 ]]; then
+  log "post-deploy smoke gate -> $PRODUCTION_URL"
+  if PORTFOLIO_PRODUCTION_URL="$PRODUCTION_URL" \
+     PORTFOLIO_VERIFY_PRODUCTION=1 \
+     PORTFOLIO_SKIP_NPM_AUDIT=1 \
+     node --test scripts/portfolio-production-smoke.test.mjs; then
+    log "smoke gate OK"
+  else
+    echo "[vibe-deploy] ERROR: smoke gate failed against $PRODUCTION_URL" >&2
+    echo "[vibe-deploy] the dist upload + container restart already happened" >&2
+    echo "[vibe-deploy] inspect the live URL, fix the regression, redeploy" >&2
+    exit 3
+  fi
+else
+  log "smoke gate SKIPPED (--no-smoke); the deploy is not gated"
+fi
 
 log "done"

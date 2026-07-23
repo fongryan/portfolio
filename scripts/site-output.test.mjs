@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const root = new URL("../", import.meta.url);
 const dist = new URL("../dist/", import.meta.url);
 const distPath = fileURLToPath(dist);
-const defaultCanonicalOrigin = "https://portfolio-peach-sigma-85.vercel.app";
+const defaultCanonicalOrigin = "https://portfolio.armalo.ai";
 const resolveCanonicalOrigin = (siteUrl) =>
   new URL(siteUrl ?? defaultCanonicalOrigin).origin;
 const canonicalOrigin = resolveCanonicalOrigin(process.env.PORTFOLIO_SITE_URL);
@@ -494,7 +494,7 @@ test("machine-policy guard rejects forbidden fields and values", () => {
 test("Astro config keeps a production-safe canonical default and env override", async () => {
   const source = await readFile(new URL("astro.config.mjs", root), "utf8");
   assert.match(source, /process\.env\.PORTFOLIO_SITE_URL\s*\?\?/);
-  assert.match(source, /https:\/\/portfolio-peach-sigma-85\.vercel\.app/);
+  assert.match(source, /https:\/\/portfolio\.armalo\.ai\//);
   assert.equal(resolveCanonicalOrigin(), defaultCanonicalOrigin);
   assert.equal(
     resolveCanonicalOrigin("https://portfolio.example/"),

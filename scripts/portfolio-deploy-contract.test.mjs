@@ -16,14 +16,90 @@ function git(cwd, args) {
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
 }
 
-test("Vercel publishes only output that passed the canonical proof", async () => {
+test("vibe container serves the approved static-site security policy", async () => {
+  // Replaces the old "Vercel publishes only output that passed the
+  // canonical proof" test now that the portfolio is hosted on the
+  // Armalo vibe Hetzner box (infra/handoff.md). The active deployment
+  // config is infra/vibe-container.sh, which bakes a nginx.conf with
+  // the same approved static-site security policy that used to live
+  // in vercel.json.
+  const source = await readFile(
+    new URL("../infra/vibe-container.sh", import.meta.url),
+    "utf8",
+  );
+  const expected = {
+    "Content-Security-Policy":
+      "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy":
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+  };
+  for (const [name, value] of Object.entries(expected)) {
+    assert.ok(
+      source.includes(value),
+      `infra/vibe-container.sh is missing the approved ${name}: ${value}`,
+    );
+  }
+});
+
+test("vibe Caddy patch routes portfolio.armalo.ai to the static container", async () => {
+  const patch = await readFile(
+    new URL("../infra/vibe-caddy.patch", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    patch,
+    /portfolio\.armalo\.ai\s*\{[^}]*reverse_proxy\s+127\.0\.0\.1:3030/s,
+    "Caddy patch must route portfolio.armalo.ai to the static container on :3030",
+  );
+  assert.match(
+    patch,
+    /encode zstd gzip/,
+    "Caddy patch must request zstd+gzip encoding",
+  );
+});
+
+test("Route53 record is the A record for portfolio.armalo.ai -> vibe", async () => {
+  const changeBatch = JSON.parse(
+    await readFile(
+      new URL("../infra/route53-portfolio.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.equal(changeBatch.Changes.length, 1);
+  const change = changeBatch.Changes[0];
+  assert.equal(change.Action, "UPSERT");
+  assert.equal(change.ResourceRecordSet.Name, "portfolio.armalo.ai.");
+  assert.equal(change.ResourceRecordSet.Type, "A");
+  assert.deepEqual(change.ResourceRecordSet.ResourceRecords, [
+    { Value: "5.78.90.97" },
+  ]);
+});
+
+test("vercel.json is an inert sentinel (off-Vercel move)", async () => {
+  // The portfolio is no longer deployed via Vercel. vercel.json is kept
+  // as a documented sentinel so any stray Vercel scanner / framework
+  // detector falls back to defaults rather than running an outdated
+  // build. The active deployment config lives in infra/.
   const config = JSON.parse(
     await readFile(new URL("../vercel.json", import.meta.url), "utf8"),
   );
-
-  assert.equal(config.framework, "astro");
-  assert.equal(config.buildCommand, "npm run proof");
-  assert.equal(config.outputDirectory, "dist");
+  // The sentinel must not try to run a real build, and must not claim
+  // a framework that's actually live (so Vercel doesn't pretend to
+  // own the deploy).
+  assert.equal(
+    config.framework,
+    "other",
+    "vercel.json framework must be 'other' so Vercel stops owning the deploy",
+  );
+  assert.match(
+    config.buildCommand,
+    /no longer deployed via Vercel/,
+    "vercel.json buildCommand must announce the off-Vercel move",
+  );
 });
 
 test("GitHub Actions stays intentionally dormant while the owner billing gate is closed", async () => {
@@ -198,24 +274,19 @@ test("the Vercel format gate validates upload archives without Git metadata", as
   );
 });
 
-test("Vercel applies the approved static-site security policy", async () => {
+test("vercel.json is an inert sentinel (no live security policy)", async () => {
+  // The portfolio is no longer deployed via Vercel; vercel.json is kept
+  // as a sentinel that announces the off-Vercel move. It must NOT
+  // claim a live security policy in its headers array, because the
+  // active policy lives in infra/vibe-container.sh (asserted by the
+  // "vibe container serves the approved static-site security policy"
+  // test above). Drift here means vercel.json is trying to be live.
   const config = JSON.parse(
     await readFile(new URL("../vercel.json", import.meta.url), "utf8"),
   );
-  const expected = {
-    "Content-Security-Policy":
-      "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'",
-    "X-Frame-Options": "DENY",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Permissions-Policy":
-      "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
-  };
-
-  assert.deepEqual(config.headers, [
-    {
-      source: "/(.*)",
-      headers: Object.entries(expected).map(([key, value]) => ({ key, value })),
-    },
-  ]);
+  assert.deepEqual(
+    config.headers,
+    [],
+    "vercel.json must not carry a live security policy; the active policy lives in infra/vibe-container.sh",
+  );
 });

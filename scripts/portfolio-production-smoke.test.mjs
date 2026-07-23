@@ -7,7 +7,7 @@
  *     PORTFOLIO_VERIFY_PRODUCTION=1 npm test
  *
  * What it asserts against the canonical URL
- * (https://portfolio-peach-sigma-85.vercel.app/ by default, or whatever
+ * (https://portfolio.armalo.ai/ by default, or whatever
  * PORTFOLIO_PRODUCTION_URL points at):
  *
  *   - HTTP 200, content-type text/html.
@@ -36,8 +36,7 @@ import test from "node:test";
 import { readdir, readFile } from "node:fs/promises";
 
 const PRODUCTION_URL =
-  process.env.PORTFOLIO_PRODUCTION_URL ??
-  "https://portfolio-peach-sigma-85.vercel.app/";
+  process.env.PORTFOLIO_PRODUCTION_URL ?? "https://portfolio.armalo.ai/";
 
 const testGateEnabled = process.env.PORTFOLIO_VERIFY_PRODUCTION === "1";
 
