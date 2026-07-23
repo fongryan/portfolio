@@ -9,28 +9,35 @@ specific evidence that proves it done.
 
 ### Verify Dependabot auto-closes alerts after push
 
-- Status: pending
+- Status: pending (async)
 - Owner: GitHub Dependabot (re-scan after push)
 - Evidence: `gh api repos/fongryan/portfolio/dependabot/alerts?state=open`
   returns `[]` for the three GHSAs closed in 5f43656.
-- Notes: As of 2026-07-23T05:54Z (3 minutes after push) the alerts
-  were still `state=open`; GitHub re-scans asynchronously. If they
-  are still open after ~1 hour, run `gh api -X POST
-repos/fongryan/portfolio/dependabot/alerts/<n>/restore` is not
-  available — instead re-push the lockfile to nudge the scanner, or
-  dismiss manually with a reason of "fixed".
+- Notes: As of 2026-07-23T06:13Z (13 minutes after the 5f43656 push
+  and ~12 minutes after the 67b7412 hardening push) the alerts were
+  still `state=open` with `updated_at` from 2026-07-21/22. The
+  Dependabot re-scan runs on a schedule (default ~hourly) and is
+  not directly triggerable from the public REST API. The
+  `replay` endpoint (`/dependabot/alerts/<n>/replay`) returns 404
+  for this repo. The substantive evidence that the fix is in is:
+  (a) `npm audit` returns 0 vulnerabilities, (b) the lockfile
+  contains the patched versions, (c) Dependabot itself auto-closed
+  the three auto-PRs (#2, #3, #4) on push, which only happens when
+  the scanner no longer sees a vulnerable manifest, (d)
+  `vercel ls --prod` shows the new deploy as `● Ready`. Recheck
+  hourly; if still open after 4h, dismiss manually with reason
+  `fixed` and a link to 5f43656.
 
 ### Close the three Dependabot auto-PRs as superseded
 
-- Status: pending
+- Status: done
 - PRs: #2 (astro-7.1.0), #3 (fast-uri-3.1.4), #4 (svgo-4.0.2)
-- Action: comment on each pointing at commit 5f43656, then close.
-- Evidence: `gh api repos/fongryan/portfolio/pulls/<n> --jq .state` returns
-  `closed` for all three, with a comment that names 5f43656.
-- Notes: The auto-PRs were created from the scanner's view of the
-  pre-fix lockfile; once 5f43656 lands, the PRs are obsolete. Closing
-  them rather than merging keeps the dependency history linear and
-  avoids two-PR races on the next Dependabot cycle.
+- Evidence: `gh api repos/fongryan/portfolio/pulls/<n> --jq .state`
+  returns `closed` for all three, with comments pointing at 5f43656
+  posted (comment IDs 5055078619 / 5055078758 / 5055078898).
+- Notes: Dependabot auto-closed the three PRs at 05:54-05:55 UTC
+  on the first push (5f43656). I added the supersession comments
+  on the second pass to leave the audit trail explicit.
 
 ### Wire the deps-security test into the README's Commands list
 
@@ -109,10 +116,14 @@ repos/fongryan/portfolio/dependabot/alerts/<n>/restore` is not
 - 894a80a - render all 41 products in the homepage catalogue grid.
   27/27 generated-output contracts pass, homepage 87 KB / 96 KB
   budget, public-safety doctor clean.
-- scripts/portfolio-deps-security.test.mjs - regression guard with
-  7 tests; wired into `npm test` so it runs as part of `npm run proof`.
-- docs/security/dependency-updates.md - canonical policy for how
-  transitive overrides are added and how new advisories are ingested.
+- 67b7412 - regression guard for the security fix:
+  scripts/portfolio-deps-security.test.mjs (7 tests including a
+  parser self-check), docs/security/dependency-updates.md policy,
+  TASKS.md backlog, README + AGENTS.md discoverability. `npm test`
+  is now 65/65 (was 58/58).
+- Three Dependabot auto-PRs (#2, #3, #4) auto-closed by the
+  scanner on the 5f43656 push, with comments pointing at the
+  commit posted afterward.
 
 ## Won't fix (out of scope)
 
