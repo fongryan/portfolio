@@ -1028,11 +1028,37 @@ h2 em {
 .catalogue-section .catalogue-group__header {
   border-bottom-color: #d9d7d1;
 }
-.catalogue-section .catalogue-group__list {
-  border-bottom-color: #d9d7d1;
+.catalogue-group__lede {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  margin: 0.25rem 0 1.5rem;
+  max-width: 42rem;
 }
-.catalogue-section .catalogue-group__list > li + li {
-  border-top-color: #d9d7d1;
+.catalogue-group__list--grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  border-bottom: none;
+}
+.catalogue-group__list--grid > li {
+  display: flex;
+}
+.catalogue-group__list--grid > li > a {
+  width: 100%;
+}
+.catalogue-section .catalogue-group__list--grid > li + li {
+  border-top: none;
+}
+@media (min-width: 40rem) {
+  .catalogue-group__list--grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 64rem) {
+  .catalogue-group__list--grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .atlas-band {

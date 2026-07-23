@@ -290,15 +290,15 @@ const atlasPreview = productAtlas.slice(0, 8);
                   </span>
                 </>
               </div>
-              <ul class="catalogue-group__list">
+              <p class="catalogue-group__lede">
+                Every product family in this category. Each card links to the
+                full product record with stack, access, proof, and the offer
+                shape.
+              </p>
+              <ul class="catalogue-group__list catalogue-group__list--grid">
                 {group.apps.map((app) => (
                   <li>
-                    <a href={`/apps/${app.id}`} class="catalogue-product">
-                      <span class="catalogue-product__name">
-                        {app.data.name}
-                      </span>
-                      <StatusBadge status={app.data.status} compact />
-                    </a>
+                    <AppCard app={app} compact />
                   </li>
                 ))}
               </ul>
