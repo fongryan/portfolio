@@ -5,3 +5,14 @@
 .firstmate/
 .no-mistakes/
 .treehouse/
+
+# Foreign package-manager artifacts. The portfolio uses npm
+# (package-lock.json is the canonical lockfile). If pnpm-lock.yaml
+# or yarn.lock uploads, Vercel auto-detects pnpm and switches the
+# install + package manager to one that ignores the npm overrides
+# in package.json, breaking the GHSA patches and the build.
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+bun.lock
+.pnpm-store/

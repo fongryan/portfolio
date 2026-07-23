@@ -88,6 +88,33 @@ test("Vercel uploads exclude local agent state", async () => {
   }
 });
 
+test("Vercel uploads exclude foreign package-manager artifacts", async () => {
+  // The 2026-07-15 -> 2026-07-21 production Error streak was caused
+  // by Vercel auto-detecting pnpm from a stray pnpm-lock.yaml in the
+  // upload, which switched the install to pnpm and ignored the npm
+  // overrides in package.json (the GHSA patches). Locking the upload
+  // contract so a future agent cannot accidentally re-trigger this.
+  const ignored = new Set(
+    (await readFile(new URL("../.vercelignore", import.meta.url), "utf8"))
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")),
+  );
+
+  for (const path of [
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "bun.lockb",
+    "bun.lock",
+    ".pnpm-store/",
+  ]) {
+    assert.ok(
+      ignored.has(path),
+      `${path} must not upload to Vercel (Vercel would auto-detect the matching package manager)`,
+    );
+  }
+});
+
 test("the format gate checks committed authored Vercel config", async (t) => {
   const fixture = await mkdtemp(
     path.join(tmpdir(), "portfolio-vercel-format-"),

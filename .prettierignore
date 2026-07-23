@@ -10,3 +10,15 @@ CLAUDE.md
 .vercel/
 dist/
 vercel.json
+
+# Foreign package-manager artifacts. If a stray pnpm-lock.yaml or
+# yarn.lock slips into the working tree, the pnpm store and any
+# foreign node_modules have to be skipped too — otherwise prettier
+# --check . reports Code style issues found in 310 files and the
+# proof exits 1 before it gets to the build (see git log for the
+# 2026-07-15 to 2026-07-21 Error streak).
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+bun.lock
+.pnpm-store/

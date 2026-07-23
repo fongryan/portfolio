@@ -15,6 +15,13 @@ Read [`AGENTS.md`](./AGENTS.md) before doing anything non-trivial here; it is th
 single source of truth for every coding agent and locks in the cracked dev
 workflow (Firstmate, repo-native proof, lavish-axi, and Brain).
 
+Security reports: see [`SECURITY.md`](./SECURITY.md). The dependency-update
+policy lives at
+[`docs/security/dependency-updates.md`](./docs/security/dependency-updates.md);
+the regression guards are `scripts/portfolio-deps-security.test.mjs`
+(in-tree) and `scripts/portfolio-production-smoke.test.mjs` (opt-in via
+`PORTFOLIO_VERIFY_PRODUCTION=1 npm test`).
+
 ## Stack
 
 - **Astro 7** — content-first, static output, zero client JS for static content.

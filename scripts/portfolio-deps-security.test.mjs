@@ -242,6 +242,85 @@ test("installed node_modules matches the lockfile (no stale pnpm-style duplicate
   }
 });
 
+test("the repo carries only one package-manager lockfile (npm is canonical)", async () => {
+  // Vercel auto-detects the package manager from the lockfile in the
+  // upload. If multiple lockfiles exist, or a foreign one slips in,
+  // Vercel picks one based on heuristics and the npm overrides in
+  // package.json stop applying (which is how the 2026-07-15 to
+  // 2026-07-21 production Error streak was caused).
+  const lockfiles = [
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "bun.lockb",
+    "bun.lock",
+  ];
+  const present = [];
+  for (const lockfile of lockfiles) {
+    try {
+      await readFile(new URL(`../${lockfile}`, import.meta.url));
+      present.push(lockfile);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+  }
+  assert.deepEqual(
+    present,
+    ["package-lock.json"],
+    `Only package-lock.json must exist in the working tree; found ${JSON.stringify(present)}. A foreign lockfile makes Vercel auto-detect a non-npm manager and the GHSA overrides stop applying.`,
+  );
+});
+
+test(".prettierignore excludes the foreign package-manager artifacts", async () => {
+  // Even if .pnpm-store slips into the working tree (a future agent
+  // runs `pnpm install` locally), prettier --check must not scan it.
+  // The 2026-07-15 Error streak ran prettier against 310 pnpm-store
+  // files and exited 1 before the proof got to the build.
+  const ignored = new Set(
+    (await readFile(new URL("../.prettierignore", import.meta.url), "utf8"))
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")),
+  );
+
+  for (const path of [
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "bun.lockb",
+    "bun.lock",
+    ".pnpm-store/",
+  ]) {
+    assert.ok(
+      ignored.has(path),
+      `.prettierignore must exclude ${path} so prettier --check . cannot be polluted by foreign package-manager artifacts`,
+    );
+  }
+});
+
+test(".gitignore excludes the foreign package-manager artifacts", async () => {
+  // Defense in depth: even if a future agent runs pnpm or yarn
+  // locally, the resulting artifacts cannot be committed.
+  const ignored = new Set(
+    (await readFile(new URL("../.gitignore", import.meta.url), "utf8"))
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#")),
+  );
+
+  for (const path of [
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "bun.lockb",
+    "bun.lock",
+    ".pnpm-store/",
+  ]) {
+    assert.ok(
+      ignored.has(path),
+      `.gitignore must exclude ${path} so it cannot be committed`,
+    );
+  }
+});
+
 test("npm audit reports no high or critical vulnerabilities in the resolved tree", (t) => {
   // Optional gate: skip when PORTFOLIO_SKIP_NPM_AUDIT=1 to keep CI
   // deterministic when offline. The lockfile check above already locks

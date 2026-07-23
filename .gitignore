@@ -35,6 +35,22 @@ build/
 coverage/
 .cache/
 
+# Foreign package managers — npm is the only canonical lockfile for
+# this repo. A stray pnpm-lock.yaml makes Vercel auto-detect pnpm,
+# which pulls a different dependency tree than the npm overrides in
+# package.json are designed to enforce. The Error streak on
+# 2026-07-15 through 2026-07-21 was caused by pnpm-lock.yaml +
+# .pnpm-store/ landing in the working tree: prettier --check . then
+# scanned 310 pnpm-store JSON files and exited 1, failing the proof.
+# Defense in depth: keep these out of git AND out of the Vercel
+# upload AND out of the prettier scan.
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+bun.lock
+.pnpm-store/
+.pnpm-debug.log*
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

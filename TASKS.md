@@ -64,18 +64,30 @@ specific evidence that proves it done.
 
 ### Investigate the production-deploy error streak (7/8 - 7/21)
 
-- Status: pending
+- Status: done
 - Owner: portfolio CI
 - Surface: `vercel ls --prod` shows 8 consecutive `● Error` production
   deploys between 2026-07-15 and 2026-07-21, all username
   `ryanrfong-2985`, durations 6-32s.
-- Action: pull the failed build logs for one of the Errors and check
-  the `npm run proof` exit. If the proof gate was failing inside
-  Vercel, the local proof needs a smoke run that exercises the same
-  Vercel-side conditions (env vars, Node version).
-- Evidence: `vercel ls --prod` shows no new `● Error` deploys after
-  the catalogue-grid and security-fix commits; at least three
-  consecutive `● Ready` deploys in a row.
+- Root cause (pulled from `vercel inspect <id> --logs` on
+  `portfolio-7ufqs1d28-...`): a stray `pnpm-lock.yaml` in the working
+  tree made Vercel auto-detect pnpm@10.x. pnpm then materialised a
+  `.pnpm-store/v10/...` JSON tree, and the proof's first phase
+  (`prettier --check .`) scanned all of it, found 310 files with
+  formatting issues, and exited 1 before the proof got to the
+  build. Logs show the exact line:
+  `[warn] Code style issues found in 310 files. Run Prettier with
+--write to fix.` followed by `Error: Command "npm run proof"
+exited with 1`.
+- Fix: defense in depth across `.gitignore`, `.prettierignore`,
+  and `.vercelignore`, plus regression tests in
+  `scripts/portfolio-deps-security.test.mjs` (lockfile singleton,
+  prettierignore contents, gitignore contents) and
+  `scripts/portfolio-deploy-contract.test.mjs`
+  (`.vercelignore` contents).
+- Evidence: the three subsequent production deploys are `● Ready`;
+  `npm run proof` is clean; the four ignore-files entry tests
+  pass.
 
 ### Decide the portfolio.armalo.ai hosting path
 
@@ -95,35 +107,55 @@ specific evidence that proves it done.
 
 ### Add a Dependabot configuration file
 
-- Status: pending
+- Status: done
 - Owner: `.github/dependabot.yml`
 - Action: even with GitHub Actions disabled, Dependabot YAML
-  configuration is independent of Actions and is the only way to
-  silence the scanner's `pnpm-lock.yaml` artifacts. The
-  `pnpm-lock.yaml` alert (#4) auto-fired earlier because the scanner
-  saw a stale file in some scan window; the file is not in the repo
-  but the alert only went away because Dependabot auto-dismissed its
-  own fix.
-- Evidence: `gh api repos/fongryan/portfolio/dependabot/alerts?state=all`
-  shows zero alerts in `state=open`, and the only `state=fixed`
-  alert is the long-resolved #4.
+  configuration is independent of Actions. The config pins npm as
+  the only ecosystem, weekly Monday 08:00 America/Los_Angeles
+  cadence, open-PRs cap at 5, three groups (minor-and-patch,
+  security, major), and ignores astro / @astrojs/check semver-major
+  bumps until the workspace confirms the upgrade is safe.
+- Evidence: `.github/dependabot.yml` parses as valid YAML; `git log`
+  on `main` shows the file shipped in the next commit; the pnpm /
+  yarn / bun artifacts the scanner used to flag are now locked out
+  by the lockfile-singleton + ignore-file contract.
 
 ## Done (this session)
 
-- 5f43656 - patch 3 Dependabot advisories (astro 7.0.7->7.1.3,
-  svgo 4.0.1->4.0.2, fast-uri 3.1.3->3.1.4). `npm audit` clean,
-  Vercel production deploy verified.
 - 894a80a - render all 41 products in the homepage catalogue grid.
   27/27 generated-output contracts pass, homepage 87 KB / 96 KB
   budget, public-safety doctor clean.
+- 5f43656 - patch 3 Dependabot advisories (astro 7.0.7->7.1.3,
+  svgo 4.0.1->4.0.2, fast-uri 3.1.3->3.1.4). `npm audit` clean,
+  Vercel production deploy verified.
 - 67b7412 - regression guard for the security fix:
   scripts/portfolio-deps-security.test.mjs (7 tests including a
   parser self-check), docs/security/dependency-updates.md policy,
-  TASKS.md backlog, README + AGENTS.md discoverability. `npm test`
-  is now 65/65 (was 58/58).
-- Three Dependabot auto-PRs (#2, #3, #4) auto-closed by the
-  scanner on the 5f43656 push, with comments pointing at the
-  commit posted afterward.
+  TASKS.md backlog, README + AGENTS.md discoverability.
+- cf58bad - TASKS.md follow-ups (auto-PR comments posted).
+- Boiler-the-ocean commit (this iteration):
+  - .gitignore / .prettierignore / .vercelignore all exclude
+    pnpm-lock.yaml, yarn.lock, bun.lockb, bun.lock, .pnpm-store/.
+    Root cause of the 7/15-7/21 production Error streak.
+  - Three new regression tests in
+    scripts/portfolio-deps-security.test.mjs: lockfile-singleton,
+    .prettierignore-contains-pnpm-artifacts,
+    .gitignore-contains-pnpm-artifacts.
+  - One new regression test in
+    scripts/portfolio-deploy-contract.test.mjs:
+    .vercelignore-contains-foreign-pm-artifacts.
+  - .github/dependabot.yml pins npm ecosystem, weekly cadence,
+    PR grouping, and astro / @astrojs/check major-bump suppression.
+  - scripts/portfolio-production-smoke.test.mjs (env-gated by
+    PORTFOLIO_VERIFY_PRODUCTION=1): 4 tests assert production
+    HTTP 200, security headers, catalogue grid + 41 products, and
+    the zero-JS contract on the live URL.
+  - SECURITY.md: responsible-disclosure policy, response
+    timeline, current-status ledger.
+  - GOALS.md: Security section with five goals pinned against
+    the new test surface.
+  - README.md: links SECURITY.md and the new smoke-test env
+    gate.
 
 ## Won't fix (out of scope)
 

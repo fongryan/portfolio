@@ -1,0 +1,58 @@
+# Dependabot configuration for the portfolio repo.
+#
+# GitHub Actions is intentionally disabled (AGENTS.md, owner billing
+# gate). Dependabot is independent of Actions and is the canonical
+# vulnerability scanner for npm in this repo. The .github/ directory
+# itself is allowed because Dependabot's YAML is not a runnable
+# workflow; the doctor/format gate exclude it from prettier, but it
+# still needs to live somewhere Dependabot can find it.
+#
+# This file exists to:
+#   1. Lock the package ecosystem as npm and the directory as "/".
+#      Vercel auto-detects from uploaded lockfiles, so a foreign
+#      ecosystem configuration here would be redundant with the
+#      single-lockfile contract in scripts/portfolio-deps-security.test.mjs.
+#   2. Group minor and patch updates so a Dependabot weekly batch
+#      produces a single PR instead of N small ones.
+#   3. Limit open PRs so the queue stays bounded.
+#   4. Pin a weekly cadence so re-scans don't fire on every push.
+#   5. Label every PR so the audit trail is explicit (security,
+#      dependencies, weekly-batch).
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "automated"
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+      security:
+        applies-to: security-updates
+      major:
+        applies-to: version-updates
+        update-types:
+          - "major"
+    # Ignore the astro 7 major bump line until the workspace confirms
+    # the upgrade is safe; portfolio is currently on 7.1.x. The lockfile
+    # constraint in package.json is the authoritative floor; this entry
+    # only silences Dependabot's auto-PR stream until the manual
+    # promotion lands. Same reasoning for @astrojs/check, which is
+    # pinned to the minor line that matches astro 7.1.x.
+    ignore:
+      - dependency-name: "astro"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@astrojs/check"
+        update-types:
+          - "version-update:semver-major"

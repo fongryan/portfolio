@@ -69,6 +69,40 @@ States: `active`, `stretch`, `done`, `retired`.
   proof — scripts/portfolio-doctor.sh — zero secret/private-topology leaks —
   continuous.
 
+## Security
+
+- [active] Keep the resolved npm tree free of known-vulnerable ranges —
+  scripts/portfolio-deps-security.test.mjs + package.json overrides —
+  zero high or critical vulnerabilities per `npm audit`; the test
+  guard fails any future regen that re-introduces a known range —
+  continuous.
+- [active] Keep Vercel locked to npm and the upload free of foreign
+  package-manager artifacts — .github/dependabot.yml +
+  scripts/portfolio-deps-security.test.mjs +
+  scripts/portfolio-deploy-contract.test.mjs — no pnpm-lock.yaml,
+  yarn.lock, or .pnpm-store/ can land in a Vercel upload; the
+  2026-07-15 to 2026-07-21 Error streak was caused by this slipping
+  — continuous.
+- [active] Keep the static-site response headers pinned to the
+  approved security policy — vercel.json +
+  scripts/portfolio-deploy-contract.test.mjs +
+  scripts/portfolio-production-smoke.test.mjs — CSP, X-Frame-Options
+  DENY, X-Content-Type-Options nosniff, Referrer-Policy
+  strict-origin-when-cross-origin, Permissions-Policy camera/mic/
+  geolocation/payment/usb disabled, HSTS includeSubDomains preload
+  — continuous.
+- [active] Maintain the responsible-disclosure policy and the
+  current-status ledger — SECURITY.md — every external report gets
+  an acknowledgement within one business day and a triage within
+  three business days; CVSS >= 7.0 issues get triage within 24
+  hours — continuous.
+- [stretch] Wire the production smoke test into the Vercel deploy
+  hook so the catalogue + headers contract is checked on every
+  production push, not only on demand — Vercel Deploy Hook + a
+  small runner that exec's `PORTFOLIO_VERIFY_PRODUCTION=1 npm test
+scripts/portfolio-production-smoke.test.mjs` — before the next
+  mini-app launch.
+
 ## Self-Improvement
 
 - [active] Maintain a versioned, digest-pinned starter bundle for every product
