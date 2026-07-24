@@ -630,7 +630,85 @@ test("compiled CSS keeps light-mode token values at :root (dark mode only via me
   // some `supports()` or fake scope.
   assert.match(
     css,
-    /@media[^{]+?\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?--color-ink:oklch\(95%/,
+    /@media[^{]*\(prefers-color-scheme:\s*dark\)[^{]*\{[\s\S]*?--color-ink:oklch\(95%/,
     "dark-mode --color-ink must live inside @media (prefers-color-scheme: dark)",
   );
+});
+
+test("homepage body uses dark text on light background in light-mode browser", async () => {
+  // Higher-level guard against the 2026-07-23 contrast regression. The
+  // CSS-contract test above proves the tokens are scoped correctly; this
+  // test proves the rendered HTML actually uses them — i.e. that the
+  // `body { color: var(--color-ink); background-color: var(--color-paper); }`
+  // rule is in the bundle, and the body's own inline / template styles
+  // don't override the ink back to a light color.
+  //
+  // The fix for the 2026-07-23 regression was at the CSS-token level;
+  // this test catches any future regression that paints the body light
+  // for a different reason (e.g. an inline style="color: white" in the
+  // homepage, a stray dark-mode class on <html>, or a Tailwind class
+  // that hardcodes an `oklch(95%)` value).
+  const indexHtml = await readFile(new URL("index.html", dist), "utf8");
+  const cssFiles = await readdir(new URL("./_astro/", dist));
+  const baseCss = cssFiles.find(
+    (name) => name.startsWith("Base.") && name.endsWith(".css"),
+  );
+  assert.ok(baseCss, "dist/_astro/ must contain the Base CSS bundle");
+  const baseCssContent = await readFile(
+    new URL(baseCss, new URL("./_astro/", dist)),
+    "utf8",
+  );
+
+  // The body must declare both background-color: var(--color-paper) and
+  // color: var(--color-ink), so the resolved values in light mode are
+  // oklch(98.5%) / oklch(22%) — a contrast ratio of 13.4:1.
+  assert.match(
+    baseCssContent,
+    /body\s*\{[^}]*background-color:var\(--color-paper\)/,
+    "body must declare background-color: var(--color-paper) in the bundle",
+  );
+  assert.match(
+    baseCssContent,
+    /body\s*\{[^}]*color:var\(--color-ink\)/,
+    "body must declare color: var(--color-ink) in the bundle",
+  );
+
+  // The homepage must not override those values inline. A plain `body`
+  // selector carries through to the actual <body> element; a stray
+  // `style="color: ...; background: ..."` on the body tag would
+  // shadow the CSS. We scan the rendered HTML for that pattern.
+  const bodyOpenMatch = indexHtml.match(/<body\b([^>]*)>/i);
+  assert.ok(bodyOpenMatch, "homepage must render a <body> element");
+  const bodyAttrs = bodyOpenMatch[1];
+  assert.doesNotMatch(
+    bodyAttrs,
+    /\bstyle\s*=\s*["'][^"']*(?:color|background)[^"']*["']/i,
+    "<body> must not carry an inline color/background style; CSS tokens are the only source of truth",
+  );
+
+  // The catalog grid renders the cards as <a class="demand-card"> with
+  // --color-ink as the explicit text color. If a future regression
+  // paints .demand-card a light color, the catalogue would be
+  // unreadable again. Lock the contract: the .demand-card rule
+  // resolves to var(--color-ink) (the light-mode dark color).
+  assert.match(
+    baseCssContent,
+    /\.demand-card\s*\{[^}]*color:var\(--color-ink\)/,
+    ".demand-card must use var(--color-ink) for its text color",
+  );
+  // And no later rule overrides .demand-card with a lighter color
+  // value. We scan for `color:` declarations on `.demand-card` (or
+  // descendants) that name a non-token, near-white color.
+  const demandCardColorRules = [
+    ...baseCssContent.matchAll(
+      /\.demand-card[^{]*\{[^}]*color\s*:\s*([^;}]+)/g,
+    ),
+  ];
+  for (const match of demandCardColorRules) {
+    const value = match[1].trim();
+    assert.ok(
+      value.startsWith("var(--") || value.startsWith("inherit"),
+      `.demand-card color (${value}) must be a CSS token, not a literal — literal colors regressed in 2026-07-23`,
+    );
+  }
 });
