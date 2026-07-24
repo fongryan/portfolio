@@ -117,16 +117,20 @@ test("deploy-vibe.sh source documents every env var + flag", async () => {
 
 test("deploy-vibe.sh refuses to run without a dist/ build", () => {
   // The script's first action is to require dist/index.html. We
-  // simulate this by renaming the dist dir and re-running.
+  // simulate this by running it in a temp dir where there is no
+  // dist/, then asserting the failure mode. We can't just move the
+  // real dist/ aside because the proof runs `npm test` BEFORE `npm run
+  // build`, so the directory may or may not exist.
   const result = spawnSync(
     "bash",
-    [
-      "-c",
-      "mv dist dist.bak && bash scripts/deploy-vibe.sh; ec=$?; mv dist.bak dist; exit $ec",
-    ],
-    { cwd: root, encoding: "utf8" },
+    ["-c", "cd /tmp && bash '" + root + "/scripts/deploy-vibe.sh'"],
+    { cwd: "/tmp", encoding: "utf8" },
   );
-  assert.notEqual(result.status, 0, "must exit non-zero without a build");
+  assert.notEqual(
+    result.status,
+    0,
+    "must exit non-zero when run from a directory without dist/index.html",
+  );
   assert.match(result.stdout + result.stderr, /dist\/index\.html missing/i);
 });
 
