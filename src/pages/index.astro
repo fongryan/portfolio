@@ -94,6 +94,53 @@ const atlasPreview = productAtlas.slice(0, 8);
     </div>
   </section>
 
+  <section
+    id="demand"
+    class="demand-section mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28"
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Market signal</p><h2>
+          What people already<br />pay to fix.
+        </h2>
+      </div><div>
+        <p>
+          Ten product families ranked by urgency, repeatability, time to value,
+          build feasibility, safety, and proofability.
+        </p><a class="arrow-link" href="/research/demand-backed-ai-catalogue/"
+          >Read the research <span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </div>
+    <ol class="demand-list">
+      {
+        rankedDemandApps.map(({ product, app }) => (
+          <li>
+            <>
+              <span class="demand-list__rank">
+                {String(product.rank).padStart(2, "0")}
+              </span>
+              <AppCard app={app} compact />
+            </>
+          </li>
+        ))
+      }
+    </ol>
+    <aside id="consumer-lab" class="consumer-lab" aria-label="Consumer lab">
+      <div>
+        <p class="eyebrow">Consumer lab</p><p>{consumerLabScopeLabel}</p>
+      </div><div class="consumer-lab__links">
+        {
+          consumerLabApps.map((app) => (
+            <a href={`/apps/${app.id}`}>
+              {app.data.name} <span aria-hidden="true">↗</span>
+            </a>
+          ))
+        }
+      </div>
+    </aside>
+  </section>
+
   <AnnotationDashboard />
 
   <section class="intro-grid mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28">
@@ -206,53 +253,6 @@ const atlasPreview = productAtlas.slice(0, 8);
         }
       </ol>
     </div>
-  </section>
-
-  <section
-    id="demand"
-    class="demand-section mx-auto max-w-6xl px-6 py-20 sm:px-10 sm:py-28"
-  >
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Market signal</p><h2>
-          What people already<br />pay to fix.
-        </h2>
-      </div><div>
-        <p>
-          Ten product families ranked by urgency, repeatability, time to value,
-          build feasibility, safety, and proofability.
-        </p><a class="arrow-link" href="/research/demand-backed-ai-catalogue/"
-          >Read the research <span aria-hidden="true">↗</span></a
-        >
-      </div>
-    </div>
-    <ol class="demand-list">
-      {
-        rankedDemandApps.map(({ product, app }) => (
-          <li>
-            <>
-              <span class="demand-list__rank">
-                {String(product.rank).padStart(2, "0")}
-              </span>
-              <AppCard app={app} compact />
-            </>
-          </li>
-        ))
-      }
-    </ol>
-    <aside id="consumer-lab" class="consumer-lab" aria-label="Consumer lab">
-      <div>
-        <p class="eyebrow">Consumer lab</p><p>{consumerLabScopeLabel}</p>
-      </div><div class="consumer-lab__links">
-        {
-          consumerLabApps.map((app) => (
-            <a href={`/apps/${app.id}`}>
-              {app.data.name} <span aria-hidden="true">↗</span>
-            </a>
-          ))
-        }
-      </div>
-    </aside>
   </section>
 
   <section
