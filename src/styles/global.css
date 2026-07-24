@@ -1011,7 +1011,7 @@ h2 em {
 }
 
 .catalogue-section {
-  background: #fff;
+  background: var(--color-paper);
 }
 .category-nav {
   border-bottom: 1px solid #d9d7d1;

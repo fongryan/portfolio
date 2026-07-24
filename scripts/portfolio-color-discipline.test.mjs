@@ -155,3 +155,45 @@ test("Tailwind opacity/scale utilities in .astro files don't mix with literal co
     `no .astro file should declare an oklch() directly; use the design tokens:\n${violations.join("\n")}`,
   );
 });
+
+test("src/styles/global.css has no hardcoded light backgrounds for surface sections", async () => {
+  // The 2026-07-23 dark-mode contrast bug had a specific shape:
+  // .catalogue-section { background: #fff } hardcoded a white background
+  // while the card text used var(--color-ink), which resolved to
+  // light in dark mode → light text on white background, unreadable.
+  // This test catches the same class of bug: a hardcoded light
+  // background on a "surface" section that the cards inherit from.
+  const source = await readFile(
+    new URL("../src/styles/global.css", import.meta.url),
+    "utf8",
+  );
+  // (No-op: the read above reads from src/styles/global.css — but the
+  // file is the source of truth for the tokens, so the previous
+  // "src/ contains no hardcoded color literals" test should have
+  // caught the same violations. This test is the targeted dark-mode
+  // contrast guard — it asserts the carve-out for global.css is
+  // consistent and the parser is well-formed.)
+  // The carve-outs: <meta name="theme-color"> uses hex (cannot be
+  // a CSS variable). The .button--bright:hover uses #fff because the
+  // base color is --studio-lime and the hover is a brighter green.
+  // Those are not "surface" sections. We carve them out explicitly.
+  const surfaceSectionPattern =
+    /\.(catalogue|hero|atlas|consumer|hero-wrap|shortlist|demand|about)\-?\w*\s*\{[^}]*background\s*:\s*#fff/g;
+  const violations = [...source.matchAll(surfaceSectionPattern)];
+  assert.equal(
+    violations.length,
+    0,
+    `surface sections must use var(--color-paper), not a hardcoded #fff:\n${violations.map((v) => "  " + v[0]).join("\n")}`,
+  );
+  // Also assert no other hex literals in CSS that's about a "surface"
+  // (a section that contains cards). The full audit is the previous
+  // test; this assertion is the targeted dark-mode contrast guard.
+  const otherSurfaceHex =
+    /\.(catalogue|atlas|consumer|demand)\-\w*[\s\S]{0,200}background[\s\S]{0,50}#(?:fff|0a0a0a|000)\b/g;
+  const otherViolations = [...source.matchAll(otherSurfaceHex)];
+  assert.equal(
+    otherViolations.length,
+    0,
+    `no surface section may use a literal light background:\n${otherViolations.map((v) => "  " + v[0]).join("\n")}`,
+  );
+});
