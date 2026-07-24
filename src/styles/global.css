@@ -955,6 +955,16 @@ h2 em {
 
 .demand-section {
   background: var(--studio-paper);
+  color: var(--studio-ink);
+}
+/* The demand section locks its background to --studio-paper (always
+ * light). Its text must therefore also be mode-locked to a dark ink,
+ * otherwise dark-mode browsers inherit --color-ink = light and the
+ * section goes unreadable (the 2026-07-23-class regression). The
+ * global .demand-card rule uses --color-ink on purpose for catalogue
+ * pages, so we override here for the market-signal list only. */
+.demand-section h2 {
+  color: var(--studio-ink);
 }
 .demand-list {
   border-top: 1px solid #d9d7d1;
@@ -980,10 +990,14 @@ h2 em {
   background: transparent;
   border: 0;
   border-radius: 0;
+  color: var(--studio-ink);
   padding: 0.6rem 0;
 }
 .demand-list .demand-card:hover {
   color: var(--studio-blue);
+}
+.demand-list .demand-card .demand-card__description {
+  color: var(--studio-muted);
 }
 .consumer-lab {
   border-top: 1px solid #d9d7d1;
