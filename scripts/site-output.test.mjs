@@ -501,3 +501,136 @@ test("Astro config keeps a production-safe canonical default and env override", 
     "https://portfolio.example",
   );
 });
+
+test("compiled CSS keeps light-mode token values at :root (dark mode only via media query)", async () => {
+  // 2026-07-23 contrast regression: the dark-mode block was wrapped in
+  // `@theme` inside `@media (prefers-color-scheme: dark)`. Tailwind v4
+  // emits every `@theme` to `:root` with last-wins precedence, so the
+  // dark-mode values clobbered the light-mode defaults unconditionally.
+  // That made the catalogue cards (light background) carry near-white
+  // text (the dark-mode ink value), with a contrast ratio under 1.5:1.
+  //
+  // The fix: use `:root { ... }` inside the media query so the override
+  // is media-scoped. This test guards the contract by asserting that:
+  //   1. The compiled CSS contains BOTH the light-mode ink value
+  //      (oklch(22% ...)) AND the dark-mode ink value
+  //      (oklch(95% ...)).
+  //   2. The light-mode value is declared at :root in the baseline rule
+  //      (no media query wrapping it).
+  //   3. The dark-mode value is declared ONLY inside a media query
+  //      wrapping `:root`. A naked `@theme { --color-ink: oklch(95%) }`
+  //      would re-introduce the bug.
+  const astroDir = new URL("./_astro/", dist);
+  const files = await readdir(astroDir);
+  const cssFile = files.find(
+    (name) => name.startsWith("Base.") && name.endsWith(".css"),
+  );
+  assert.ok(
+    cssFile,
+    "dist/_astro/ must contain a Base.<hash>.css bundle from the build",
+  );
+  const css = await readFile(new URL(cssFile, astroDir), "utf8");
+
+  // 1. Both values present.
+  assert.match(
+    css,
+    /--color-ink:oklch\(22%\s*\.012\s*75\)/,
+    "compiled CSS must declare the light-mode --color-ink (22% lightness)",
+  );
+  assert.match(
+    css,
+    /--color-ink:oklch\(95%\s*\.004\s*75\)/,
+    "compiled CSS must declare the dark-mode --color-ink (95% lightness)",
+  );
+  assert.match(
+    css,
+    /--color-paper:oklch\(98\.5%\s*\.004\s*75\)/,
+    "compiled CSS must declare the light-mode --color-paper (98.5% lightness, near-white)",
+  );
+  assert.match(
+    css,
+    /--color-paper:oklch\(16%\s*\.008\s*75\)/,
+    "compiled CSS must declare the dark-mode --color-paper (16% lightness, near-black)",
+  );
+
+  // Helper: strip every balanced { ... } block whose opening selector
+  // starts at a position where `isOpening(source, i)` returns true.
+  // Handles nested braces correctly. Used to test what is left after
+  // removing all media queries (light-mode token assertions) or what
+  // is left after removing every non-media block (dark-mode-only
+  // assertions).
+  const stripBlocks = (source, isOpening) => {
+    let out = "";
+    let i = 0;
+    while (i < source.length) {
+      if (!isOpening(source, i)) {
+        out += source[i];
+        i += 1;
+        continue;
+      }
+      // Find the opening `{` (the first `{` at or after i).
+      let j = i;
+      while (j < source.length && source[j] !== "{") j += 1;
+      if (j >= source.length) {
+        out += source.slice(i);
+        break;
+      }
+      // Skip past the matched block, counting braces.
+      let depth = 0;
+      let k = j;
+      while (k < source.length) {
+        const ch = source[k];
+        if (ch === "{") depth += 1;
+        else if (ch === "}") {
+          depth -= 1;
+          if (depth === 0) {
+            k += 1;
+            break;
+          }
+        }
+        k += 1;
+      }
+      i = k;
+    }
+    return out;
+  };
+
+  // 2. The light-mode values must NOT be wrapped in a media query.
+  //    Strip every media-query block and assert the light-mode values
+  //    survive — i.e. they were declared at :root unconditionally.
+  const isAtMedia = (source, i) => source.startsWith("@media", i);
+  const withoutMedia = stripBlocks(css, isAtMedia);
+  assert.match(
+    withoutMedia,
+    /--color-ink:oklch\(22%/,
+    "light-mode --color-ink must be declared at :root, not inside a media query",
+  );
+  assert.match(
+    withoutMedia,
+    /--color-paper:oklch\(98\.5%/,
+    "light-mode --color-paper must be declared at :root, not inside a media query",
+  );
+
+  // 3. The dark-mode values MUST be inside a media query wrapping
+  //    :root. A naked `:root { --color-ink:oklch(95%) }` outside any
+  //    media query would re-introduce the bug (Tailwind would emit
+  //    the dark-mode values at :root, clobbering the light-mode ones).
+  const darkOnly = stripBlocks(css, isAtMedia);
+  assert.doesNotMatch(
+    darkOnly,
+    /--color-ink:oklch\(95%/,
+    "dark-mode --color-ink must NOT be declared at :root (would clobber light mode)",
+  );
+  assert.doesNotMatch(
+    darkOnly,
+    /--color-paper:oklch\(16%/,
+    "dark-mode --color-paper must NOT be declared at :root (would clobber light mode)",
+  );
+  // And the dark-mode block must be inside a real media query, not
+  // some `supports()` or fake scope.
+  assert.match(
+    css,
+    /@media[^{]+?\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?--color-ink:oklch\(95%/,
+    "dark-mode --color-ink must live inside @media (prefers-color-scheme: dark)",
+  );
+});

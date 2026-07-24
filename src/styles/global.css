@@ -61,9 +61,17 @@
   --radius-lg: 10px;
 }
 
-/* Dark theme: same tokens, inverted lightness. Honors system preference. */
+/* Dark theme: same tokens, inverted lightness. Honors system preference.
+ *
+ * IMPORTANT: Tailwind v4 emits every `@theme` block to `:root` with
+ * last-wins precedence, so the dark-mode block must NOT be wrapped in
+ * `@theme` — that would clobber the light-mode defaults unconditionally
+ * (see 2026-07-23 contrast regression in `portfolio-production-smoke`
+ * contract + `scripts/portfolio-contrast-regression.test.mjs`). The
+ * `:root` selector here keeps the override scoped to the media query.
+ */
 @media (prefers-color-scheme: dark) {
-  @theme {
+  :root {
     --color-ink: oklch(0.95 0.004 75);
     --color-ink-soft: oklch(0.78 0.006 75);
     --color-ink-faint: oklch(0.6 0.006 75);
